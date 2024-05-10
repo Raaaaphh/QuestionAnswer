@@ -5,6 +5,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppService } from './app.service';
 import { User } from './users/user.model';
 import { UsersModule } from './users/users.module';
+import { QuestionsModule } from './questions/questions.module';
+import { AnswersModule } from './answers/answers.module';
+import { FavoritesModule } from './favorites/favorites.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -26,6 +29,9 @@ import { UsersModule } from './users/users.module';
     inject: [ConfigService],
   }),
     UsersModule,
+    QuestionsModule,
+    AnswersModule,
+    FavoritesModule,
   ],
   providers: [AppService],
 })

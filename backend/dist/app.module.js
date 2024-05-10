@@ -14,6 +14,9 @@ const config_1 = require("@nestjs/config");
 const app_service_1 = require("./app.service");
 const user_model_1 = require("./users/user.model");
 const users_module_1 = require("./users/users.module");
+const questions_module_1 = require("./questions/questions.module");
+const answers_module_1 = require("./answers/answers.module");
+const favorites_module_1 = require("./favorites/favorites.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -37,7 +40,10 @@ exports.AppModule = AppModule = __decorate([
                 }),
                 inject: [config_1.ConfigService],
             }),
-            users_module_1.UsersModule,],
+            users_module_1.UsersModule,
+            questions_module_1.QuestionsModule,
+            answers_module_1.AnswersModule,
+            favorites_module_1.FavoritesModule,],
         providers: [app_service_1.AppService],
     })
 ], AppModule);
