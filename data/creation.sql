@@ -1,21 +1,25 @@
-drop if exists Favorite;
+DROP TABLE IF EXISTS `Favorite`;
 
-drop if exists QuestionTag;
+DROP TABLE IF EXISTS `QuestionTag`;
 
-drop if exists Tag;
+DROP TABLE IF EXISTS `Tag`;
 
-drop if exists Answer;
+DROP TABLE IF EXISTS `Answer`;
 
-drop if exists Question;
+DROP TABLE IF EXISTS `Question`;
 
-drop if exists User;
+DROP TABLE IF EXISTS `User`;
 
 Create table `User` (
     `idUser` varchar(100) not null,
     `name` varchar(255) not null,
     `email` varchar(255) not null,
     `password` varchar(255) not null,
-    `lecturer` boolean default false,
+    `role` enum(
+        'SuperAdmin',
+        'Lecturer',
+        'Student'
+    ) default 'Student',
     `createdAt` datetime not null,
     `updatedAt` datetime not null,
     primary key (`idUser`)
@@ -74,4 +78,14 @@ Create table `Favorite` (
     primary key (`idUser`, `idQuest`),
     foreign key (`idUser`) references `User` (`idUser`) ON DELETE CASCADE,
     foreign key (`idQuest`) references `Question` (`idQuest`) ON DELETE CASCADE
+);
+
+CREATE TABLE `Invitation` (
+    `idInvitation` INT AUTO_INCREMENT PRIMARY KEY,
+    `idSender` varchar(100) NOT NULL,
+    `idRecipient` varchar(100) NOT NULL,
+    `createdAt` datetime NOT NULL,
+    `updatedAt` datetime NOT NULL,
+    FOREIGN KEY (`idSender`) REFERENCES `User` (`idUser`) ON DELETE CASCADE,
+    FOREIGN KEY (`idRecipient`) REFERENCES `User` (`idUser`) ON DELETE CASCADE
 );
