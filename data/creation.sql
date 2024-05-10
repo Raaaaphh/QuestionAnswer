@@ -10,7 +10,7 @@ DROP TABLE IF EXISTS `Question`;
 
 DROP TABLE IF EXISTS `User`;
 
-Create table `User` (
+Create table `Users` (
     `idUser` varchar(100) not null,
     `name` varchar(255) not null,
     `email` varchar(255) not null,
@@ -25,7 +25,7 @@ Create table `User` (
     primary key (`idUser`)
 );
 
-Create table `Question` (
+Create table `Questions` (
     `idQuest` varchar(100) not null,
     `idUser` varchar(100) not null,
     `content` text not null,
@@ -39,7 +39,7 @@ Create table `Question` (
     foreign key (`idUser`) references `User` (`idUser`) ON DELETE CASCADE
 );
 
-Create table `Answer` (
+Create table `Answers` (
     `idAnsw` varchar(100) not null,
     `idQuest` varchar(100) not null,
     `idUser` varchar(100) not null,
@@ -52,7 +52,7 @@ Create table `Answer` (
     foreign key (`idUser`) references `User` (`idUser`) ON DELETE CASCADE
 );
 
-Create table `Tag` (
+Create table `Tags` (
     `idTag` varchar(100) not null,
     `idUser` varchar(100) not null,
     `name` varchar(255) not null,
@@ -64,7 +64,7 @@ Create table `Tag` (
     foreign key (`idUser`) references `User` (`idUser`) ON DELETE CASCADE
 );
 
-Create table `QuestionTag` (
+Create table `QuestionTags` (
     `idQuest` varchar(100) not null,
     `idTag` varchar(100) not null,
     primary key (`idQuest`, `idTag`),
@@ -72,7 +72,7 @@ Create table `QuestionTag` (
     foreign key (`idTag`) references `Tag` (`idTag`) ON DELETE CASCADE
 );
 
-Create table `Favorite` (
+Create table `Favorites` (
     `idUser` varchar(100) not null,
     `idQuest` varchar(100) not null,
     primary key (`idUser`, `idQuest`),
@@ -80,7 +80,7 @@ Create table `Favorite` (
     foreign key (`idQuest`) references `Question` (`idQuest`) ON DELETE CASCADE
 );
 
-CREATE TABLE `Invitation` (
+CREATE TABLE `Invitations` (
     `idInvitation` INT AUTO_INCREMENT PRIMARY KEY,
     `idSender` varchar(100) NOT NULL,
     `idRecipient` varchar(100) NOT NULL,

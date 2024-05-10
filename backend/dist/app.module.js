@@ -11,31 +11,34 @@ const common_1 = require("@nestjs/common");
 const auth_module_1 = require("./auth/auth.module");
 const sequelize_1 = require("@nestjs/sequelize");
 const config_1 = require("@nestjs/config");
+const app_service_1 = require("./app.service");
+const user_model_1 = require("./users/user.model");
+const users_module_1 = require("./users/users.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [auth_module_1.AuthModule,
+        imports: [config_1.ConfigModule.forRoot({
+                isGlobal: true,
+                envFilePath: '.env',
+            }),
+            auth_module_1.AuthModule,
             sequelize_1.SequelizeModule.forRootAsync({
                 imports: [config_1.ConfigModule],
-                useFactory: async (configService) => ({
+                useFactory: (configService) => ({
                     dialect: 'mysql',
-                    host: 'localhost',
-                    port: 3306,
-                    username: 'aoiazoia',
-                    password: 'root',
-                    database: 'test',
-                    models: [],
-                    dialectOptions: {
-                        options: {
-                            validateConnection: true,
-                        },
-                    },
+                    host: configService.get('DB_HOST'),
+                    port: +configService.get('DB_PORT'),
+                    username: configService.get('DB_USER'),
+                    password: configService.get('DB_PASSWORD'),
+                    database: configService.get('DB_NAME'),
+                    models: [user_model_1.User],
                 }),
                 inject: [config_1.ConfigService],
             }),
-        ],
+            users_module_1.UsersModule,],
+        providers: [app_service_1.AppService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
