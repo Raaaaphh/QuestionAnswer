@@ -1,4 +1,7 @@
-import { Column, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { Column, HasMany, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { Answer } from 'src/answers/answer.model';
+import { Favorite } from 'src/favorites/favorite.model';
+import { Question } from 'src/questions/question.model';
 
 enum Role {
     SuperAdmin = 'SuperAdmin',
@@ -23,4 +26,14 @@ export class User extends Model {
 
     @Column
     role: Role;
+
+    @HasMany(() => Question)
+    questions: Question[];
+
+    @HasMany(() => Answer)
+    answers: Answer[];
+
+    @HasMany(() => Favorite)
+    favorites: Favorite[];
 }
+

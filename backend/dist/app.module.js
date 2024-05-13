@@ -17,6 +17,11 @@ const users_module_1 = require("./users/users.module");
 const questions_module_1 = require("./questions/questions.module");
 const answers_module_1 = require("./answers/answers.module");
 const favorites_module_1 = require("./favorites/favorites.module");
+const question_model_1 = require("./questions/question.model");
+const answer_model_1 = require("./answers/answer.model");
+const favorite_model_1 = require("./favorites/favorite.model");
+const questiontags_module_1 = require("./questiontags/questiontags.module");
+const invitations_module_1 = require("./invitations/invitations.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -36,14 +41,16 @@ exports.AppModule = AppModule = __decorate([
                     username: configService.get('DB_USER'),
                     password: configService.get('DB_PASSWORD'),
                     database: configService.get('DB_NAME'),
-                    models: [user_model_1.User],
+                    models: [user_model_1.User, question_model_1.Question, answer_model_1.Answer, favorite_model_1.Favorite],
                 }),
                 inject: [config_1.ConfigService],
             }),
             users_module_1.UsersModule,
             questions_module_1.QuestionsModule,
             answers_module_1.AnswersModule,
-            favorites_module_1.FavoritesModule,],
+            favorites_module_1.FavoritesModule,
+            questiontags_module_1.QuestiontagsModule,
+            invitations_module_1.InvitationsModule,],
         providers: [app_service_1.AppService],
     })
 ], AppModule);

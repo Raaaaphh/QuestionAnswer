@@ -8,6 +8,11 @@ import { UsersModule } from './users/users.module';
 import { QuestionsModule } from './questions/questions.module';
 import { AnswersModule } from './answers/answers.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { Question } from './questions/question.model';
+import { Answer } from './answers/answer.model';
+import { Favorite } from './favorites/favorite.model';
+import { QuestiontagsModule } from './questiontags/questiontags.module';
+import { InvitationsModule } from './invitations/invitations.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -24,7 +29,7 @@ import { FavoritesModule } from './favorites/favorites.module';
       username: configService.get('DB_USER'),
       password: configService.get('DB_PASSWORD'),
       database: configService.get('DB_NAME'),
-      models: [User],
+      models: [User, Question, Answer, Favorite],
     }),
     inject: [ConfigService],
   }),
@@ -32,6 +37,8 @@ import { FavoritesModule } from './favorites/favorites.module';
     QuestionsModule,
     AnswersModule,
     FavoritesModule,
+    QuestiontagsModule,
+    InvitationsModule,
   ],
   providers: [AppService],
 })

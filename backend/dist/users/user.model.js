@@ -11,6 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
+const answer_model_1 = require("../answers/answer.model");
+const favorite_model_1 = require("../favorites/favorite.model");
+const question_model_1 = require("../questions/question.model");
 var Role;
 (function (Role) {
     Role["SuperAdmin"] = "SuperAdmin";
@@ -41,6 +44,18 @@ __decorate([
     sequelize_typescript_1.Column,
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => question_model_1.Question),
+    __metadata("design:type", Array)
+], User.prototype, "questions", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => answer_model_1.Answer),
+    __metadata("design:type", Array)
+], User.prototype, "answers", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => favorite_model_1.Favorite),
+    __metadata("design:type", Array)
+], User.prototype, "favorites", void 0);
 exports.User = User = __decorate([
     sequelize_typescript_1.Table
 ], User);

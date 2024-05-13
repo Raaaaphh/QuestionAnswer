@@ -1,4 +1,7 @@
 import { Model } from 'sequelize-typescript';
+import { Answer } from 'src/answers/answer.model';
+import { Favorite } from 'src/favorites/favorite.model';
+import { Question } from 'src/questions/question.model';
 declare enum Role {
     SuperAdmin = "SuperAdmin",
     Lecturer = "Lecturer",
@@ -10,5 +13,8 @@ export declare class User extends Model {
     email: string;
     password: string;
     role: Role;
+    questions: Question[];
+    answers: Answer[];
+    favorites: Favorite[];
 }
 export {};
