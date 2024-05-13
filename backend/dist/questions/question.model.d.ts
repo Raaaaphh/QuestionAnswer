@@ -1,6 +1,6 @@
 import { Model } from "sequelize-typescript";
-import { Answer } from "src/answers/answer.model";
-import { Favorite } from "src/favorites/favorite.model";
+import { Answer } from "src/class/answers/answer.model";
+import { Favorite } from "src/class/favorites/favorite.model";
 import { User } from "src/users/user.model";
 export declare class Question extends Model {
     idQuest: string;

@@ -3,16 +3,17 @@ import { AuthModule } from './auth/auth.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppService } from './app.service';
-import { User } from './users/user.model';
-import { UsersModule } from './users/users.module';
-import { QuestionsModule } from './questions/questions.module';
-import { AnswersModule } from './answers/answers.module';
-import { FavoritesModule } from './favorites/favorites.module';
-import { Question } from './questions/question.model';
-import { Answer } from './answers/answer.model';
-import { Favorite } from './favorites/favorite.model';
-import { QuestiontagsModule } from './questiontags/questiontags.module';
-import { InvitationsModule } from './invitations/invitations.module';
+import { User } from './class/users/user.model';
+import { UsersModule } from './class/users/users.module';
+import { QuestionsModule } from './class/questions/questions.module';
+import { AnswersModule } from './class/answers/answers.module';
+import { FavoritesModule } from './class/favorites/favorites.module';
+import { Question } from './class/questions/question.model';
+import { Answer } from './class/answers/answer.model';
+import { Favorite } from './class/favorites/favorite.model';
+import { QuestiontagsModule } from './class/questiontags/questiontags.module';
+import { InvitationsModule } from './class/invitations/invitations.module';
+import { TagsModule } from './class/tags/tags.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -39,6 +40,7 @@ import { InvitationsModule } from './invitations/invitations.module';
     FavoritesModule,
     QuestiontagsModule,
     InvitationsModule,
+    TagsModule,
   ],
   providers: [AppService],
 })

@@ -11,8 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Question = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
-const answer_model_1 = require("../answers/answer.model");
-const favorite_model_1 = require("../favorites/favorite.model");
+const answer_model_1 = require("../class/answers/answer.model");
+const favorite_model_1 = require("../class/favorites/favorite.model");
 const user_model_1 = require("../users/user.model");
 let Question = class Question extends sequelize_typescript_1.Model {
 };
