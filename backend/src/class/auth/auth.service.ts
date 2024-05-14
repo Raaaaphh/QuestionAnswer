@@ -3,11 +3,12 @@ import { AuthLoginDto, AuthRegisterDto } from "./dto";
 import * as argon from 'argon2';
 import { InjectModel } from "@nestjs/sequelize";
 import { User } from "../users/user.model";
+import { MailerService } from "src/Mailers/mailer.service";
 
 
 @Injectable({})
 export class AuthService {
-    constructor(@InjectModel(User) private userModel: typeof User) { }
+    constructor(@InjectModel(User) private userModel: typeof User, private mailerService: MailerService) { }
 
     test() {
         return 'Hello World ! depuis le Back';
@@ -29,6 +30,7 @@ export class AuthService {
             password: hash,
         });
         console.log("Le nouvel utilisateur" + newUser);
+
         return newUser;
     }
 }

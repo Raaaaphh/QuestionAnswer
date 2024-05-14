@@ -14,6 +14,7 @@ import { Favorite } from './class/favorites/favorite.model';
 import { QuestiontagsModule } from './class/questiontags/questiontags.module';
 import { InvitationsModule } from './class/invitations/invitations.module';
 import { TagsModule } from './class/tags/tags.module';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -43,6 +44,15 @@ import { TagsModule } from './class/tags/tags.module';
     QuestiontagsModule,
     InvitationsModule,
     TagsModule,
+  MailerModule.forRoot({
+    transport: {
+      host: 'smtp.gmail.com',
+      auth: {
+        user: 'corsica0107@gmail.com',
+        pass: 'raphael11022004',
+      },
+    },
+  }),
   ],
   providers: [AppService],
 })
