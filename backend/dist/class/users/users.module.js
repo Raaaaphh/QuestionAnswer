@@ -20,6 +20,7 @@ exports.UsersModule = UsersModule = __decorate([
         imports: [sequelize_1.SequelizeModule.forFeature([user_model_1.User])],
         providers: [users_service_1.UsersService],
         controllers: [users_controller_1.UsersController],
+        exports: [sequelize_1.SequelizeModule],
     })
 ], UsersModule);
 //# sourceMappingURL=users.module.js.map

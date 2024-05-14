@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './class/auth/auth.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppService } from './app.service';
@@ -31,6 +31,8 @@ import { TagsModule } from './class/tags/tags.module';
       password: configService.get('DB_PASSWORD'),
       database: configService.get('DB_NAME'),
       models: [User, Question, Answer, Favorite],
+      //autoLoadModels: true,
+      //synchronize: true,
     }),
     inject: [ConfigService],
   }),
