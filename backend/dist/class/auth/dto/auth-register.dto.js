@@ -15,7 +15,7 @@ class AuthRegisterDto {
 }
 exports.AuthRegisterDto = AuthRegisterDto;
 __decorate([
-    (0, class_validator_1.IsEmail)(),
+    (0, class_validator_1.Matches)(/^.+@utp\.edu\.my$/, { message: 'L\'adresse e-mail doit se terminer par @utp.edu.my' }),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], AuthRegisterDto.prototype, "email", void 0);
