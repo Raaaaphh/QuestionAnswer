@@ -2,6 +2,8 @@ import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/com
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.model';
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
+import { UserEditMdpDto, UserEditNameDto } from './dto';
+import * as argon from 'argon2';
 
 
 @Injectable()
@@ -50,5 +52,49 @@ export class UsersService {
         await user.destroy();
     }
 
+    async editMdp(mdpDto: UserEditMdpDto) {
+        const user = await this.userModel.findOne({
+            where: {
+                idUser: mdpDto.idUser
+            }
+        });
+
+        if (!user) {
+            throw new ForbiddenException('User not found');
+        }
+
+        const valid = await argon.verify(user.password, mdpDto.oldpassword);
+        if (!valid) {
+            throw new ForbiddenException('Invalid password');
+        }
+
+        if (mdpDto.newpassword !== mdpDto.confirmpassword) {
+            throw new ForbiddenException('Passwords do not match');
+        }
+
+        const hash = await argon.hash(mdpDto.newpassword);
+        user.password = hash;
+
+        await user.save();
+        return user;
+    }
+
+    async editName(userDto: UserEditNameDto) {
+        const user = await this.userModel.findOne({
+            where: {
+                idUser: userDto.idUser
+            }
+        });
+
+        if (!user) {
+            throw new ForbiddenException('User not found');
+        }
+
+        user.name = userDto.name;
+
+        await user.save();
+        return user;
+
+    }
 
 }

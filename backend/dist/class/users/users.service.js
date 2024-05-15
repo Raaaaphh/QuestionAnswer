@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
 const user_model_1 = require("./user.model");
 const uuid_1 = require("uuid");
+const argon = require("argon2");
 let UsersService = class UsersService {
     constructor(userModel) {
         this.userModel = userModel;
@@ -48,6 +49,40 @@ let UsersService = class UsersService {
             throw new common_1.ForbiddenException('Question not found');
         }
         await user.destroy();
+    }
+    async editMdp(mdpDto) {
+        const user = await this.userModel.findOne({
+            where: {
+                idUser: mdpDto.idUser
+            }
+        });
+        if (!user) {
+            throw new common_1.ForbiddenException('User not found');
+        }
+        const valid = await argon.verify(user.password, mdpDto.oldpassword);
+        if (!valid) {
+            throw new common_1.ForbiddenException('Invalid password');
+        }
+        if (mdpDto.newpassword !== mdpDto.confirmpassword) {
+            throw new common_1.ForbiddenException('Passwords do not match');
+        }
+        const hash = await argon.hash(mdpDto.newpassword);
+        user.password = hash;
+        await user.save();
+        return user;
+    }
+    async editName(userDto) {
+        const user = await this.userModel.findOne({
+            where: {
+                idUser: userDto.idUser
+            }
+        });
+        if (!user) {
+            throw new common_1.ForbiddenException('User not found');
+        }
+        user.name = userDto.name;
+        await user.save();
+        return user;
     }
 };
 exports.UsersService = UsersService;

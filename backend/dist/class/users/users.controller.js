@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
 const users_service_1 = require("./users.service");
+const dto_1 = require("./dto");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -27,6 +28,12 @@ let UsersController = class UsersController {
     }
     async remove(id) {
         return this.usersService.remove(id);
+    }
+    async editMdp(mdpDto) {
+        return this.usersService.editMdp(mdpDto);
+    }
+    async editName(nameDto) {
+        return this.usersService.editName(nameDto);
     }
 };
 exports.UsersController = UsersController;
@@ -50,6 +57,20 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Post)('edit/mdp'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [dto_1.UserEditMdpDto]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "editMdp", null);
+__decorate([
+    (0, common_1.Post)('edit/name'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [dto_1.UserEditNameDto]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "editName", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])
