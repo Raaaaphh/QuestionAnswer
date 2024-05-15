@@ -23,7 +23,7 @@ const favorite_model_1 = require("./class/favorites/favorite.model");
 const questiontags_module_1 = require("./class/questiontags/questiontags.module");
 const invitations_module_1 = require("./class/invitations/invitations.module");
 const tags_module_1 = require("./class/tags/tags.module");
-const mailer_1 = require("@nestjs-modules/mailer");
+const tag_model_1 = require("./class/tags/tag.model");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -43,7 +43,7 @@ exports.AppModule = AppModule = __decorate([
                     username: configService.get('DB_USER'),
                     password: configService.get('DB_PASSWORD'),
                     database: configService.get('DB_NAME'),
-                    models: [user_model_1.User, question_model_1.Question, answer_model_1.Answer, favorite_model_1.Favorite],
+                    models: [user_model_1.User, question_model_1.Question, answer_model_1.Answer, favorite_model_1.Favorite, tag_model_1.Tag],
                 }),
                 inject: [config_1.ConfigService],
             }),
@@ -53,16 +53,7 @@ exports.AppModule = AppModule = __decorate([
             favorites_module_1.FavoritesModule,
             questiontags_module_1.QuestiontagsModule,
             invitations_module_1.InvitationsModule,
-            tags_module_1.TagsModule,
-            mailer_1.MailerModule.forRoot({
-                transport: {
-                    host: 'smtp.gmail.com',
-                    auth: {
-                        user: 'corsica0107@gmail.com',
-                        pass: 'raphael11022004',
-                    },
-                },
-            }),],
+            tags_module_1.TagsModule,],
         providers: [app_service_1.AppService],
     })
 ], AppModule);

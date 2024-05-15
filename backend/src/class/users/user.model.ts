@@ -2,6 +2,7 @@ import { Column, HasMany, Model, PrimaryKey, Table } from 'sequelize-typescript'
 import { Answer } from 'src/class/answers/answer.model';
 import { Favorite } from 'src/class/favorites/favorite.model';
 import { Question } from 'src/class/questions/question.model';
+import { Tag } from '../tags/tag.model';
 
 enum Role {
     SuperAdmin = 'SuperAdmin',
@@ -38,5 +39,8 @@ export class User extends Model {
 
     @HasMany(() => Favorite)
     favorites: Favorite[];
+
+    @HasMany(() => Tag)
+    tags: Tag[];
 }
 

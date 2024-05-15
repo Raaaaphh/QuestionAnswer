@@ -35,7 +35,7 @@ let QuestionsService = class QuestionsService {
         }
         return question;
     }
-    async findAll() {
+    findAll() {
         return this.questModel.findAll();
     }
     async createQuestion(quest) {

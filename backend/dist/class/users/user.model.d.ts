@@ -2,6 +2,7 @@ import { Model } from 'sequelize-typescript';
 import { Answer } from 'src/class/answers/answer.model';
 import { Favorite } from 'src/class/favorites/favorite.model';
 import { Question } from 'src/class/questions/question.model';
+import { Tag } from '../tags/tag.model';
 declare enum Role {
     SuperAdmin = "SuperAdmin",
     Lecturer = "Lecturer",
@@ -17,5 +18,6 @@ export declare class User extends Model {
     questions: Question[];
     answers: Answer[];
     favorites: Favorite[];
+    tags: Tag[];
 }
 export {};

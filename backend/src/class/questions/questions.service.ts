@@ -26,7 +26,7 @@ export class QuestionsService {
         return question;
     }
 
-    async findAll() {
+    findAll() {
         return this.questModel.findAll();
     }
 
