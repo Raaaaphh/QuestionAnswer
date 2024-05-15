@@ -49,12 +49,12 @@ let QuestionsService = class QuestionsService {
                 description: quest.description,
                 context: quest.context,
             });
-            console.log("La nouvelle question" + question);
+            console.log("New question" + question);
             return question;
         }
         catch (error) {
             console.log(error);
-            throw new common_1.HttpException('Erreur lors de la création de la question', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new common_1.HttpException('Error during the creation of the question', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     async editQuestion(question) {

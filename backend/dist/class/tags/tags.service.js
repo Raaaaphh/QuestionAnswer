@@ -38,12 +38,12 @@ let TagsService = class TagsService {
                 description: tagDto.description,
                 idUser: tagDto.idUser,
             });
-            console.log("Le nouveau tag" + tag);
+            console.log("New tag" + tag);
             return tag;
         }
         catch (error) {
             console.log(error);
-            throw new common_2.HttpException('Erreur lors de la création du tag', common_2.HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new common_2.HttpException('Error during the creation of the tag', common_2.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     async deleteTag(id) {

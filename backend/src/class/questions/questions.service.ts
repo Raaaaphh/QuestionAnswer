@@ -42,11 +42,11 @@ export class QuestionsService {
                 description: quest.description,
                 context: quest.context,
             });
-            console.log("La nouvelle question" + question);
+            console.log("New question" + question);
             return question;
         } catch (error) {
             console.log(error);
-            throw new HttpException('Erreur lors de la création de la question', HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException('Error during the creation of the question', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

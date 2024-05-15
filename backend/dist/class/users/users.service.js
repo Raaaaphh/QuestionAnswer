@@ -46,7 +46,7 @@ let UsersService = class UsersService {
             }
         });
         if (!user) {
-            throw new common_1.ForbiddenException('Question not found');
+            throw new common_1.ForbiddenException('User not found');
         }
         await user.destroy();
     }

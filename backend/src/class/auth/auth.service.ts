@@ -52,7 +52,7 @@ export class AuthService {
             password: hash,
             color: color
         });
-        console.log("Le nouvel utilisateur" + newUser);
+        console.log("New user" + newUser);
 
         return newUser;
     }

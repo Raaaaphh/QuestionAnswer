@@ -42,16 +42,25 @@ export class AnswersService {
                 idQuest: answDto.idQuest,
                 content: answDto.content,
             });
-            console.log("La nouvelle reponse" + answer);
+            console.log("New answer" + answer);
             return answer;
 
         } catch (error) {
             console.log(error);
-            throw new HttpException('Erreur lors de la création de la question', HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException('Error during the creation of the answer', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    deleteAnswer(id: string) {
-        return `This action removes a #${id} answer`;
+    async deleteAnswer(id: string) {
+        const answer = await this.answModel.findOne({
+            where: {
+                idAnsw: id
+            }
+        });
+        if (!answer) {
+            throw new ForbiddenException('Answer not found');
+        }
+
+        await answer.destroy();
     }
 }

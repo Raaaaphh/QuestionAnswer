@@ -29,12 +29,12 @@ export class TagsService {
                 description: tagDto.description,
                 idUser: tagDto.idUser,
             });
-            console.log("Le nouveau tag" + tag);
+            console.log("New tag" + tag);
             return tag;
 
         } catch (error) {
             console.log(error);
-            throw new HttpException('Erreur lors de la création du tag', HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException('Error during the creation of the tag', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

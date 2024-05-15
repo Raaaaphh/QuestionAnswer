@@ -48,16 +48,24 @@ let AnswersService = class AnswersService {
                 idQuest: answDto.idQuest,
                 content: answDto.content,
             });
-            console.log("La nouvelle reponse" + answer);
+            console.log("New answer" + answer);
             return answer;
         }
         catch (error) {
             console.log(error);
-            throw new common_1.HttpException('Erreur lors de la création de la question', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new common_1.HttpException('Error during the creation of the answer', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    deleteAnswer(id) {
-        return `This action removes a #${id} answer`;
+    async deleteAnswer(id) {
+        const answer = await this.answModel.findOne({
+            where: {
+                idAnsw: id
+            }
+        });
+        if (!answer) {
+            throw new common_1.ForbiddenException('Answer not found');
+        }
+        await answer.destroy();
     }
 };
 exports.AnswersService = AnswersService;

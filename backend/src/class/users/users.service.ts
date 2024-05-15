@@ -46,7 +46,7 @@ export class UsersService {
             }
         });
         if (!user) {
-            throw new ForbiddenException('Question not found');
+            throw new ForbiddenException('User not found');
         }
 
         await user.destroy();

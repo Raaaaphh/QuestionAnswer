@@ -6,5 +6,5 @@ export declare class AnswersService {
     getAnswer(id: string): Promise<Answer>;
     findAll(): Promise<Answer[]>;
     createAnswer(answDto: AnswerCreateDto): Promise<Answer>;
-    deleteAnswer(id: string): string;
+    deleteAnswer(id: string): Promise<void>;
 }
