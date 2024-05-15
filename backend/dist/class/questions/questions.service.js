@@ -35,6 +35,9 @@ let QuestionsService = class QuestionsService {
         }
         return question;
     }
+    async findAll() {
+        return this.questModel.findAll();
+    }
     async createQuestion(quest) {
         const idQuest = (0, uuid_1.v4)();
         console.log(idQuest);

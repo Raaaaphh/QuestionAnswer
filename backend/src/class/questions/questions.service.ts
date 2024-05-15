@@ -26,6 +26,9 @@ export class QuestionsService {
         return question;
     }
 
+    async findAll() {
+        return this.questModel.findAll();
+    }
 
     async createQuestion(quest: QuestionCreateDto) {
         const idQuest = uuidv4();

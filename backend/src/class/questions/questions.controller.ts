@@ -12,6 +12,11 @@ export class QuestionsController {
         return this.questionsService.getQuestion(id);
     }
 
+    @Get()
+    findAll() {
+        return this.questionsService.findAll();
+    }
+
     @Post('create')
     createQuestion(@Body() quest: QuestionCreateDto) {
         try {

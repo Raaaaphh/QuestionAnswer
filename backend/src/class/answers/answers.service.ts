@@ -27,6 +27,10 @@ export class AnswersService {
         return answer;
     }
 
+    findAll() {
+        return this.answModel.findAll();
+    }
+
     async createAnswer(answDto: AnswerCreateDto) {
         const idAnsw = uuidv4();
         console.log(idAnsw);

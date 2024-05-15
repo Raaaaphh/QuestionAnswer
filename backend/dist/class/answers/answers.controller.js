@@ -23,6 +23,9 @@ let AnswersController = class AnswersController {
     getAnswer(id) {
         return this.answersService.getAnswer(id);
     }
+    findAll() {
+        return this.answersService.findAll();
+    }
     createAnswer(answer) {
         return this.answersService.createAnswer(answer);
     }
@@ -38,6 +41,12 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], AnswersController.prototype, "getAnswer", null);
+__decorate([
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], AnswersController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Post)('create'),
     __param(0, (0, common_1.Body)()),

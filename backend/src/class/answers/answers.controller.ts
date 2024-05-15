@@ -11,6 +11,11 @@ export class AnswersController {
         return this.answersService.getAnswer(id);
     }
 
+    @Get()
+    findAll() {
+        return this.answersService.findAll();
+    }
+
     @Post('create')
     createAnswer(@Body() answer: AnswerCreateDto) {
         return this.answersService.createAnswer(answer);

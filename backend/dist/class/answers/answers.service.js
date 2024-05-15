@@ -35,6 +35,9 @@ let AnswersService = class AnswersService {
         }
         return answer;
     }
+    findAll() {
+        return this.answModel.findAll();
+    }
     async createAnswer(answDto) {
         const idAnsw = (0, uuid_1.v4)();
         console.log(idAnsw);
