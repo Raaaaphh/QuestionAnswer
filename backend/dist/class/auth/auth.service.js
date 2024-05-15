@@ -17,7 +17,7 @@ const common_1 = require("@nestjs/common");
 const argon = require("argon2");
 const sequelize_1 = require("@nestjs/sequelize");
 const user_model_1 = require("../users/user.model");
-const mailer_service_1 = require("../../Mailers/mailer.service");
+const mailer_service_1 = require("../../mailers/mailer.service");
 let AuthService = class AuthService {
     constructor(userModel, mailerService) {
         this.userModel = userModel;

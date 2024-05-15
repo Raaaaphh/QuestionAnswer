@@ -1,6 +1,6 @@
 import { AuthLoginDto, AuthRegisterDto } from "./dto";
 import { User } from "../users/user.model";
-import { MailerService } from "src/Mailers/mailer.service";
+import { MailerService } from "src/mailers/mailer.service";
 export declare class AuthService {
     private userModel;
     private mailerService;

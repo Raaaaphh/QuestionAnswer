@@ -8,16 +8,65 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QuestionsController = void 0;
 const common_1 = require("@nestjs/common");
 const questions_service_1 = require("./questions.service");
+const question_dto_1 = require("./dto/question.dto");
 let QuestionsController = class QuestionsController {
     constructor(questionsService) {
         this.questionsService = questionsService;
     }
+    getQuestion(id) {
+        return this.questionsService.getQuestion(id);
+    }
+    createQuestion(quest) {
+        try {
+            return this.questionsService.createQuestion(quest);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+    editQuestion(question) {
+        return this.questionsService.editQuestion(question);
+    }
+    deleteQuestion(id) {
+        return this.questionsService.deleteQuestion(id);
+    }
 };
 exports.QuestionsController = QuestionsController;
+__decorate([
+    (0, common_1.Get)('/:id'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], QuestionsController.prototype, "getQuestion", null);
+__decorate([
+    (0, common_1.Post)('create'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [question_dto_1.QuestionDto]),
+    __metadata("design:returntype", void 0)
+], QuestionsController.prototype, "createQuestion", null);
+__decorate([
+    (0, common_1.Post)('edit'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], QuestionsController.prototype, "editQuestion", null);
+__decorate([
+    (0, common_1.Delete)('delete'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], QuestionsController.prototype, "deleteQuestion", null);
 exports.QuestionsController = QuestionsController = __decorate([
     (0, common_1.Controller)('questions'),
     __metadata("design:paramtypes", [questions_service_1.QuestionsService])

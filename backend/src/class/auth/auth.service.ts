@@ -3,7 +3,7 @@ import { AuthLoginDto, AuthRegisterDto } from "./dto";
 import * as argon from 'argon2';
 import { InjectModel } from "@nestjs/sequelize";
 import { User } from "../users/user.model";
-import { MailerService } from "src/Mailers/mailer.service";
+import { MailerService } from "src/mailers/mailer.service";
 
 
 @Injectable({})
