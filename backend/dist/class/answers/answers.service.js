@@ -21,8 +21,19 @@ let AnswersService = class AnswersService {
     constructor(answModel) {
         this.answModel = answModel;
     }
-    getAnswer(id) {
-        return `This action returns a #${id} answer`;
+    async getAnswer(id) {
+        if (!(0, uuid_1.validate)(id)) {
+            throw new common_1.BadRequestException('Invalid answer ID');
+        }
+        const answer = await this.answModel.findOne({
+            where: {
+                idAnsw: id
+            }
+        });
+        if (!answer) {
+            throw new common_1.ForbiddenException('Question not found');
+        }
+        return answer;
     }
     async createAnswer(answDto) {
         const idAnsw = (0, uuid_1.v4)();

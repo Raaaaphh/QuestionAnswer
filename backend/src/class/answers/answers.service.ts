@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { AnswerCreateDto } from "./dto";
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { Answer } from "./answer.model";
@@ -10,8 +10,21 @@ export class AnswersService {
 
     constructor(@InjectModel(Answer) private answModel: typeof Answer) { }
 
-    getAnswer(id: string) {
-        return `This action returns a #${id} answer`;
+    async getAnswer(id: string) {
+        if (!isValidUUID(id)) {
+            throw new BadRequestException('Invalid answer ID');
+        }
+
+        const answer = await this.answModel.findOne({
+            where: {
+                idAnsw: id
+            }
+        });
+
+        if (!answer) {
+            throw new ForbiddenException('Question not found');
+        }
+        return answer;
     }
 
     async createAnswer(answDto: AnswerCreateDto) {
