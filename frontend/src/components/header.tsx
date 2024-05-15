@@ -155,7 +155,7 @@ const Header: React.FC = () => {
       <Link to='/'>
         <img src={UTPLogo} alt="logo" className='logoUTPHeader' />
       </Link>
-      <Link to='/'><h1 className='homeButtonText'>Home</h1></Link>
+      <Link to='/' className='homeButton'><h1 className='homeButtonText'>Home</h1> <div className='underline'></div></Link>
       <SearchBar />
       <FilterMenu />
       <BtnQuestion />

@@ -12,7 +12,7 @@ header {
   justify-content: space-between;
   align-items: center;
   background-color: #ffffff;
-  color: rgb(0, 0, 0);
+  color: #000000;
   flex-direction: row;
   height: 85px;
   box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.212);
@@ -52,6 +52,7 @@ h1 {
   font-family: 'Poppins', sans-serif;
 }
 
+
 .searchButton {
   position: absolute;
   left: 10px;
@@ -87,13 +88,18 @@ h1 {
   padding: 10px;
 }
 
+.notificationButton img, .profileButton img, .filterButton img{
+  width: 60px;
+  height: 60px;
+}
+
 .profileButton {
   margin-right: 20px;
 }
 
 .dropdown {
   position: absolute;
-  top: 95px;
+  top: 90px;
   right: 10px;
   background-color: white;
   border: 1px solid #ddd;
@@ -117,8 +123,33 @@ h1 {
   background-color: #f0f0f0;
 }
 
+.homeButton{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.homeButton:visited{
+  text-decoration: none;
+  color: #8F8F8F;
+}
+
+.underline {
+  border-bottom: 2px solid #C88A12;
+  width: 90%;
+}
+
 .homeButtonText {
   margin: 0px 10px 0px 10px;
+  font-weight: 300;
+  color: #8F8F8F;
+  text-decoration: none;
+}
+
+
+.homeButtonText:visited {
+  color: #8F8F8F;
+  text-decoration: none;
 }
 
 
