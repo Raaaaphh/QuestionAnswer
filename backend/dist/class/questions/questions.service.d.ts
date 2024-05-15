@@ -6,5 +6,5 @@ export declare class QuestionsService {
     getQuestion(id: string): Promise<Question>;
     createQuestion(quest: QuestionDto): Promise<Question>;
     editQuestion(question: any): string;
-    deleteQuestion(id: string): string;
+    deleteQuestion(id: string): Promise<void>;
 }

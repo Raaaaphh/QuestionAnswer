@@ -23,7 +23,6 @@ export class QuestionsService {
         if (!question) {
             throw new ForbiddenException('Question not found');
         }
-
         return question;
     }
 
@@ -52,7 +51,16 @@ export class QuestionsService {
         return 'Question edited !';
     }
 
-    deleteQuestion(id: string) {
-        return 'Question deleted !';
+    async deleteQuestion(id: string) {
+        const question = await this.questModel.findOne({
+            where: {
+                idQuest: id
+            }
+        });
+        if (!question) {
+            throw new ForbiddenException('Question not found');
+        }
+
+        await question.destroy();
     }
 }

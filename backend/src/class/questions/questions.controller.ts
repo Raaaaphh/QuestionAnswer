@@ -26,8 +26,8 @@ export class QuestionsController {
         return this.questionsService.editQuestion(question);
     }
 
-    @Delete('delete')
-    deleteQuestion(@Body() id: string) {
+    @Delete(':id')
+    deleteQuestion(@Param('id') id: string) {
         return this.questionsService.deleteQuestion(id);
     }
 }

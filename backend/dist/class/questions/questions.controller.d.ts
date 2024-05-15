@@ -6,5 +6,5 @@ export declare class QuestionsController {
     getQuestion(id: string): Promise<import("./question.model").Question>;
     createQuestion(quest: QuestionDto): Promise<import("./question.model").Question>;
     editQuestion(question: any): string;
-    deleteQuestion(id: string): string;
+    deleteQuestion(id: string): Promise<void>;
 }

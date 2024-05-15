@@ -56,8 +56,16 @@ let QuestionsService = class QuestionsService {
     editQuestion(question) {
         return 'Question edited !';
     }
-    deleteQuestion(id) {
-        return 'Question deleted !';
+    async deleteQuestion(id) {
+        const question = await this.questModel.findOne({
+            where: {
+                idQuest: id
+            }
+        });
+        if (!question) {
+            throw new common_1.ForbiddenException('Question not found');
+        }
+        await question.destroy();
     }
 };
 exports.QuestionsService = QuestionsService;
