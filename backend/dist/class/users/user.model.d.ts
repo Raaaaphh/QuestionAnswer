@@ -13,6 +13,7 @@ export declare class User extends Model {
     email: string;
     password: string;
     role: Role;
+    color: string;
     questions: Question[];
     answers: Answer[];
     favorites: Favorite[];

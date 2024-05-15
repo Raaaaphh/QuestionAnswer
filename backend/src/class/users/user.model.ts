@@ -27,6 +27,9 @@ export class User extends Model {
     @Column
     role: Role;
 
+    @Column
+    color: string;
+
     @HasMany(() => Question)
     questions: Question[];
 

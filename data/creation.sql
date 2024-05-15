@@ -21,6 +21,7 @@ Create table `Users` (
         'Lecturer',
         'Student'
     ) default 'Student',
+    `color` varchar(100) not NULL,
     `createdAt` datetime not null,
     `updatedAt` datetime not null,
     primary key (`idUser`)

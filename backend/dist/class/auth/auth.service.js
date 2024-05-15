@@ -47,11 +47,14 @@ let AuthService = class AuthService {
         console.log(hash);
         const idUser = (0, uuid_1.v4)();
         console.log(idUser);
+        const colors = ['FFB5B5', 'FFC8F0', 'FFD6A6', 'FEFFB4', 'C7FFF8', 'B7BEFF', 'ACACAC', 'C6FFCC'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
         const newUser = await this.userModel.create({
             idUser: idUser,
             name: authreg.name,
             email: authreg.email,
             password: hash,
+            color: color
         });
         console.log("Le nouvel utilisateur" + newUser);
         return newUser;

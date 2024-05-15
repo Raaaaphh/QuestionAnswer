@@ -45,6 +45,10 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
 __decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", String)
+], User.prototype, "color", void 0);
+__decorate([
     (0, sequelize_typescript_1.HasMany)(() => question_model_1.Question),
     __metadata("design:type", Array)
 ], User.prototype, "questions", void 0);

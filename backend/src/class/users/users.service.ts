@@ -94,7 +94,6 @@ export class UsersService {
 
         await user.save();
         return user;
-
     }
 
 }
