@@ -22,7 +22,7 @@ export class AnswersService {
         });
 
         if (!answer) {
-            throw new ForbiddenException('Question not found');
+            throw new ForbiddenException('Answer not found');
         }
         return answer;
     }

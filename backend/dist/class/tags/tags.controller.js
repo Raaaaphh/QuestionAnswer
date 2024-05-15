@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TagsController = void 0;
 const common_1 = require("@nestjs/common");
 const tags_service_1 = require("./tags.service");
+const tag_create_dto_1 = require("./dto/tag-create.dto");
 let TagsController = class TagsController {
     constructor(tagsService) {
         this.tagsService = tagsService;
@@ -24,6 +25,12 @@ let TagsController = class TagsController {
     }
     getTag(id) {
         return this.tagsService.getTag(id);
+    }
+    createTag(tagDto) {
+        return this.tagsService.createTag(tagDto);
+    }
+    deleteTag(id) {
+        return this.tagsService.deleteTag(id);
     }
 };
 exports.TagsController = TagsController;
@@ -40,6 +47,20 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], TagsController.prototype, "getTag", null);
+__decorate([
+    (0, common_1.Post)('create'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [tag_create_dto_1.TagCreateDto]),
+    __metadata("design:returntype", void 0)
+], TagsController.prototype, "createTag", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], TagsController.prototype, "deleteTag", null);
 exports.TagsController = TagsController = __decorate([
     (0, common_1.Controller)('tags'),
     __metadata("design:paramtypes", [tags_service_1.TagsService])

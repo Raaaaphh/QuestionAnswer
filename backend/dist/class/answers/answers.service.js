@@ -31,7 +31,7 @@ let AnswersService = class AnswersService {
             }
         });
         if (!answer) {
-            throw new common_1.ForbiddenException('Question not found');
+            throw new common_1.ForbiddenException('Answer not found');
         }
         return answer;
     }

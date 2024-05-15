@@ -16,15 +16,38 @@ exports.TagsService = void 0;
 const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
 const tag_model_1 = require("./tag.model");
+const uuid_1 = require("uuid");
+const common_2 = require("@nestjs/common");
 let TagsService = class TagsService {
-    constructor(questModel) {
-        this.questModel = questModel;
+    constructor(tagModel) {
+        this.tagModel = tagModel;
     }
     findAll() {
-        return this.questModel.findAll();
+        return this.tagModel.findAll();
     }
     async getTag(id) {
         return "Tag not found";
+    }
+    async createTag(tagDto) {
+        const idTag = (0, uuid_1.v4)();
+        console.log(idTag);
+        try {
+            const tag = await this.tagModel.create({
+                idTag: idTag,
+                name: tagDto.name,
+                description: tagDto.description,
+                idUser: tagDto.idUser,
+            });
+            console.log("Le nouveau tag" + tag);
+            return tag;
+        }
+        catch (error) {
+            console.log(error);
+            throw new common_2.HttpException('Erreur lors de la création du tag', common_2.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async deleteTag(id) {
+        return "Tag deleted";
     }
 };
 exports.TagsService = TagsService;
