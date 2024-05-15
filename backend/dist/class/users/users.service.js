@@ -16,6 +16,7 @@ exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
 const user_model_1 = require("./user.model");
+const uuid_1 = require("uuid");
 let UsersService = class UsersService {
     constructor(userModel) {
         this.userModel = userModel;
@@ -23,12 +24,19 @@ let UsersService = class UsersService {
     async findAll() {
         return this.userModel.findAll();
     }
-    findOne(id) {
-        return this.userModel.findOne({
+    async findOne(id) {
+        if (!(0, uuid_1.validate)(id)) {
+            throw new common_1.BadRequestException('Invalid question ID');
+        }
+        const user = await this.userModel.findOne({
             where: {
-                id,
-            },
+                idUser: id
+            }
         });
+        if (!user) {
+            throw new common_1.ForbiddenException('User not found');
+        }
+        return user;
     }
     async remove(id) {
         const user = await this.findOne(id);

@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Post } from "@nestjs/common";
+import { Controller, Delete, Get, Param, Post } from "@nestjs/common";
 import { UsersService } from "./users.service";
 
 @Controller('users')
@@ -11,7 +11,7 @@ export class UsersController {
     }
 
     @Get(':id')
-    async findOne(id: string) {
+    async findOne(@Param('id') id: string) {
         return this.usersService.findOne(id);
     }
 
