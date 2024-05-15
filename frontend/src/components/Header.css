@@ -1,0 +1,21 @@
+header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    flex-direction: row;
+    height: 85px;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.212);
+}
+
+h1{
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 0;
+}
+
+.logoUTPHeader{
+    height: 75%;
+    margin-left: 1%;
+}
