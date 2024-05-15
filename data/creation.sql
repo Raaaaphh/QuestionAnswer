@@ -32,7 +32,7 @@ Create table `Questions` (
     `content` text not null,
     `votes` int default 0,
     `flagsSpam` int default 0,
-    `flagsOffensive` int default 0,
+    `flagsInappropiate` int default 0,
     `status` enum('Solved', 'Unsolved') default 'Unsolved',
     `createdAt` datetime not null,
     `updatedAt` datetime not null,

@@ -1,4 +1,5 @@
-import { ForbiddenException, Injectable, HttpException, HttpStatus } from "@nestjs/common";
+import { ForbiddenException, Injectable, HttpException, HttpStatus, BadRequestException } from "@nestjs/common";
+import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { QuestionDto } from "./dto/question.dto";
 import { InjectModel } from "@nestjs/sequelize";
 import { Question } from "./question.model";
@@ -9,17 +10,23 @@ export class QuestionsService {
     constructor(@InjectModel(Question) private questModel: typeof Question) { }
 
     async getQuestion(id: string) {
+        if (!isValidUUID(id)) {
+            throw new BadRequestException('Invalid question ID');
+        }
+
         const question = await this.questModel.findOne({
-            where:
-            {
+            where: {
                 idQuest: id
             }
         });
+
         if (!question) {
             throw new ForbiddenException('Question not found');
         }
+
         return question;
     }
+
 
     async createQuestion(quest: QuestionDto) {
         const { v4: uuidv4 } = require("uuid");

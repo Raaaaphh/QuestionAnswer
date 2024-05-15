@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QuestionsService = void 0;
 const common_1 = require("@nestjs/common");
+const uuid_1 = require("uuid");
 const sequelize_1 = require("@nestjs/sequelize");
 const question_model_1 = require("./question.model");
 let QuestionsService = class QuestionsService {
@@ -21,6 +22,9 @@ let QuestionsService = class QuestionsService {
         this.questModel = questModel;
     }
     async getQuestion(id) {
+        if (!(0, uuid_1.validate)(id)) {
+            throw new common_1.BadRequestException('Invalid question ID');
+        }
         const question = await this.questModel.findOne({
             where: {
                 idQuest: id

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
 import { QuestionsService } from "./questions.service";
 import { QuestionDto } from "./dto/question.dto";
 
@@ -7,8 +7,8 @@ export class QuestionsController {
     constructor(private questionsService: QuestionsService) {
     }
 
-    @Get('/:id')
-    getQuestion(@Body() id: string) {
+    @Get(':id')
+    getQuestion(@Param('id') id: string) {
         return this.questionsService.getQuestion(id);
     }
 
