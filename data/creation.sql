@@ -93,3 +93,15 @@ CREATE TABLE `Invitations` (
     FOREIGN KEY (`idSender`) REFERENCES `User` (`idUser`) ON DELETE CASCADE,
     FOREIGN KEY (`idRecipient`) REFERENCES `User` (`idUser`) ON DELETE CASCADE
 );
+
+CREATE TABLE `Images` (
+    `idImage` varchar(100) NOT NULL,
+    `idQuest` varchar(100) NULL,
+    `idAnsw` varchar(100) NULL,
+    `imageUrl` varchar(255) NOT NULL,
+    `createdAt` datetime NOT NULL,
+    `updatedAt` datetime NOT NULL,
+    PRIMARY KEY (`idImage`),
+    FOREIGN KEY (`idQuest`) REFERENCES `Questions` (`idQuest`) ON DELETE CASCADE,
+    FOREIGN KEY (`idAnsw`) REFERENCES `Answers` (`idAnsw`) ON DELETE CASCADE
+);
