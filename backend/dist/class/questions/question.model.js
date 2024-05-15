@@ -34,7 +34,15 @@ __decorate([
 __decorate([
     sequelize_typescript_1.Column,
     __metadata("design:type", String)
-], Question.prototype, "content", void 0);
+], Question.prototype, "title", void 0);
+__decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", String)
+], Question.prototype, "description", void 0);
+__decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", String)
+], Question.prototype, "context", void 0);
 __decorate([
     sequelize_typescript_1.Column,
     __metadata("design:type", Number)

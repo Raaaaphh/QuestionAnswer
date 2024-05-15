@@ -1,8 +1,8 @@
 import { ForbiddenException, Injectable, HttpException, HttpStatus, BadRequestException } from "@nestjs/common";
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
-import { QuestionDto } from "./dto/question.dto";
 import { InjectModel } from "@nestjs/sequelize";
 import { Question } from "./question.model";
+import { QuestionCreateDto, QuestionEditDto } from "./dto";
 
 @Injectable()
 export class QuestionsService {
@@ -27,8 +27,7 @@ export class QuestionsService {
     }
 
 
-    async createQuestion(quest: QuestionDto) {
-        const { v4: uuidv4 } = require("uuid");
+    async createQuestion(quest: QuestionCreateDto) {
         const idQuest = uuidv4();
         console.log(idQuest);
 
@@ -36,7 +35,9 @@ export class QuestionsService {
             const question = await this.questModel.create({
                 idQuest: idQuest,
                 idUser: quest.idUser,
-                content: quest.content,
+                title: quest.title,
+                description: quest.description,
+                context: quest.context,
             });
             console.log("La nouvelle question" + question);
             return question;
@@ -47,8 +48,29 @@ export class QuestionsService {
     }
 
 
-    editQuestion(question: any) {
-        return 'Question edited !';
+    async editQuestion(question: QuestionEditDto) {
+
+        const quest = await this.questModel.findOne({
+            where: {
+                idQuest: question.idQuest
+            }
+        });
+
+        if (!quest) {
+            throw new ForbiddenException('Question not found');
+        }
+
+        if (!isValidUUID(quest.idUser)) {
+            throw new BadRequestException('Invalid user ID');
+        }
+
+        quest.title = question.title;
+        quest.description = question.description;
+        quest.context = question.context;
+        quest.idUser = question.idUser;
+
+        await quest.save();
+        return quest;
     }
 
     async deleteQuestion(id: string) {

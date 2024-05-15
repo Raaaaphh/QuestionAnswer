@@ -36,7 +36,17 @@ export class UsersService {
     }
 
     async remove(id: string): Promise<void> {
-        const user = await this.findOne(id);
+        //const user = await this.findOne(id);
+        //await user.destroy();
+        const user = await this.userModel.findOne({
+            where: {
+                idUser: id
+            }
+        });
+        if (!user) {
+            throw new ForbiddenException('Question not found');
+        }
+
         await user.destroy();
     }
 

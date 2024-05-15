@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.QuestionsController = void 0;
 const common_1 = require("@nestjs/common");
 const questions_service_1 = require("./questions.service");
-const question_dto_1 = require("./dto/question.dto");
+const dto_1 = require("./dto");
 let QuestionsController = class QuestionsController {
     constructor(questionsService) {
         this.questionsService = questionsService;
@@ -50,14 +50,14 @@ __decorate([
     (0, common_1.Post)('create'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [question_dto_1.QuestionDto]),
+    __metadata("design:paramtypes", [dto_1.QuestionCreateDto]),
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "createQuestion", null);
 __decorate([
     (0, common_1.Post)('edit'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [dto_1.QuestionEditDto]),
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "editQuestion", null);
 __decorate([

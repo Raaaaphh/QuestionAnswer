@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
 import { QuestionsService } from "./questions.service";
-import { QuestionDto } from "./dto/question.dto";
+import { QuestionCreateDto, QuestionEditDto } from "./dto";
 
 @Controller('questions')
 export class QuestionsController {
@@ -13,7 +13,7 @@ export class QuestionsController {
     }
 
     @Post('create')
-    createQuestion(@Body() quest: QuestionDto) {
+    createQuestion(@Body() quest: QuestionCreateDto) {
         try {
             return this.questionsService.createQuestion(quest);
         } catch (error) {
@@ -22,7 +22,7 @@ export class QuestionsController {
     }
 
     @Post('edit')
-    editQuestion(@Body() question: any) {
+    editQuestion(@Body() question: QuestionEditDto) {
         return this.questionsService.editQuestion(question);
     }
 

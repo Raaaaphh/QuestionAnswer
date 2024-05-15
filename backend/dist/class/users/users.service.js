@@ -39,7 +39,14 @@ let UsersService = class UsersService {
         return user;
     }
     async remove(id) {
-        const user = await this.findOne(id);
+        const user = await this.userModel.findOne({
+            where: {
+                idUser: id
+            }
+        });
+        if (!user) {
+            throw new common_1.ForbiddenException('Question not found');
+        }
         await user.destroy();
     }
 };

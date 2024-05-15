@@ -36,14 +36,15 @@ let QuestionsService = class QuestionsService {
         return question;
     }
     async createQuestion(quest) {
-        const { v4: uuidv4 } = require("uuid");
-        const idQuest = uuidv4();
+        const idQuest = (0, uuid_1.v4)();
         console.log(idQuest);
         try {
             const question = await this.questModel.create({
                 idQuest: idQuest,
                 idUser: quest.idUser,
-                content: quest.content,
+                title: quest.title,
+                description: quest.description,
+                context: quest.context,
             });
             console.log("La nouvelle question" + question);
             return question;
@@ -53,8 +54,24 @@ let QuestionsService = class QuestionsService {
             throw new common_1.HttpException('Erreur lors de la création de la question', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    editQuestion(question) {
-        return 'Question edited !';
+    async editQuestion(question) {
+        const quest = await this.questModel.findOne({
+            where: {
+                idQuest: question.idQuest
+            }
+        });
+        if (!quest) {
+            throw new common_1.ForbiddenException('Question not found');
+        }
+        if (!(0, uuid_1.validate)(quest.idUser)) {
+            throw new common_1.BadRequestException('Invalid user ID');
+        }
+        quest.title = question.title;
+        quest.description = question.description;
+        quest.context = question.context;
+        quest.idUser = question.idUser;
+        await quest.save();
+        return quest;
     }
     async deleteQuestion(id) {
         const question = await this.questModel.findOne({

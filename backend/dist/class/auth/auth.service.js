@@ -18,6 +18,7 @@ const argon = require("argon2");
 const sequelize_1 = require("@nestjs/sequelize");
 const user_model_1 = require("../users/user.model");
 const mailer_service_1 = require("../../mailers/mailer.service");
+const uuid_1 = require("uuid");
 let AuthService = class AuthService {
     constructor(userModel, mailerService) {
         this.userModel = userModel;
@@ -44,8 +45,7 @@ let AuthService = class AuthService {
     async register(authreg) {
         const hash = await argon.hash(authreg.password);
         console.log(hash);
-        const { v4: uuidv4 } = require("uuid");
-        const idUser = uuidv4();
+        const idUser = (0, uuid_1.v4)();
         console.log(idUser);
         const newUser = await this.userModel.create({
             idUser: idUser,

@@ -29,7 +29,9 @@ Create table `Users` (
 Create table `Questions` (
     `idQuest` varchar(100) not null,
     `idUser` varchar(100) not null,
-    `content` text not null,
+    `title` varchar(100) not null,
+    `description` text not null,
+    `context` text not null,
     `votes` int default 0,
     `flagsSpam` int default 0,
     `flagsInappropiate` int default 0,

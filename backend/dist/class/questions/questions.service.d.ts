@@ -1,10 +1,10 @@
-import { QuestionDto } from "./dto/question.dto";
 import { Question } from "./question.model";
+import { QuestionCreateDto, QuestionEditDto } from "./dto";
 export declare class QuestionsService {
     private questModel;
     constructor(questModel: typeof Question);
     getQuestion(id: string): Promise<Question>;
-    createQuestion(quest: QuestionDto): Promise<Question>;
-    editQuestion(question: any): string;
+    createQuestion(quest: QuestionCreateDto): Promise<Question>;
+    editQuestion(question: QuestionEditDto): Promise<Question>;
     deleteQuestion(id: string): Promise<void>;
 }

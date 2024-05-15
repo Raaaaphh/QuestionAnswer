@@ -6,7 +6,9 @@ export declare class Question extends Model {
     idQuest: string;
     idUser: string;
     user: User;
-    content: string;
+    title: string;
+    description: string;
+    context: string;
     votes: number;
     flagsSpam: number;
     flagsInappropiate: number;

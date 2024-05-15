@@ -17,7 +17,13 @@ export class Question extends Model {
     user: User;
 
     @Column
-    content: string;
+    title: string;
+
+    @Column
+    description: string;
+
+    @Column
+    context: string;
 
     @Column
     votes: number;

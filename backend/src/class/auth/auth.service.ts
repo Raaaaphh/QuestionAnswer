@@ -4,6 +4,7 @@ import * as argon from 'argon2';
 import { InjectModel } from "@nestjs/sequelize";
 import { User } from "../users/user.model";
 import { MailerService } from "src/mailers/mailer.service";
+import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 
 
 @Injectable({})
@@ -37,7 +38,6 @@ export class AuthService {
         const hash = await argon.hash(authreg.password);
         console.log(hash);
 
-        const { v4: uuidv4 } = require("uuid");
         const idUser = uuidv4();
         console.log(idUser);
 
