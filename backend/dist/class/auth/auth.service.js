@@ -27,14 +27,28 @@ let AuthService = class AuthService {
         return 'Hello World ! depuis le Back';
     }
     async login(authlog) {
-        return 'Login';
+        const user = await this.userModel.findOne({
+            where: {
+                name: authlog.name
+            }
+        });
+        if (!user) {
+            throw new common_1.ForbiddenException('User not found');
+        }
+        const valid = await argon.verify(user.password, authlog.password);
+        if (!valid) {
+            throw new common_1.ForbiddenException('Invalid password');
+        }
+        return user;
     }
     async register(authreg) {
-        const password = JSON.stringify(authreg.password);
-        const hash = await argon.hash(password);
+        const hash = await argon.hash(authreg.password);
         console.log(hash);
+        const { v4: uuidv4 } = require("uuid");
+        const idUser = uuidv4();
+        console.log(idUser);
         const newUser = await this.userModel.create({
-            idUser: 'znajndzandakj',
+            idUser: idUser,
             name: authreg.name,
             email: authreg.email,
             password: hash,

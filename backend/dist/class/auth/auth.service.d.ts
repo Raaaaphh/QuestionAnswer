@@ -6,6 +6,6 @@ export declare class AuthService {
     private mailerService;
     constructor(userModel: typeof User, mailerService: MailerService);
     test(): string;
-    login(authlog: AuthLoginDto): Promise<string>;
+    login(authlog: AuthLoginDto): Promise<User>;
     register(authreg: AuthRegisterDto): Promise<User>;
 }

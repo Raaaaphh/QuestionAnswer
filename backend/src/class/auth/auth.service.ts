@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { AuthLoginDto, AuthRegisterDto } from "./dto";
 import * as argon from 'argon2';
 import { InjectModel } from "@nestjs/sequelize";
@@ -15,16 +15,34 @@ export class AuthService {
     }
 
     async login(authlog: AuthLoginDto) {
-        return 'Login';
+        const user = await this.userModel.findOne({
+            where:
+            {
+                name: authlog.name
+            }
+        });
+
+        if (!user) {
+            throw new ForbiddenException('User not found');
+        }
+        const valid = await argon.verify(user.password, authlog.password);
+        if (!valid) {
+            throw new ForbiddenException('Invalid password');
+        }
+
+        return user;
     }
 
     async register(authreg: AuthRegisterDto) {
-        const password = JSON.stringify(authreg.password);
-        const hash = await argon.hash(password);
+        const hash = await argon.hash(authreg.password);
         console.log(hash);
 
+        const { v4: uuidv4 } = require("uuid");
+        const idUser = uuidv4();
+        console.log(idUser);
+
         const newUser = await this.userModel.create({
-            idUser: 'znajndzandakj',
+            idUser: idUser,
             name: authreg.name,
             email: authreg.email,
             password: hash,
