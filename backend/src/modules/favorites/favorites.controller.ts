@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { FavoritesService } from "./favorites.service";
-import { FavoriteAddDto } from "./dto/favorite-add.dto";
+import { FavoriteDto } from "./dto/favorite.dto";
 
 @Controller('favorites')
 export class FavoritesController {
@@ -17,8 +17,13 @@ export class FavoritesController {
     }
 
     @Post('add')
-    async addFavorite(@Body() favDto: FavoriteAddDto) {
+    async addFavorite(@Body() favDto: FavoriteDto) {
         return await this.favService.addFavorite(favDto);
+    }
+
+    @Post('remove')
+    async removeFavorite(@Body() favDto: FavoriteDto) {
+        return await this.favService.removeFavorite(favDto);
     }
 
 }

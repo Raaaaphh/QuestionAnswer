@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from "class-validator";
 
-export class FavoriteAddDto {
+export class FavoriteDto {
     @IsString()
     @IsNotEmpty()
     idUser: string;

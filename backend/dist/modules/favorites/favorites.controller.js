@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FavoritesController = void 0;
 const common_1 = require("@nestjs/common");
 const favorites_service_1 = require("./favorites.service");
-const favorite_add_dto_1 = require("./dto/favorite-add.dto");
+const favorite_dto_1 = require("./dto/favorite.dto");
 let FavoritesController = class FavoritesController {
     constructor(favService) {
         this.favService = favService;
@@ -28,6 +28,9 @@ let FavoritesController = class FavoritesController {
     }
     async addFavorite(favDto) {
         return await this.favService.addFavorite(favDto);
+    }
+    async removeFavorite(favDto) {
+        return await this.favService.removeFavorite(favDto);
     }
 };
 exports.FavoritesController = FavoritesController;
@@ -48,9 +51,16 @@ __decorate([
     (0, common_1.Post)('add'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [favorite_add_dto_1.FavoriteAddDto]),
+    __metadata("design:paramtypes", [favorite_dto_1.FavoriteDto]),
     __metadata("design:returntype", Promise)
 ], FavoritesController.prototype, "addFavorite", null);
+__decorate([
+    (0, common_1.Post)('remove'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [favorite_dto_1.FavoriteDto]),
+    __metadata("design:returntype", Promise)
+], FavoritesController.prototype, "removeFavorite", null);
 exports.FavoritesController = FavoritesController = __decorate([
     (0, common_1.Controller)('favorites'),
     __metadata("design:paramtypes", [favorites_service_1.FavoritesService])

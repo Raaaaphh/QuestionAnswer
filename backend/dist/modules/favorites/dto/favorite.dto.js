@@ -24,4 +24,4 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], FavoriteDto.prototype, "idQuest", void 0);
-//# sourceMappingURL=favorite-add.dto.js.map
+//# sourceMappingURL=favorite.dto.js.map

@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable } from "@nestjs/com
 import { InjectModel } from "@nestjs/sequelize";
 import { Favorite } from "./favorite.model";
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
-import { FavoriteAddDto } from "./dto/favorite-add.dto";
+import { FavoriteDto } from "./dto/favorite.dto";
 
 @Injectable()
 export class FavoritesService {
@@ -29,7 +29,7 @@ export class FavoritesService {
         return favorites;
     }
 
-    async addFavorite(favDto: FavoriteAddDto) {
+    async addFavorite(favDto: FavoriteDto) {
         if (!isValidUUID(favDto.idUser) || !isValidUUID(favDto.idQuest)) {
             throw new BadRequestException('Invalid user or question ID');
         }
@@ -40,6 +40,25 @@ export class FavoritesService {
         });
 
         return favorite;
+    }
+
+    async removeFavorite(favDto: FavoriteDto) {
+        if (!isValidUUID(favDto.idUser) || !isValidUUID(favDto.idQuest)) {
+            throw new BadRequestException('Invalid user or question ID');
+        }
+
+        const favorite = await this.favModel.findOne({
+            where: {
+                idUser: favDto.idUser,
+                idQuest: favDto.idQuest
+            }
+        });
+
+        if (!favorite) {
+            throw new ForbiddenException('Favorite not found');
+        }
+
+        await favorite.destroy();
     }
 
 }
