@@ -59,7 +59,7 @@ Create table `Answers` (
 Create table `Tags` (
     `idTag` varchar(100) not null,
     `idUser` varchar(100) not null,
-    `name` varchar(255) not null,
+    `name` varchar(20) not null,
     `description` text not null,
     `occurrence` int default 0,
     `createdAt` datetime not null,

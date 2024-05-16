@@ -5,6 +5,7 @@ export declare class QuestionsService {
     constructor(questModel: typeof Question);
     getQuestion(id: string): Promise<Question>;
     findAll(): Promise<Question[]>;
+    searchQuestions(search: string): Promise<Question[]>;
     createQuestion(quest: QuestionCreateDto): Promise<Question>;
     editQuestion(question: QuestionEditDto): Promise<Question>;
     deleteQuestion(id: string): Promise<void>;

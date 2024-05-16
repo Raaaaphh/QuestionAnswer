@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Query } from "@nestjs/common";
 import { QuestionsService } from "./questions.service";
 import { QuestionCreateDto, QuestionEditDto } from "./dto";
 
@@ -16,6 +16,12 @@ export class QuestionsController {
     findAll() {
         return this.questionsService.findAll();
     }
+
+    @Get('search/:search')
+    searchQuestions(@Param('search') search: string) {
+        return this.questionsService.searchQuestions(search);
+    }
+
 
     @Post('create')
     createQuestion(@Body() quest: QuestionCreateDto) {

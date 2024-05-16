@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const uuid_1 = require("uuid");
 const sequelize_1 = require("@nestjs/sequelize");
 const question_model_1 = require("./question.model");
+const sequelize_2 = require("sequelize");
 let QuestionsService = class QuestionsService {
     constructor(questModel) {
         this.questModel = questModel;
@@ -37,6 +38,20 @@ let QuestionsService = class QuestionsService {
     }
     findAll() {
         return this.questModel.findAll();
+    }
+    async searchQuestions(search) {
+        const questions = await this.questModel.findAll({
+            where: {
+                title: {
+                    [sequelize_2.Op.like]: `%${search}%`
+                }
+            },
+            limit: 20
+        });
+        if (!questions || questions.length === 0) {
+            throw new common_1.ForbiddenException('Questions not found');
+        }
+        return questions;
     }
     async createQuestion(quest) {
         const idQuest = (0, uuid_1.v4)();

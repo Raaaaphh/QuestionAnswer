@@ -3,6 +3,7 @@ import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { InjectModel } from "@nestjs/sequelize";
 import { Question } from "./question.model";
 import { QuestionCreateDto, QuestionEditDto } from "./dto";
+import { Op } from "sequelize";
 
 @Injectable()
 export class QuestionsService {
@@ -29,6 +30,23 @@ export class QuestionsService {
     findAll() {
         return this.questModel.findAll();
     }
+
+    async searchQuestions(search: string) {
+        const questions = await this.questModel.findAll({
+            where: {
+                title: {
+                    [Op.like]: `%${search}%`
+                }
+            },
+            limit: 20
+        });
+
+        if (!questions || questions.length === 0) {
+            throw new ForbiddenException('Questions not found');
+        }
+        return questions;
+    }
+
 
     async createQuestion(quest: QuestionCreateDto) {
         const idQuest = uuidv4();
