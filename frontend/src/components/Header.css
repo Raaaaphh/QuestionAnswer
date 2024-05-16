@@ -96,18 +96,20 @@ h1 {
 
 .authButtons {
   display: flex;
-  gap: 10px;
+  gap: 5px;
   margin-right: 2%;
 }
 
 .authButton {
-  padding: 10px 20px;
+  padding: 10px 25px 14px 25px;
   background-color: #004A85;
   color: white;
-  border-radius: 5px;
+  border-radius: 200px;
   text-decoration: none;
+  font-size: medium;
   cursor: pointer;
   margin: 0px 20px 0 20px;
+  max-height: 20px;
 }
 
 .authButton:hover {
