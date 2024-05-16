@@ -71,6 +71,8 @@ Create table `Tags` (
 Create table `QuestionTags` (
     `idQuest` varchar(100) not null,
     `idTag` varchar(100) not null,
+    `createdAt` datetime not null,
+    `updatedAt` datetime not null,
     primary key (`idQuest`, `idTag`),
     foreign key (`idQuest`) references `Question` (`idQuest`) ON DELETE CASCADE,
     foreign key (`idTag`) references `Tag` (`idTag`) ON DELETE CASCADE
@@ -79,6 +81,8 @@ Create table `QuestionTags` (
 Create table `Favorites` (
     `idUser` varchar(100) not null,
     `idQuest` varchar(100) not null,
+    `createdAt` datetime not null,
+    `updatedAt` datetime not null,
     primary key (`idUser`, `idQuest`),
     foreign key (`idUser`) references `User` (`idUser`) ON DELETE CASCADE,
     foreign key (`idQuest`) references `Question` (`idQuest`) ON DELETE CASCADE

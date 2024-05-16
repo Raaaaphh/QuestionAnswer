@@ -2,6 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable } from "@nestjs/com
 import { InjectModel } from "@nestjs/sequelize";
 import { Favorite } from "./favorite.model";
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
+import { FavoriteAddDto } from "./dto/favorite-add.dto";
 
 @Injectable()
 export class FavoritesService {
@@ -27,4 +28,18 @@ export class FavoritesService {
         }
         return favorites;
     }
+
+    async addFavorite(favDto: FavoriteAddDto) {
+        if (!isValidUUID(favDto.idUser) || !isValidUUID(favDto.idQuest)) {
+            throw new BadRequestException('Invalid user or question ID');
+        }
+
+        const favorite = await this.favModel.create({
+            idUser: favDto.idUser,
+            idQuest: favDto.idQuest,
+        });
+
+        return favorite;
+    }
+
 }

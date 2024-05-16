@@ -38,6 +38,16 @@ let FavoritesService = class FavoritesService {
         }
         return favorites;
     }
+    async addFavorite(favDto) {
+        if (!(0, uuid_1.validate)(favDto.idUser) || !(0, uuid_1.validate)(favDto.idQuest)) {
+            throw new common_1.BadRequestException('Invalid user or question ID');
+        }
+        const favorite = await this.favModel.create({
+            idUser: favDto.idUser,
+            idQuest: favDto.idQuest,
+        });
+        return favorite;
+    }
 };
 exports.FavoritesService = FavoritesService;
 exports.FavoritesService = FavoritesService = __decorate([
