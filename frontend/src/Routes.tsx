@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes as RoutesComponents, Route} from 'react
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import AskAQuestion from './pages/AskAQuestion';
+import AuthForm from './pages/AuthForm';
 
 export const Routes = () => {
     return (
@@ -9,6 +10,8 @@ export const Routes = () => {
             <RoutesComponents>
                 <Route path="/" element={<Home/>}/>
                 <Route path="*" element={<NotFound/>}/>
+                <Route path="/login" element={<AuthForm />} />
+                <Route path="/register" element={<AuthForm isRegister />} />
                 <Route path="question" element={<AskAQuestion/>}/>
             </RoutesComponents>
         </Router>
