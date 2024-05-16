@@ -3,8 +3,56 @@ import Header from "../components/Header";
 import axios from "axios";
 import './Home.css';
 
+const mockQuestions = [
+  {
+    idQuest: 1,
+    title: 'How to solve a Rubik\'s Cube?',
+    description: 'I have been trying to solve a Rubik\'s Cube for a while now, but I can\'t seem to figure it out. Can anyone provide some tips or a step-by-step guide?',
+    user: {
+      username: 'PuzzleLover'
+    },
+    status: 'unsolved'
+  },
+  {
+    idQuest: 2,
+    title: 'What is the best way to learn JavaScript?',
+    description: 'I am new to programming and want to learn JavaScript. What are the best resources and what is the best way to start?',
+    user: {
+      username: 'NewCoder'
+    },
+    status: 'solved'
+  },
+  {
+    idQuest: 3,
+    title: 'How to improve my painting skills?',
+    description: 'I have been painting for a while now, but I feel like I am not improving. Does anyone have any tips or resources to help me improve my painting skills?',
+    user: {
+      username: 'ArtisticSoul'
+    },
+    status: 'unsolved'
+  },
+  {
+    idQuest: 4,
+    title: 'What is the capital of Australia?',
+    description: 'I am studying for a geography quiz and I can\'t remember the capital of Australia. Can someone help me?',
+    user: {
+      username: 'GeographyEnthusiast'
+    },
+    status: 'solved'
+  },
+  {
+    idQuest: 5,
+    title: 'How to bake a perfect cake?',
+    description: 'I love baking, but I always struggle with getting my cakes to come out perfect. Does anyone have any tips or a foolproof recipe?',
+    user: {
+      username: 'BakingBeginner'
+    },
+    status: 'unsolved'
+  }
+];
+
 const Home = () => {
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState(mockQuestions);
   const [filter, setFilter] = useState('topUnsolved'); // Default filter
   const [sectionTitle, setSectionTitle] = useState('Top Unsolved Questions'); // Default section title
 
