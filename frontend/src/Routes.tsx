@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import AskAQuestion from './pages/AskAQuestion';
 import AuthForm from './pages/AuthForm';
+import Profile from './pages/Profile';
 
 export const Routes = () => {
     return (
@@ -12,7 +13,8 @@ export const Routes = () => {
                 <Route path="*" element={<NotFound/>}/>
                 <Route path="/login" element={<AuthForm />} />
                 <Route path="/register" element={<AuthForm isRegister />} />
-                <Route path="question" element={<AskAQuestion/>}/>
+                <Route path="/question" element={<AskAQuestion/>}/>
+                <Route path="/profile" element={<Profile/>}/>
             </RoutesComponents>
         </Router>
     );
