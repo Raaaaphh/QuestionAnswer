@@ -27,7 +27,22 @@ let QuestionsController = class QuestionsController {
         return this.questionsService.findAll();
     }
     searchQuestions(search, limit) {
+        if (limit === undefined) {
+            limit = '20';
+        }
         return this.questionsService.searchQuestions(search, limit);
+    }
+    searchQuestionsByFilter(filter, limit, order) {
+        if (limit === undefined) {
+            limit = '20';
+        }
+        if (order === undefined) {
+            order = 'asc';
+        }
+        if (filter === undefined) {
+            throw new Error('Filter is required');
+        }
+        return this.questionsService.searchQuestionsByFilter(filter, limit, order);
     }
     createQuestion(quest) {
         try {
@@ -66,6 +81,15 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "searchQuestions", null);
+__decorate([
+    (0, common_1.Get)('findByFilter/filter?'),
+    __param(0, (0, common_1.Query)('filter')),
+    __param(1, (0, common_1.Query)('limit')),
+    __param(2, (0, common_1.Query)('order')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", void 0)
+], QuestionsController.prototype, "searchQuestionsByFilter", null);
 __decorate([
     (0, common_1.Post)('create'),
     __param(0, (0, common_1.Body)()),

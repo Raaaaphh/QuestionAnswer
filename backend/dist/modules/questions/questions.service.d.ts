@@ -6,6 +6,7 @@ export declare class QuestionsService {
     getQuestion(id: string): Promise<Question>;
     findAll(): Promise<Question[]>;
     searchQuestions(search: string, limit: string): Promise<Question[]>;
+    searchQuestionsByFilter(filter: string, limit: string, order: string): Promise<Question[]>;
     createQuestion(quest: QuestionCreateDto): Promise<Question>;
     editQuestion(question: QuestionEditDto): Promise<Question>;
     deleteQuestion(id: string): Promise<void>;

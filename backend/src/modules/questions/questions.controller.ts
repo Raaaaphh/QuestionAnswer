@@ -19,9 +19,25 @@ export class QuestionsController {
 
     @Get('findByName/name?')
     searchQuestions(@Query('search') search: string, @Query('limit') limit: string) {
+        if (limit === undefined) {
+            limit = '20';
+        }
         return this.questionsService.searchQuestions(search, limit);
     }
 
+    @Get('findByFilter/filter?')
+    searchQuestionsByFilter(@Query('filter') filter: string, @Query('limit') limit: string, @Query('order') order: string) {
+        if (limit === undefined) {
+            limit = '20';
+        }
+        if (order === undefined) {
+            order = 'asc';
+        }
+        if (filter === undefined) {
+            throw new Error('Filter is required');
+        }
+        return this.questionsService.searchQuestionsByFilter(filter, limit, order);
+    }
 
     @Post('create')
     createQuestion(@Body() quest: QuestionCreateDto) {

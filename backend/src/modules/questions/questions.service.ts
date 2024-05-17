@@ -32,9 +32,6 @@ export class QuestionsService {
     }
 
     async searchQuestions(search: string, limit: string) {
-        if (limit === undefined) {
-            limit = '20';
-        }
         const intLimit = parseInt(limit, 10);
 
         const questions = await this.questModel.findAll({
@@ -44,6 +41,20 @@ export class QuestionsService {
                 }
             },
             limit: intLimit,
+        });
+
+        if (!questions || questions.length === 0) {
+            throw new ForbiddenException('Questions not found');
+        }
+        return questions;
+    }
+
+    async searchQuestionsByFilter(filter: string, limit: string, order: string) {
+        const intLimit = parseInt(limit, 10);
+
+        const questions = await this.questModel.findAll({
+            limit: intLimit,
+            order: [[filter, order]]
         });
 
         if (!questions || questions.length === 0) {
