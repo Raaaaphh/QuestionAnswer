@@ -31,14 +31,19 @@ export class QuestionsService {
         return this.questModel.findAll();
     }
 
-    async searchQuestions(search: string) {
+    async searchQuestions(search: string, limit: string) {
+        if (limit === undefined) {
+            limit = '20';
+        }
+        const intLimit = parseInt(limit, 10);
+
         const questions = await this.questModel.findAll({
             where: {
                 title: {
                     [Op.like]: `%${search}%`
                 }
             },
-            limit: 20
+            limit: intLimit,
         });
 
         if (!questions || questions.length === 0) {

@@ -18,8 +18,8 @@ export class QuestionsController {
     }
 
     @Get('findByName/name?')
-    searchQuestions(@Query('search') search: string) {
-        return this.questionsService.searchQuestions(search);
+    searchQuestions(@Query('search') search: string, @Query('limit') limit: string) {
+        return this.questionsService.searchQuestions(search, limit);
     }
 
 

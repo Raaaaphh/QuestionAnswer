@@ -26,8 +26,8 @@ let QuestionsController = class QuestionsController {
     findAll() {
         return this.questionsService.findAll();
     }
-    searchQuestions(search) {
-        return this.questionsService.searchQuestions(search);
+    searchQuestions(search, limit) {
+        return this.questionsService.searchQuestions(search, limit);
     }
     createQuestion(quest) {
         try {
@@ -61,8 +61,9 @@ __decorate([
 __decorate([
     (0, common_1.Get)('findByName/name?'),
     __param(0, (0, common_1.Query)('search')),
+    __param(1, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "searchQuestions", null);
 __decorate([

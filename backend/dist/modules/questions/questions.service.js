@@ -39,14 +39,18 @@ let QuestionsService = class QuestionsService {
     findAll() {
         return this.questModel.findAll();
     }
-    async searchQuestions(search) {
+    async searchQuestions(search, limit) {
+        if (limit === undefined) {
+            limit = '20';
+        }
+        const intLimit = parseInt(limit, 10);
         const questions = await this.questModel.findAll({
             where: {
                 title: {
                     [sequelize_2.Op.like]: `%${search}%`
                 }
             },
-            limit: 20
+            limit: intLimit,
         });
         if (!questions || questions.length === 0) {
             throw new common_1.ForbiddenException('Questions not found');
