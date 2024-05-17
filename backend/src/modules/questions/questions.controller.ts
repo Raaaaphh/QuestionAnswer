@@ -17,8 +17,8 @@ export class QuestionsController {
         return this.questionsService.findAll();
     }
 
-    @Get('search/:search')
-    searchQuestions(@Param('search') search: string) {
+    @Get('findByName/name?')
+    searchQuestions(@Query('search') search: string) {
         return this.questionsService.searchQuestions(search);
     }
 
