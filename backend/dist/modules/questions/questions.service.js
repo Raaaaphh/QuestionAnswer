@@ -18,9 +18,11 @@ const uuid_1 = require("uuid");
 const sequelize_1 = require("@nestjs/sequelize");
 const question_model_1 = require("./question.model");
 const sequelize_2 = require("sequelize");
+const questiontag_model_1 = require("../questiontags/questiontag.model");
 let QuestionsService = class QuestionsService {
-    constructor(questModel) {
+    constructor(questModel, questTagModel) {
         this.questModel = questModel;
+        this.questTagModel = questTagModel;
     }
     async getQuestion(id) {
         if (!(0, uuid_1.validate)(id)) {
@@ -77,11 +79,25 @@ let QuestionsService = class QuestionsService {
                 context: quest.context,
             });
             console.log("New question" + question);
-            return question;
         }
         catch (error) {
             console.log(error);
             throw new common_1.HttpException('Error during the creation of the question', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        if (quest.listTags.length > 0) {
+            try {
+                for (const tag of quest.listTags) {
+                    const questionTag = await this.questTagModel.create({
+                        idQuest: idQuest,
+                        idTag: tag
+                    });
+                    console.log("New question tag" + questionTag);
+                }
+            }
+            catch (error) {
+                console.log(error);
+                throw new common_1.HttpException('Error during the insertion of tags', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
     }
     async editQuestion(question) {
@@ -119,6 +135,7 @@ exports.QuestionsService = QuestionsService;
 exports.QuestionsService = QuestionsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, sequelize_1.InjectModel)(question_model_1.Question)),
-    __metadata("design:paramtypes", [Object])
+    __param(1, (0, sequelize_1.InjectModel)(questiontag_model_1.QuestionTag)),
+    __metadata("design:paramtypes", [Object, Object])
 ], QuestionsService);
 //# sourceMappingURL=questions.service.js.map

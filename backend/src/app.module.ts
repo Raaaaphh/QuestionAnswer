@@ -16,6 +16,7 @@ import { InvitationsModule } from './modules/invitations/invitations.module';
 import { TagsModule } from './modules/tags/tags.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Tag } from './modules/tags/tag.model';
+import { QuestionTag } from './modules/questiontags/questiontag.model';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -32,7 +33,7 @@ import { Tag } from './modules/tags/tag.model';
       username: configService.get('DB_USER'),
       password: configService.get('DB_PASSWORD'),
       database: configService.get('DB_NAME'),
-      models: [User, Question, Answer, Favorite, Tag],
+      models: [User, Question, Answer, Favorite, Tag, QuestionTag],
       //autoLoadModels: true,
       //synchronize: true,
     }),
@@ -45,6 +46,7 @@ import { Tag } from './modules/tags/tag.model';
     QuestiontagsModule,
     InvitationsModule,
     TagsModule,
+    QuestionsModule,
     // MailerModule.forRoot({
     //   transport: {
     //     host: 'smtp.gmail.com',

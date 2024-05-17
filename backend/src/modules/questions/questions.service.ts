@@ -4,11 +4,12 @@ import { InjectModel } from "@nestjs/sequelize";
 import { Question } from "./question.model";
 import { QuestionCreateDto, QuestionEditDto } from "./dto";
 import { Op } from "sequelize";
+import { QuestionTag } from "../questiontags/questiontag.model";
 
 @Injectable()
 export class QuestionsService {
 
-    constructor(@InjectModel(Question) private questModel: typeof Question) { }
+    constructor(@InjectModel(Question) private questModel: typeof Question, @InjectModel(QuestionTag) private questTagModel: typeof QuestionTag) { }
 
     async getQuestion(id: string) {
         if (!isValidUUID(id)) {
@@ -77,10 +78,25 @@ export class QuestionsService {
                 context: quest.context,
             });
             console.log("New question" + question);
-            return question;
         } catch (error) {
             console.log(error);
             throw new HttpException('Error during the creation of the question', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (quest.listTags.length > 0) {
+            try {
+                for (const tag of quest.listTags) {
+                    const questionTag = await this.questTagModel.create({
+                        idQuest: idQuest,
+                        idTag: tag
+                    });
+                    console.log("New question tag" + questionTag);
+                }
+
+            } catch (error) {
+                console.log(error);
+                throw new HttpException('Error during the insertion of tags', HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
     }
 

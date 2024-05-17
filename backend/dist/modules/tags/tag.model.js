@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Tag = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const user_model_1 = require("../users/user.model");
+const questiontag_model_1 = require("../questiontags/questiontag.model");
 let Tag = class Tag extends sequelize_typescript_1.Model {
 };
 exports.Tag = Tag;
@@ -41,6 +42,10 @@ __decorate([
     sequelize_typescript_1.Column,
     __metadata("design:type", Number)
 ], Tag.prototype, "occurrence", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => questiontag_model_1.QuestionTag),
+    __metadata("design:type", Array)
+], Tag.prototype, "questiontags", void 0);
 exports.Tag = Tag = __decorate([
     sequelize_typescript_1.Table
 ], Tag);

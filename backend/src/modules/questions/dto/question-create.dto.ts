@@ -16,4 +16,6 @@ export class QuestionCreateDto {
     @IsString()
     @IsNotEmpty()
     idUser: string;
+
+    listTags: any[];
 }

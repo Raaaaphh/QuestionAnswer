@@ -2,6 +2,7 @@ import { BelongsTo, Column, ForeignKey, PrimaryKey, Table, Model, HasMany } from
 import { Answer } from "src/modules/answers/answer.model";
 import { Favorite } from "src/modules/favorites/favorite.model";
 import { User } from "src/modules/users/user.model";
+import { QuestionTag } from "../questiontags/questiontag.model";
 
 @Table
 export class Question extends Model {
@@ -42,4 +43,7 @@ export class Question extends Model {
 
     @HasMany(() => Favorite)
     favorites: Favorite[];
+
+    @HasMany(() => QuestionTag)
+    questiontags: QuestionTag[];
 }

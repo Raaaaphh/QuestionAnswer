@@ -24,6 +24,7 @@ const questiontags_module_1 = require("./modules/questiontags/questiontags.modul
 const invitations_module_1 = require("./modules/invitations/invitations.module");
 const tags_module_1 = require("./modules/tags/tags.module");
 const tag_model_1 = require("./modules/tags/tag.model");
+const questiontag_model_1 = require("./modules/questiontags/questiontag.model");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -43,7 +44,7 @@ exports.AppModule = AppModule = __decorate([
                     username: configService.get('DB_USER'),
                     password: configService.get('DB_PASSWORD'),
                     database: configService.get('DB_NAME'),
-                    models: [user_model_1.User, question_model_1.Question, answer_model_1.Answer, favorite_model_1.Favorite, tag_model_1.Tag],
+                    models: [user_model_1.User, question_model_1.Question, answer_model_1.Answer, favorite_model_1.Favorite, tag_model_1.Tag, questiontag_model_1.QuestionTag],
                 }),
                 inject: [config_1.ConfigService],
             }),
@@ -53,7 +54,8 @@ exports.AppModule = AppModule = __decorate([
             favorites_module_1.FavoritesModule,
             questiontags_module_1.QuestiontagsModule,
             invitations_module_1.InvitationsModule,
-            tags_module_1.TagsModule,],
+            tags_module_1.TagsModule,
+            questions_module_1.QuestionsModule,],
         providers: [app_service_1.AppService],
     })
 ], AppModule);

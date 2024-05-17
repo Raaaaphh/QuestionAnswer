@@ -1,5 +1,6 @@
-import { BelongsTo, Column, ForeignKey, PrimaryKey, Table, Model } from "sequelize-typescript";
+import { BelongsTo, Column, ForeignKey, PrimaryKey, Table, Model, HasMany } from "sequelize-typescript";
 import { User } from "../users/user.model";
+import { QuestionTag } from "../questiontags/questiontag.model";
 
 @Table
 export class Tag extends Model {
@@ -22,4 +23,7 @@ export class Tag extends Model {
 
     @Column
     occurrence: number;
+
+    @HasMany(() => QuestionTag)
+    questiontags: QuestionTag[];
 }
