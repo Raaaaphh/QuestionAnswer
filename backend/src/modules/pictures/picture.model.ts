@@ -6,7 +6,7 @@ import { Answer } from "../answers/answer.model";
 export class Picture extends Model {
     @PrimaryKey
     @Column
-    idImage: string;
+    idPicture: string;
 
     @ForeignKey(() => Question)
     @Column
@@ -23,6 +23,6 @@ export class Picture extends Model {
     answer: Answer;
 
     @Column
-    imageUrl: string;
+    url: string;
 
 }

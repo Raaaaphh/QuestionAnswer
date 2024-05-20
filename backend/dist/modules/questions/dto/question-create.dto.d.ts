@@ -4,4 +4,5 @@ export declare class QuestionCreateDto {
     context: string;
     idUser: string;
     listTags: string[];
+    listPictures?: string[];
 }

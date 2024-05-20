@@ -20,7 +20,7 @@ __decorate([
     sequelize_typescript_1.PrimaryKey,
     sequelize_typescript_1.Column,
     __metadata("design:type", String)
-], Picture.prototype, "idImage", void 0);
+], Picture.prototype, "idPicture", void 0);
 __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => question_model_1.Question),
     sequelize_typescript_1.Column,
@@ -42,7 +42,7 @@ __decorate([
 __decorate([
     sequelize_typescript_1.Column,
     __metadata("design:type", String)
-], Picture.prototype, "imageUrl", void 0);
+], Picture.prototype, "url", void 0);
 exports.Picture = Picture = __decorate([
     sequelize_typescript_1.Table
 ], Picture);

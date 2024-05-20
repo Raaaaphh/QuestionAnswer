@@ -23,10 +23,10 @@ export class QuestionCreateDto {
     @IsString({ each: true })
     listTags: string[];
 
-    // @IsOptional()
-    // @IsArray()
-    // @ArrayNotEmpty()
-    // @ArrayMinSize(1)
-    // @IsString({ each: true })
-    // listImages?: string[];
+    @IsOptional()
+    @IsArray()
+    @ArrayNotEmpty()
+    @ArrayMinSize(1)
+    @IsString({ each: true })
+    listPictures?: string[];
 }

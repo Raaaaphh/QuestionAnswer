@@ -39,6 +39,8 @@ export class QuestionsController {
         return this.questionsService.searchQuestionsByFilter(filter, limit, order);
     }
 
+    // Question en fonction d'un utilisateur
+
     @Post('create')
     createQuestion(@Body() quest: QuestionCreateDto) {
         try {
