@@ -10,12 +10,16 @@ exports.PicturesModule = void 0;
 const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
 const picture_model_1 = require("./picture.model");
+const pictures_service_1 = require("./pictures.service");
+const pictures_controller_1 = require("./pictures.controller");
 let PicturesModule = class PicturesModule {
 };
 exports.PicturesModule = PicturesModule;
 exports.PicturesModule = PicturesModule = __decorate([
     (0, common_1.Module)({
         imports: [sequelize_1.SequelizeModule.forFeature([picture_model_1.Picture])],
+        providers: [pictures_service_1.PicturesService],
+        controllers: [pictures_controller_1.PicturesController],
         exports: [sequelize_1.SequelizeModule],
     })
 ], PicturesModule);
