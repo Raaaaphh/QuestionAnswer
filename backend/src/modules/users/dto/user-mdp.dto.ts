@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsString, IsUUID } from "class-validator";
 
 export class UserEditMdpDto {
     @IsString()
@@ -13,7 +13,7 @@ export class UserEditMdpDto {
     @IsNotEmpty()
     confirmpassword: string;
 
-    @IsString()
+    @IsUUID()
     @IsNotEmpty()
     idUser: string;
 }

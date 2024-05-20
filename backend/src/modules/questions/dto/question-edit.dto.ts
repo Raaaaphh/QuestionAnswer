@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsString, IsUUID } from "class-validator";
 
 export class QuestionEditDto {
 
@@ -18,7 +18,7 @@ export class QuestionEditDto {
     @IsNotEmpty()
     context: string;
 
-    @IsString()
+    @IsUUID()
     @IsNotEmpty()
     idUser: string;
 }

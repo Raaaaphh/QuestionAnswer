@@ -3,6 +3,7 @@ import { Answer } from "src/modules/answers/answer.model";
 import { Favorite } from "src/modules/favorites/favorite.model";
 import { User } from "src/modules/users/user.model";
 import { QuestionTag } from "../questiontags/questiontag.model";
+import { Picture } from "../pictures/picture.model";
 
 @Table
 export class Question extends Model {
@@ -46,4 +47,8 @@ export class Question extends Model {
 
     @HasMany(() => QuestionTag)
     questiontags: QuestionTag[];
+
+    @HasMany(() => Picture)
+    pictures: Picture[];
+
 }

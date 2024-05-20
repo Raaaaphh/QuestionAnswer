@@ -5,11 +5,13 @@ import { Question } from "./question.model";
 import { QuestionCreateDto, QuestionEditDto } from "./dto";
 import { Op } from "sequelize";
 import { QuestionTag } from "../questiontags/questiontag.model";
+import { Sequelize } from "sequelize-typescript";
+import { Picture } from "../pictures/picture.model";
 
 @Injectable()
 export class QuestionsService {
 
-    constructor(@InjectModel(Question) private questModel: typeof Question, @InjectModel(QuestionTag) private questTagModel: typeof QuestionTag) { }
+    constructor(@InjectModel(Question) private questModel: typeof Question, @InjectModel(QuestionTag) private questTagModel: typeof QuestionTag, @InjectModel(Picture) private pictureModel: typeof Picture, private readonly sequelize: Sequelize) { }
 
     async getQuestion(id: string) {
         if (!isValidUUID(id)) {
@@ -64,39 +66,88 @@ export class QuestionsService {
         return questions;
     }
 
+    async searchQuestionsByUser(id: string) {
+        const questions = await this.questModel.findAll({
+            where: {
+                idUser: id
+            }
+        });
+
+        if (!questions || questions.length === 0) {
+            throw new ForbiddenException('Questions not found');
+        }
+        return questions;
+    }
+
+    async searchQuestionsByTags(tags: string[]) {
+        try {
+            const questions = await this.questModel.findAll({
+                include: [
+                    {
+                        model: QuestionTag,
+                        where: {
+                            idTag: {
+                                [Op.in]: tags,
+                            },
+                        },
+                    },
+                ],
+                group: ['Question.idQuest'],
+                having: this.sequelize.literal(`COUNT(DISTINCT \`QuestionTags\`.\`idTag\`) = ${tags.length}`)
+            });
+
+            if (questions.length === 0) {
+                throw new HttpException('No questions found for the given tags', HttpStatus.NOT_FOUND);
+            }
+
+            return questions;
+        } catch (error) {
+            console.error(error);
+            throw new HttpException('Error while searching questions by tags', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     async createQuestion(quest: QuestionCreateDto) {
         const idQuest = uuidv4();
-        console.log(idQuest);
 
+        const transaction = await this.sequelize.transaction();
         try {
+            const newTitleWords = quest.title.toLowerCase().split(' ').filter(word => word.length > 0)
+
+            const existingQuestions = await this.questModel.findAll();
+
+            for (const existingQuestion of existingQuestions) {
+                const existingTitleWords = existingQuestion.title.toLowerCase().split(' ').filter(word => word.length > 0)
+                const similarWordsCount = this.findSimilarWordsCount(newTitleWords, existingTitleWords);
+
+                if (similarWordsCount >= 80) {
+                    throw new HttpException('A question with a similar title already exists', HttpStatus.CONFLICT);
+                }
+            }
+
             const question = await this.questModel.create({
                 idQuest: idQuest,
                 idUser: quest.idUser,
                 title: quest.title,
                 description: quest.description,
                 context: quest.context,
-            });
-            console.log("New question" + question);
-        } catch (error) {
-            console.log(error);
-            throw new HttpException('Error during the creation of the question', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            }, { transaction });
 
-        if (quest.listTags.length > 0) {
-            try {
-                for (const tag of quest.listTags) {
-                    const questionTag = await this.questTagModel.create({
-                        idQuest: idQuest,
-                        idTag: tag
-                    });
-                    console.log("New question tag" + questionTag);
-                }
+            const tagsData = quest.listTags.map(tag => ({ idQuest: idQuest, idTag: tag }));
+            await this.questTagModel.bulkCreate(tagsData, { transaction });
 
-            } catch (error) {
-                console.log(error);
-                throw new HttpException('Error during the insertion of tags', HttpStatus.INTERNAL_SERVER_ERROR);
+            if (quest.listPictures) {
+                const picturesData = quest.listPictures.map(picture => ({ idQuest: idQuest, url: picture, idAnsw: null, idPicture: uuidv4() }));
+                await this.pictureModel.bulkCreate(picturesData, { transaction });
             }
+
+            await transaction.commit();
+            return question;
+        } catch (error) {
+            await transaction.rollback();
+            console.error(error);
+            throw new HttpException(error.message || 'Error during the creation of the question', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -111,10 +162,6 @@ export class QuestionsService {
 
         if (!quest) {
             throw new ForbiddenException('Question not found');
-        }
-
-        if (!isValidUUID(quest.idUser)) {
-            throw new BadRequestException('Invalid user ID');
         }
 
         quest.title = question.title;
@@ -138,4 +185,21 @@ export class QuestionsService {
 
         await question.destroy();
     }
+
+    // Find similar questions function
+    findSimilarWordsCount(title1: string[], title2: string[]): number {
+        const set1 = new Set(title1);
+        const set2 = new Set(title2);
+        let similarCount = 0;
+
+        set1.forEach(word => {
+            if (set2.has(word)) {
+                similarCount++;
+            }
+        });
+
+        const totalWords = Math.max(title1.length, title2.length);
+        return (similarCount / totalWords) * 100;
+    }
+
 }

@@ -98,8 +98,8 @@ CREATE TABLE `Invitations` (
     FOREIGN KEY (`idRecipient`) REFERENCES `User` (`idUser`) ON DELETE CASCADE
 );
 
-CREATE TABLE `Images` (
-    `idImage` varchar(100) NOT NULL,
+CREATE TABLE `Pictures` (
+    `idPicture` varchar(100) NOT NULL,
     `idQuest` varchar(100) NULL,
     `idAnsw` varchar(100) NULL,
     `imageUrl` varchar(255) NOT NULL,

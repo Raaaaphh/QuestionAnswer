@@ -13,6 +13,7 @@ exports.Answer = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const question_model_1 = require("../questions/question.model");
 const user_model_1 = require("../users/user.model");
+const picture_model_1 = require("../pictures/picture.model");
 let Answer = class Answer extends sequelize_typescript_1.Model {
 };
 exports.Answer = Answer;
@@ -47,6 +48,10 @@ __decorate([
     sequelize_typescript_1.Column,
     __metadata("design:type", Boolean)
 ], Answer.prototype, "final", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => picture_model_1.Picture),
+    __metadata("design:type", Array)
+], Answer.prototype, "pictures", void 0);
 exports.Answer = Answer = __decorate([
     sequelize_typescript_1.Table
 ], Answer);

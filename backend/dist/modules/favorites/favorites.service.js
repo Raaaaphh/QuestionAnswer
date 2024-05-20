@@ -39,9 +39,6 @@ let FavoritesService = class FavoritesService {
         return favorites;
     }
     async addFavorite(favDto) {
-        if (!(0, uuid_1.validate)(favDto.idUser) || !(0, uuid_1.validate)(favDto.idQuest)) {
-            throw new common_1.BadRequestException('Invalid user or question ID');
-        }
         const favorite = await this.favModel.create({
             idUser: favDto.idUser,
             idQuest: favDto.idQuest,
@@ -49,9 +46,6 @@ let FavoritesService = class FavoritesService {
         return favorite;
     }
     async removeFavorite(favDto) {
-        if (!(0, uuid_1.validate)(favDto.idUser) || !(0, uuid_1.validate)(favDto.idQuest)) {
-            throw new common_1.BadRequestException('Invalid user or question ID');
-        }
         const favorite = await this.favModel.findOne({
             where: {
                 idUser: favDto.idUser,

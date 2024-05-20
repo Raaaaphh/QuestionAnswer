@@ -30,10 +30,6 @@ export class FavoritesService {
     }
 
     async addFavorite(favDto: FavoriteDto) {
-        if (!isValidUUID(favDto.idUser) || !isValidUUID(favDto.idQuest)) {
-            throw new BadRequestException('Invalid user or question ID');
-        }
-
         const favorite = await this.favModel.create({
             idUser: favDto.idUser,
             idQuest: favDto.idQuest,
@@ -43,10 +39,6 @@ export class FavoritesService {
     }
 
     async removeFavorite(favDto: FavoriteDto) {
-        if (!isValidUUID(favDto.idUser) || !isValidUUID(favDto.idQuest)) {
-            throw new BadRequestException('Invalid user or question ID');
-        }
-
         const favorite = await this.favModel.findOne({
             where: {
                 idUser: favDto.idUser,
