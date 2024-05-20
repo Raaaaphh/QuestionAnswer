@@ -4,6 +4,7 @@ import NotFound from './pages/NotFound';
 import AskAQuestion from './pages/AskAQuestion';
 import AuthForm from './pages/AuthForm';
 import Profile from './pages/Profile';
+import Question from './pages/Question';
 
 export const Routes = () => {
     return (
@@ -13,8 +14,10 @@ export const Routes = () => {
                 <Route path="*" element={<NotFound/>}/>
                 <Route path="/login" element={<AuthForm />} />
                 <Route path="/register" element={<AuthForm isRegister />} />
-                <Route path="/question" element={<AskAQuestion/>}/>
+                <Route path="/askaquestion" element={<AskAQuestion/>}/>
                 <Route path="/profile" element={<Profile/>}/>
+                <Route path="/question" element={<Question/>}/>
+                {/* <Route path="/question/:id" element={<Question/>}/> */}
             </RoutesComponents>
         </Router>
     );

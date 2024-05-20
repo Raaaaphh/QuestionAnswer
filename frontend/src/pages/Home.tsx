@@ -63,7 +63,7 @@ const Home = () => {
 
   const fetchQuestions = async () => {
     try {
-      const response = await axios.get(`YOUR_API_ENDPOINT/questions?status=${filter}`);
+      const response = await axios.get(`endpoint/questions?status=${filter}`);
       setQuestions(response.data.questions);
     } catch (error) {
       console.error('Error fetching questions:', error);

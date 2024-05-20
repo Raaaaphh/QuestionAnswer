@@ -18,7 +18,7 @@ header {
   color: #000000;
   flex-direction: row;
   height: 85px;
-  
+  z-index: 2;
 }
 
 
