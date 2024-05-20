@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsString, ArrayMinSize, IsArray, ArrayNotEmpty, IsUUID } from "class-validator";
 
 export class QuestionCreateDto {
     @IsString()
@@ -13,9 +13,13 @@ export class QuestionCreateDto {
     @IsNotEmpty()
     context: string;
 
-    @IsString()
+    @IsUUID()
     @IsNotEmpty()
     idUser: string;
 
-    listTags: any[];
+    @IsArray()
+    @ArrayNotEmpty()
+    @ArrayMinSize(1)
+    @IsString({ each: true })
+    listTags: string[];
 }

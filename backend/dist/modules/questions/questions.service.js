@@ -19,10 +19,12 @@ const sequelize_1 = require("@nestjs/sequelize");
 const question_model_1 = require("./question.model");
 const sequelize_2 = require("sequelize");
 const questiontag_model_1 = require("../questiontags/questiontag.model");
+const sequelize_typescript_1 = require("sequelize-typescript");
 let QuestionsService = class QuestionsService {
-    constructor(questModel, questTagModel) {
+    constructor(questModel, questTagModel, sequelize) {
         this.questModel = questModel;
         this.questTagModel = questTagModel;
+        this.sequelize = sequelize;
     }
     async getQuestion(id) {
         if (!(0, uuid_1.validate)(id)) {
@@ -69,7 +71,7 @@ let QuestionsService = class QuestionsService {
     }
     async createQuestion(quest) {
         const idQuest = (0, uuid_1.v4)();
-        console.log(idQuest);
+        const transaction = await this.sequelize.transaction();
         try {
             const question = await this.questModel.create({
                 idQuest: idQuest,
@@ -77,27 +79,18 @@ let QuestionsService = class QuestionsService {
                 title: quest.title,
                 description: quest.description,
                 context: quest.context,
-            });
-            console.log("New question" + question);
+            }, { transaction });
+            if (quest.listTags.length > 0) {
+                const tagsData = quest.listTags.map(tag => ({ idQuest: idQuest, idTag: tag }));
+                await this.questTagModel.bulkCreate(tagsData, { transaction });
+            }
+            await transaction.commit();
+            return question;
         }
         catch (error) {
-            console.log(error);
+            await transaction.rollback();
+            console.error(error);
             throw new common_1.HttpException('Error during the creation of the question', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        if (quest.listTags.length > 0) {
-            try {
-                for (const tag of quest.listTags) {
-                    const questionTag = await this.questTagModel.create({
-                        idQuest: idQuest,
-                        idTag: tag
-                    });
-                    console.log("New question tag" + questionTag);
-                }
-            }
-            catch (error) {
-                console.log(error);
-                throw new common_1.HttpException('Error during the insertion of tags', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
-            }
         }
     }
     async editQuestion(question) {
@@ -108,9 +101,6 @@ let QuestionsService = class QuestionsService {
         });
         if (!quest) {
             throw new common_1.ForbiddenException('Question not found');
-        }
-        if (!(0, uuid_1.validate)(quest.idUser)) {
-            throw new common_1.BadRequestException('Invalid user ID');
         }
         quest.title = question.title;
         quest.description = question.description;
@@ -136,6 +126,6 @@ exports.QuestionsService = QuestionsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, sequelize_1.InjectModel)(question_model_1.Question)),
     __param(1, (0, sequelize_1.InjectModel)(questiontag_model_1.QuestionTag)),
-    __metadata("design:paramtypes", [Object, Object])
+    __metadata("design:paramtypes", [Object, Object, sequelize_typescript_1.Sequelize])
 ], QuestionsService);
 //# sourceMappingURL=questions.service.js.map

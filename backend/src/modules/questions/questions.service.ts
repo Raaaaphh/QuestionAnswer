@@ -5,11 +5,12 @@ import { Question } from "./question.model";
 import { QuestionCreateDto, QuestionEditDto } from "./dto";
 import { Op } from "sequelize";
 import { QuestionTag } from "../questiontags/questiontag.model";
+import { Sequelize } from "sequelize-typescript";
 
 @Injectable()
 export class QuestionsService {
 
-    constructor(@InjectModel(Question) private questModel: typeof Question, @InjectModel(QuestionTag) private questTagModel: typeof QuestionTag) { }
+    constructor(@InjectModel(Question) private questModel: typeof Question, @InjectModel(QuestionTag) private questTagModel: typeof QuestionTag, private readonly sequelize: Sequelize) { }
 
     async getQuestion(id: string) {
         if (!isValidUUID(id)) {
@@ -67,8 +68,8 @@ export class QuestionsService {
 
     async createQuestion(quest: QuestionCreateDto) {
         const idQuest = uuidv4();
-        console.log(idQuest);
 
+        const transaction = await this.sequelize.transaction();
         try {
             const question = await this.questModel.create({
                 idQuest: idQuest,
@@ -76,27 +77,19 @@ export class QuestionsService {
                 title: quest.title,
                 description: quest.description,
                 context: quest.context,
-            });
-            console.log("New question" + question);
-        } catch (error) {
-            console.log(error);
-            throw new HttpException('Error during the creation of the question', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            }, { transaction });
 
-        if (quest.listTags.length > 0) {
-            try {
-                for (const tag of quest.listTags) {
-                    const questionTag = await this.questTagModel.create({
-                        idQuest: idQuest,
-                        idTag: tag
-                    });
-                    console.log("New question tag" + questionTag);
-                }
-
-            } catch (error) {
-                console.log(error);
-                throw new HttpException('Error during the insertion of tags', HttpStatus.INTERNAL_SERVER_ERROR);
+            if (quest.listTags.length > 0) {
+                const tagsData = quest.listTags.map(tag => ({ idQuest: idQuest, idTag: tag }));
+                await this.questTagModel.bulkCreate(tagsData, { transaction });
             }
+
+            await transaction.commit();
+            return question;
+        } catch (error) {
+            await transaction.rollback();
+            console.error(error);
+            throw new HttpException('Error during the creation of the question', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -111,10 +104,6 @@ export class QuestionsService {
 
         if (!quest) {
             throw new ForbiddenException('Question not found');
-        }
-
-        if (!isValidUUID(quest.idUser)) {
-            throw new BadRequestException('Invalid user ID');
         }
 
         quest.title = question.title;

@@ -30,8 +30,15 @@ __decorate([
     __metadata("design:type", String)
 ], QuestionCreateDto.prototype, "context", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsUUID)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], QuestionCreateDto.prototype, "idUser", void 0);
+__decorate([
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ArrayNotEmpty)(),
+    (0, class_validator_1.ArrayMinSize)(1),
+    (0, class_validator_1.IsString)({ each: true }),
+    __metadata("design:type", Array)
+], QuestionCreateDto.prototype, "listTags", void 0);
 //# sourceMappingURL=question-create.dto.js.map
