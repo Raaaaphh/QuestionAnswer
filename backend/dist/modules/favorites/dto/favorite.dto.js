@@ -15,12 +15,12 @@ class FavoriteDto {
 }
 exports.FavoriteDto = FavoriteDto;
 __decorate([
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsUUID)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], FavoriteDto.prototype, "idUser", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsUUID)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], FavoriteDto.prototype, "idQuest", void 0);

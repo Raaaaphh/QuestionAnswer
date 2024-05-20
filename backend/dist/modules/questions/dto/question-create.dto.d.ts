@@ -3,5 +3,6 @@ export declare class QuestionCreateDto {
     description: string;
     context: string;
     idUser: string;
-    listTags: any[];
+    listTags: string[];
+    listPictures?: string[];
 }

@@ -44,6 +44,19 @@ let QuestionsController = class QuestionsController {
         }
         return this.questionsService.searchQuestionsByFilter(filter, limit, order);
     }
+    searchQuestionsByUser(id) {
+        return this.questionsService.searchQuestionsByUser(id);
+    }
+    async searchQuestionsByTags(tags) {
+        if (!tags) {
+            throw new common_1.BadRequestException('Tags query parameter is required');
+        }
+        const tagsArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+        if (tagsArray.length === 0) {
+            throw new common_1.BadRequestException('At least one tag is required');
+        }
+        return await this.questionsService.searchQuestionsByTags(tagsArray);
+    }
     createQuestion(quest) {
         try {
             return this.questionsService.createQuestion(quest);
@@ -90,6 +103,20 @@ __decorate([
     __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "searchQuestionsByFilter", null);
+__decorate([
+    (0, common_1.Get)('findByUser/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], QuestionsController.prototype, "searchQuestionsByUser", null);
+__decorate([
+    (0, common_1.Get)('findByTags/tags?'),
+    __param(0, (0, common_1.Query)('tags')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], QuestionsController.prototype, "searchQuestionsByTags", null);
 __decorate([
     (0, common_1.Post)('create'),
     __param(0, (0, common_1.Body)()),

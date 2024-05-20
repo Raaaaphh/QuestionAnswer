@@ -17,9 +17,13 @@ const common_1 = require("@nestjs/common");
 const uuid_1 = require("uuid");
 const answer_model_1 = require("./answer.model");
 const sequelize_1 = require("@nestjs/sequelize");
+const picture_model_1 = require("../pictures/picture.model");
+const sequelize_typescript_1 = require("sequelize-typescript");
 let AnswersService = class AnswersService {
-    constructor(answModel) {
+    constructor(answModel, pictureModel, sequelize) {
         this.answModel = answModel;
+        this.pictureModel = pictureModel;
+        this.sequelize = sequelize;
     }
     async getAnswer(id) {
         if (!(0, uuid_1.validate)(id)) {
@@ -38,17 +42,33 @@ let AnswersService = class AnswersService {
     findAll() {
         return this.answModel.findAll();
     }
+    async searchAnswersByUser(id) {
+        const answers = await this.answModel.findAll({
+            where: {
+                idUser: id
+            }
+        });
+        if (!answers || answers.length === 0) {
+            throw new common_1.ForbiddenException('Answers not found');
+        }
+        return answers;
+    }
     async createAnswer(answDto) {
         const idAnsw = (0, uuid_1.v4)();
         console.log(idAnsw);
+        const transaction = await this.sequelize.transaction();
         try {
             const answer = await this.answModel.create({
                 idAnsw: idAnsw,
                 idUser: answDto.idUser,
                 idQuest: answDto.idQuest,
                 content: answDto.content,
-            });
-            console.log("New answer" + answer);
+            }, { transaction });
+            if (answDto.listPictures) {
+                const picturesData = answDto.listPictures.map(picture => ({ idQuest: null, url: picture, idAnsw: idAnsw, idPicture: (0, uuid_1.v4)() }));
+                await this.pictureModel.bulkCreate(picturesData, { transaction });
+            }
+            await transaction.commit();
             return answer;
         }
         catch (error) {
@@ -72,6 +92,7 @@ exports.AnswersService = AnswersService;
 exports.AnswersService = AnswersService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, sequelize_1.InjectModel)(answer_model_1.Answer)),
-    __metadata("design:paramtypes", [Object])
+    __param(1, (0, sequelize_1.InjectModel)(picture_model_1.Picture)),
+    __metadata("design:paramtypes", [Object, Object, sequelize_typescript_1.Sequelize])
 ], AnswersService);
 //# sourceMappingURL=answers.service.js.map

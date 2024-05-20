@@ -19,10 +19,14 @@ const sequelize_1 = require("@nestjs/sequelize");
 const question_model_1 = require("./question.model");
 const sequelize_2 = require("sequelize");
 const questiontag_model_1 = require("../questiontags/questiontag.model");
+const sequelize_typescript_1 = require("sequelize-typescript");
+const picture_model_1 = require("../pictures/picture.model");
 let QuestionsService = class QuestionsService {
-    constructor(questModel, questTagModel) {
+    constructor(questModel, questTagModel, pictureModel, sequelize) {
         this.questModel = questModel;
         this.questTagModel = questTagModel;
+        this.pictureModel = pictureModel;
+        this.sequelize = sequelize;
     }
     async getQuestion(id) {
         if (!(0, uuid_1.validate)(id)) {
@@ -67,37 +71,76 @@ let QuestionsService = class QuestionsService {
         }
         return questions;
     }
+    async searchQuestionsByUser(id) {
+        const questions = await this.questModel.findAll({
+            where: {
+                idUser: id
+            }
+        });
+        if (!questions || questions.length === 0) {
+            throw new common_1.ForbiddenException('Questions not found');
+        }
+        return questions;
+    }
+    async searchQuestionsByTags(tags) {
+        try {
+            const questions = await this.questModel.findAll({
+                include: [
+                    {
+                        model: questiontag_model_1.QuestionTag,
+                        where: {
+                            idTag: {
+                                [sequelize_2.Op.in]: tags,
+                            },
+                        },
+                    },
+                ],
+                group: ['Question.idQuest'],
+                having: this.sequelize.literal(`COUNT(DISTINCT \`QuestionTags\`.\`idTag\`) = ${tags.length}`)
+            });
+            if (questions.length === 0) {
+                throw new common_1.HttpException('No questions found for the given tags', common_1.HttpStatus.NOT_FOUND);
+            }
+            return questions;
+        }
+        catch (error) {
+            console.error(error);
+            throw new common_1.HttpException('Error while searching questions by tags', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     async createQuestion(quest) {
         const idQuest = (0, uuid_1.v4)();
-        console.log(idQuest);
+        const transaction = await this.sequelize.transaction();
         try {
+            const newTitleWords = quest.title.toLowerCase().split(' ').filter(word => word.length > 0);
+            const existingQuestions = await this.questModel.findAll();
+            for (const existingQuestion of existingQuestions) {
+                const existingTitleWords = existingQuestion.title.toLowerCase().split(' ').filter(word => word.length > 0);
+                const similarWordsCount = this.findSimilarWordsCount(newTitleWords, existingTitleWords);
+                if (similarWordsCount >= 80) {
+                    throw new common_1.HttpException('A question with a similar title already exists', common_1.HttpStatus.CONFLICT);
+                }
+            }
             const question = await this.questModel.create({
                 idQuest: idQuest,
                 idUser: quest.idUser,
                 title: quest.title,
                 description: quest.description,
                 context: quest.context,
-            });
-            console.log("New question" + question);
+            }, { transaction });
+            const tagsData = quest.listTags.map(tag => ({ idQuest: idQuest, idTag: tag }));
+            await this.questTagModel.bulkCreate(tagsData, { transaction });
+            if (quest.listPictures) {
+                const picturesData = quest.listPictures.map(picture => ({ idQuest: idQuest, url: picture, idAnsw: null, idPicture: (0, uuid_1.v4)() }));
+                await this.pictureModel.bulkCreate(picturesData, { transaction });
+            }
+            await transaction.commit();
+            return question;
         }
         catch (error) {
-            console.log(error);
-            throw new common_1.HttpException('Error during the creation of the question', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        if (quest.listTags.length > 0) {
-            try {
-                for (const tag of quest.listTags) {
-                    const questionTag = await this.questTagModel.create({
-                        idQuest: idQuest,
-                        idTag: tag
-                    });
-                    console.log("New question tag" + questionTag);
-                }
-            }
-            catch (error) {
-                console.log(error);
-                throw new common_1.HttpException('Error during the insertion of tags', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+            await transaction.rollback();
+            console.error(error);
+            throw new common_1.HttpException(error.message || 'Error during the creation of the question', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     async editQuestion(question) {
@@ -108,9 +151,6 @@ let QuestionsService = class QuestionsService {
         });
         if (!quest) {
             throw new common_1.ForbiddenException('Question not found');
-        }
-        if (!(0, uuid_1.validate)(quest.idUser)) {
-            throw new common_1.BadRequestException('Invalid user ID');
         }
         quest.title = question.title;
         quest.description = question.description;
@@ -130,12 +170,25 @@ let QuestionsService = class QuestionsService {
         }
         await question.destroy();
     }
+    findSimilarWordsCount(title1, title2) {
+        const set1 = new Set(title1);
+        const set2 = new Set(title2);
+        let similarCount = 0;
+        set1.forEach(word => {
+            if (set2.has(word)) {
+                similarCount++;
+            }
+        });
+        const totalWords = Math.max(title1.length, title2.length);
+        return (similarCount / totalWords) * 100;
+    }
 };
 exports.QuestionsService = QuestionsService;
 exports.QuestionsService = QuestionsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, sequelize_1.InjectModel)(question_model_1.Question)),
     __param(1, (0, sequelize_1.InjectModel)(questiontag_model_1.QuestionTag)),
-    __metadata("design:paramtypes", [Object, Object])
+    __param(2, (0, sequelize_1.InjectModel)(picture_model_1.Picture)),
+    __metadata("design:paramtypes", [Object, Object, Object, sequelize_typescript_1.Sequelize])
 ], QuestionsService);
 //# sourceMappingURL=questions.service.js.map

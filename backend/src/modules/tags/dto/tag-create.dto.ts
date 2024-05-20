@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsString, IsUUID } from "class-validator";
 
 export class TagCreateDto {
     @IsString()
@@ -9,7 +9,7 @@ export class TagCreateDto {
     @IsNotEmpty()
     description: string;
 
-    @IsString()
+    @IsUUID()
     @IsNotEmpty()
     idUser: string;
 }
