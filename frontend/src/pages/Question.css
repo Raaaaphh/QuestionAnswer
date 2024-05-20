@@ -10,7 +10,7 @@
     margin-top: 50px;
     display: flex;
     flex-direction: row;
-    height: 20%;
+    height: 120px;
     width: 80%;
     justify-content: space-between;
     padding: 0 25px 0 25px;
@@ -27,7 +27,7 @@
     padding: 25px;
     background-color: white;
     border-radius: 0px;
-    min-height: 150vh;
+    min-height: auto;
     width: 80%;
     box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px, rgba(0, 0, 0, 0.05) 0px 5px 10px;
 }
@@ -77,9 +77,10 @@ h2{
 }
 
 .avatarQuestion{
-    width: 85px;
-    height: 85px;
+    height: 80%;
+    width: auto;
     border-radius: 50%;
+    margin-left: 30%;
 }
 
 .date p{
