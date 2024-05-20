@@ -39,7 +39,10 @@ export class QuestionsController {
         return this.questionsService.searchQuestionsByFilter(filter, limit, order);
     }
 
-    // Question en fonction d'un utilisateur
+    @Get('findByUser/:id')
+    searchQuestionsByUser(@Param('id') id: string) {
+        return this.questionsService.searchQuestionsByUser(id);
+    }
 
     @Post('create')
     createQuestion(@Body() quest: QuestionCreateDto) {

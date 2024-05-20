@@ -71,6 +71,17 @@ let QuestionsService = class QuestionsService {
         }
         return questions;
     }
+    async searchQuestionsByUser(id) {
+        const questions = await this.questModel.findAll({
+            where: {
+                idUser: id
+            }
+        });
+        if (!questions || questions.length === 0) {
+            throw new common_1.ForbiddenException('Questions not found');
+        }
+        return questions;
+    }
     async createQuestion(quest) {
         const idQuest = (0, uuid_1.v4)();
         const transaction = await this.sequelize.transaction();

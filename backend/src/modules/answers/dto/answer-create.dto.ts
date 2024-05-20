@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsUUID } from "class-validator";
+import { ArrayMinSize, ArrayNotEmpty, IsArray, IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
 
 export class AnswerCreateDto {
     @IsString()
@@ -12,4 +12,11 @@ export class AnswerCreateDto {
     @IsUUID()
     @IsNotEmpty()
     idQuest: string;
+
+    @IsOptional()
+    @IsArray()
+    @ArrayNotEmpty()
+    @ArrayMinSize(1)
+    @IsString({ each: true })
+    listPictures?: string[];
 }

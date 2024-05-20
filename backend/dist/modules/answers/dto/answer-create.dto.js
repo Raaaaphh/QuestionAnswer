@@ -29,4 +29,12 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], AnswerCreateDto.prototype, "idQuest", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ArrayNotEmpty)(),
+    (0, class_validator_1.ArrayMinSize)(1),
+    (0, class_validator_1.IsString)({ each: true }),
+    __metadata("design:type", Array)
+], AnswerCreateDto.prototype, "listPictures", void 0);
 //# sourceMappingURL=answer-create.dto.js.map

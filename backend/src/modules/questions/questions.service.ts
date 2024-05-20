@@ -66,6 +66,18 @@ export class QuestionsService {
         return questions;
     }
 
+    async searchQuestionsByUser(id: string) {
+        const questions = await this.questModel.findAll({
+            where: {
+                idUser: id
+            }
+        });
+
+        if (!questions || questions.length === 0) {
+            throw new ForbiddenException('Questions not found');
+        }
+        return questions;
+    }
 
     async createQuestion(quest: QuestionCreateDto) {
         const idQuest = uuidv4();

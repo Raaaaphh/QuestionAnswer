@@ -3,12 +3,14 @@ import { AnswerCreateDto } from "./dto";
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { Answer } from "./answer.model";
 import { InjectModel } from "@nestjs/sequelize";
+import { Picture } from "../pictures/picture.model";
+import { Sequelize } from "sequelize-typescript";
 
 
 @Injectable()
 export class AnswersService {
 
-    constructor(@InjectModel(Answer) private answModel: typeof Answer) { }
+    constructor(@InjectModel(Answer) private answModel: typeof Answer, @InjectModel(Picture) private pictureModel: typeof Picture, private readonly sequelize: Sequelize) { }
 
     async getAnswer(id: string) {
         if (!isValidUUID(id)) {
@@ -35,16 +37,23 @@ export class AnswersService {
         const idAnsw = uuidv4();
         console.log(idAnsw);
 
+        const transaction = await this.sequelize.transaction();
+
         try {
             const answer = await this.answModel.create({
                 idAnsw: idAnsw,
                 idUser: answDto.idUser,
                 idQuest: answDto.idQuest,
                 content: answDto.content,
-            });
-            console.log("New answer" + answer);
-            return answer;
+            }, { transaction });
 
+            if (answDto.listPictures) {
+                const picturesData = answDto.listPictures.map(picture => ({ idQuest: null, url: picture, idAnsw: idAnsw, idPicture: uuidv4() }));
+                await this.pictureModel.bulkCreate(picturesData, { transaction });
+            }
+
+            await transaction.commit();
+            return answer;
         } catch (error) {
             console.log(error);
             throw new HttpException('Error during the creation of the answer', HttpStatus.INTERNAL_SERVER_ERROR);
