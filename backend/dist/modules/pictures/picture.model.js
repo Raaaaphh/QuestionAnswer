@@ -9,50 +9,41 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Answer = void 0;
+exports.Picture = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const question_model_1 = require("../questions/question.model");
-const user_model_1 = require("../users/user.model");
-const picture_model_1 = require("../pictures/picture.model");
-let Answer = class Answer extends sequelize_typescript_1.Model {
+const answer_model_1 = require("../answers/answer.model");
+let Picture = class Picture extends sequelize_typescript_1.Model {
 };
-exports.Answer = Answer;
+exports.Picture = Picture;
 __decorate([
     sequelize_typescript_1.PrimaryKey,
     sequelize_typescript_1.Column,
     __metadata("design:type", String)
-], Answer.prototype, "idAnsw", void 0);
-__decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => user_model_1.User),
-    sequelize_typescript_1.Column,
-    __metadata("design:type", String)
-], Answer.prototype, "idUser", void 0);
-__decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => user_model_1.User),
-    __metadata("design:type", user_model_1.User)
-], Answer.prototype, "user", void 0);
+], Picture.prototype, "idImage", void 0);
 __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => question_model_1.Question),
     sequelize_typescript_1.Column,
     __metadata("design:type", String)
-], Answer.prototype, "idQuest", void 0);
+], Picture.prototype, "idQuest", void 0);
 __decorate([
     (0, sequelize_typescript_1.BelongsTo)(() => question_model_1.Question),
     __metadata("design:type", question_model_1.Question)
-], Answer.prototype, "question", void 0);
+], Picture.prototype, "question", void 0);
+__decorate([
+    (0, sequelize_typescript_1.ForeignKey)(() => answer_model_1.Answer),
+    sequelize_typescript_1.Column,
+    __metadata("design:type", String)
+], Picture.prototype, "idAnsw", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsTo)(() => answer_model_1.Answer),
+    __metadata("design:type", answer_model_1.Answer)
+], Picture.prototype, "answer", void 0);
 __decorate([
     sequelize_typescript_1.Column,
     __metadata("design:type", String)
-], Answer.prototype, "content", void 0);
-__decorate([
-    sequelize_typescript_1.Column,
-    __metadata("design:type", Boolean)
-], Answer.prototype, "final", void 0);
-__decorate([
-    (0, sequelize_typescript_1.HasMany)(() => picture_model_1.Picture),
-    __metadata("design:type", Array)
-], Answer.prototype, "pictures", void 0);
-exports.Answer = Answer = __decorate([
+], Picture.prototype, "imageUrl", void 0);
+exports.Picture = Picture = __decorate([
     sequelize_typescript_1.Table
-], Answer);
-//# sourceMappingURL=answer.model.js.map
+], Picture);
+//# sourceMappingURL=picture.model.js.map

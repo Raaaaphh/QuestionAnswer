@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, ArrayMinSize, IsArray, ArrayNotEmpty, IsUUID } from "class-validator";
+import { IsNotEmpty, IsString, ArrayMinSize, IsArray, ArrayNotEmpty, IsUUID, IsOptional } from "class-validator";
 
 export class QuestionCreateDto {
     @IsString()
@@ -22,4 +22,11 @@ export class QuestionCreateDto {
     @ArrayMinSize(1)
     @IsString({ each: true })
     listTags: string[];
+
+    // @IsOptional()
+    // @IsArray()
+    // @ArrayNotEmpty()
+    // @ArrayMinSize(1)
+    // @IsString({ each: true })
+    // listImages?: string[];
 }
