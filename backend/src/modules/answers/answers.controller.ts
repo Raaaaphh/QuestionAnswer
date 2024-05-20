@@ -16,6 +16,11 @@ export class AnswersController {
         return this.answersService.findAll();
     }
 
+    @Get('findByUser/:id')
+    searchAnswersByUser(@Param('id') id: string) {
+        return this.answersService.searchAnswersByUser(id);
+    }
+
     @Post('create')
     createAnswer(@Body() answer: AnswerCreateDto) {
         return this.answersService.createAnswer(answer);

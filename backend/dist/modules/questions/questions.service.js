@@ -82,6 +82,32 @@ let QuestionsService = class QuestionsService {
         }
         return questions;
     }
+    async searchQuestionsByTags(tags) {
+        try {
+            const questions = await this.questModel.findAll({
+                include: [
+                    {
+                        model: questiontag_model_1.QuestionTag,
+                        where: {
+                            idTag: {
+                                [sequelize_2.Op.in]: tags,
+                            },
+                        },
+                    },
+                ],
+                group: ['Question.idQuest'],
+                having: this.sequelize.literal(`COUNT(DISTINCT \`QuestionTags\`.\`idTag\`) = ${tags.length}`)
+            });
+            if (questions.length === 0) {
+                throw new common_1.HttpException('No questions found for the given tags', common_1.HttpStatus.NOT_FOUND);
+            }
+            return questions;
+        }
+        catch (error) {
+            console.error(error);
+            throw new common_1.HttpException('Error while searching questions by tags', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     async createQuestion(quest) {
         const idQuest = (0, uuid_1.v4)();
         const transaction = await this.sequelize.transaction();

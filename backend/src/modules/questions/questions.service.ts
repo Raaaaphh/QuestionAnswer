@@ -79,6 +79,35 @@ export class QuestionsService {
         return questions;
     }
 
+    async searchQuestionsByTags(tags: string[]) {
+        try {
+            const questions = await this.questModel.findAll({
+                include: [
+                    {
+                        model: QuestionTag,
+                        where: {
+                            idTag: {
+                                [Op.in]: tags,
+                            },
+                        },
+                    },
+                ],
+                group: ['Question.idQuest'],
+                having: this.sequelize.literal(`COUNT(DISTINCT \`QuestionTags\`.\`idTag\`) = ${tags.length}`)
+            });
+
+            if (questions.length === 0) {
+                throw new HttpException('No questions found for the given tags', HttpStatus.NOT_FOUND);
+            }
+
+            return questions;
+        } catch (error) {
+            console.error(error);
+            throw new HttpException('Error while searching questions by tags', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
     async createQuestion(quest: QuestionCreateDto) {
         const idQuest = uuidv4();
 

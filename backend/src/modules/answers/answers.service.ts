@@ -33,6 +33,19 @@ export class AnswersService {
         return this.answModel.findAll();
     }
 
+    async searchAnswersByUser(id: string) {
+        const answers = await this.answModel.findAll({
+            where: {
+                idUser: id
+            }
+        });
+
+        if (!answers || answers.length === 0) {
+            throw new ForbiddenException('Answers not found');
+        }
+        return answers;
+    }
+
     async createAnswer(answDto: AnswerCreateDto) {
         const idAnsw = uuidv4();
         console.log(idAnsw);

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Query } from "@nestjs/common";
 import { QuestionsService } from "./questions.service";
 import { QuestionCreateDto, QuestionEditDto } from "./dto";
 
@@ -42,6 +42,21 @@ export class QuestionsController {
     @Get('findByUser/:id')
     searchQuestionsByUser(@Param('id') id: string) {
         return this.questionsService.searchQuestionsByUser(id);
+    }
+
+    @Get('findByTags/tags?')
+    async searchQuestionsByTags(@Query('tags') tags: string) {
+        if (!tags) {
+            throw new BadRequestException('Tags query parameter is required');
+        }
+
+        const tagsArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+
+        if (tagsArray.length === 0) {
+            throw new BadRequestException('At least one tag is required');
+        }
+
+        return await this.questionsService.searchQuestionsByTags(tagsArray);
     }
 
     @Post('create')
