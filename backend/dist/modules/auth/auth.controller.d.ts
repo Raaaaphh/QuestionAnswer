@@ -4,6 +4,9 @@ export declare class AuthController {
     private authService;
     constructor(authService: AuthService);
     test(): string;
-    login(authlog: AuthLoginDto): Promise<import("../users/user.model").User>;
+    login(authlog: AuthLoginDto): Promise<{
+        user: import("../users/user.model").User;
+        token: string;
+    }>;
     register(authreg: AuthRegisterDto): Promise<import("../users/user.model").User>;
 }

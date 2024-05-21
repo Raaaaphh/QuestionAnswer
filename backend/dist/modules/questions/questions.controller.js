@@ -16,6 +16,7 @@ exports.QuestionsController = void 0;
 const common_1 = require("@nestjs/common");
 const questions_service_1 = require("./questions.service");
 const dto_1 = require("./dto");
+const student_guard_1 = require("../../guards/student.guard");
 let QuestionsController = class QuestionsController {
     constructor(questionsService) {
         this.questionsService = questionsService;
@@ -119,6 +120,7 @@ __decorate([
 ], QuestionsController.prototype, "searchQuestionsByTags", null);
 __decorate([
     (0, common_1.Post)('create'),
+    (0, common_1.UseGuards)(student_guard_1.StudentGuard),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [dto_1.QuestionCreateDto]),

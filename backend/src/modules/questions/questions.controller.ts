@@ -1,6 +1,7 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Query } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
 import { QuestionsService } from "./questions.service";
 import { QuestionCreateDto, QuestionEditDto } from "./dto";
+import { StudentGuard } from "src/guards/student.guard";
 
 @Controller('questions')
 export class QuestionsController {
@@ -16,6 +17,8 @@ export class QuestionsController {
     findAll() {
         return this.questionsService.findAll();
     }
+
+    // Get avec limit
 
     @Get('findByName/name?')
     searchQuestions(@Query('search') search: string, @Query('limit') limit: string) {
@@ -60,6 +63,7 @@ export class QuestionsController {
     }
 
     @Post('create')
+    @UseGuards(StudentGuard)
     createQuestion(@Body() quest: QuestionCreateDto) {
         try {
             return this.questionsService.createQuestion(quest);
