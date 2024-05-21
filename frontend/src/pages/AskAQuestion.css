@@ -58,6 +58,12 @@
     background-color: #00396a;
   }
   
+  input:disabled ~ .fileInputLabel {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+  }
+  
   .fileInput {
     display: none;
   }
@@ -75,9 +81,125 @@
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   }
+
+  .imagePreview{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .imagePreview button{
+    background-color: #004985;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-top: 10px;
+    width : 60%
+  }
+
   
   .error {
     color: red;
     margin: 10px 0;
   }
   
+
+  .tagSection {
+    width: 80%;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .tagsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  
+  .tag {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    margin: 5px;
+    border: 1px solid #004985;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+  }
+  
+  .tag.selected {
+    background-color: #004985;
+    color: white;
+  }
+  
+  .tag button {
+    margin-left: 10px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: white;
+  }
+  
+  .addTagButton {
+    padding: 5px 10px;
+    margin: 5px;
+    border: 1px solid #004985;
+    border-radius: 5px;
+    background-color: white;
+    cursor: pointer;
+  }
+  
+  .tagDropdownWrapper {
+    position: relative;
+    width: 100%;
+  }
+  
+  .tagDropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: white;
+    width: 100%;
+    max-height: 200px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .tagDropdown input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+  
+  .tagDropdownList {
+    max-height: 150px;
+    overflow-y: auto;
+  }
+  
+  .tagDropdownItem {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .tagDropdownItem:hover {
+    background-color: #f0f0f0;
+  }
+
+  .submitButton{
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #004985;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    margin-bottom: 3%;
+  }
