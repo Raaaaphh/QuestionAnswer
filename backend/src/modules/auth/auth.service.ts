@@ -5,11 +5,12 @@ import { InjectModel } from "@nestjs/sequelize";
 import { User } from "../users/user.model";
 import { MailerService } from "src/mailers/mailer.service";
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
+import { JwtService } from "@nestjs/jwt";
 
 
 @Injectable({})
 export class AuthService {
-    constructor(@InjectModel(User) private userModel: typeof User, private mailerService: MailerService) { }
+    constructor(@InjectModel(User) private userModel: typeof User, private mailerService: MailerService, private jwtService: JwtService) { }
 
     test() {
         return 'Hello World ! depuis le Back';
@@ -17,10 +18,7 @@ export class AuthService {
 
     async login(authlog: AuthLoginDto) {
         const user = await this.userModel.findOne({
-            where:
-            {
-                name: authlog.name
-            }
+            where: { name: authlog.name }
         });
 
         if (!user) {
@@ -31,7 +29,10 @@ export class AuthService {
             throw new ForbiddenException('Invalid password');
         }
 
-        return user;
+        const payload = { id: user.idUser, role: user.role };
+        const token = this.jwtService.sign(payload);
+
+        return { user, token };
     }
 
     async register(authreg: AuthRegisterDto) {

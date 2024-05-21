@@ -96,4 +96,8 @@ export class UsersService {
         return user;
     }
 
+    async findById(id: string): Promise<User | null> {
+        return await this.userModel.findByPk(id);
+    }
+
 }

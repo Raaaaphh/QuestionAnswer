@@ -5,17 +5,44 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ValidateAdminMiddleware = void 0;
+exports.JwtMiddleware = void 0;
 const common_1 = require("@nestjs/common");
-let ValidateAdminMiddleware = class ValidateAdminMiddleware {
-    use(req, res, next) {
-        console.log('ValidateAnswerMiddleware');
-        next();
+const jwt = require("jsonwebtoken");
+const users_service_1 = require("../modules/users/users.service");
+let JwtMiddleware = class JwtMiddleware {
+    constructor(userService) {
+        this.userService = userService;
+    }
+    async use(req, res, next) {
+        const authHeader = req.headers['authorization'];
+        if (!authHeader) {
+            throw new common_1.UnauthorizedException('Authorization header is missing');
+        }
+        const token = authHeader.split(' ')[1];
+        if (!token) {
+            throw new common_1.UnauthorizedException('Token is missing');
+        }
+        try {
+            const decoded = jwt.verify(token, 'your_jwt_secret');
+            const user = await this.userService.findById(decoded.id);
+            if (!user) {
+                throw new common_1.UnauthorizedException('User not found');
+            }
+            req.user = user;
+            next();
+        }
+        catch (error) {
+            throw new common_1.UnauthorizedException('Invalid token');
+        }
     }
 };
-exports.ValidateAdminMiddleware = ValidateAdminMiddleware;
-exports.ValidateAdminMiddleware = ValidateAdminMiddleware = __decorate([
-    (0, common_1.Injectable)()
-], ValidateAdminMiddleware);
+exports.JwtMiddleware = JwtMiddleware;
+exports.JwtMiddleware = JwtMiddleware = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [users_service_1.UsersService])
+], JwtMiddleware);
 //# sourceMappingURL=validate-admin.middleware.js.map

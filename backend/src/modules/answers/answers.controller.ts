@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { AnswersService } from "./answers.service";
 import { AnswerCreateDto } from "./dto";
+import { AdminGuard } from "src/guards/admin.guard";
 
 @Controller('answers')
 export class AnswersController {
@@ -16,12 +17,15 @@ export class AnswersController {
         return this.answersService.findAll();
     }
 
+    // Get en fonction id Question 
+
     @Get('findByUser/:id')
     searchAnswersByUser(@Param('id') id: string) {
         return this.answersService.searchAnswersByUser(id);
     }
 
     @Post('create')
+    @UseGuards(AdminGuard)
     createAnswer(@Body() answer: AnswerCreateDto) {
         return this.answersService.createAnswer(answer);
     }
