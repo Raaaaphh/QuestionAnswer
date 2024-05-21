@@ -22,41 +22,85 @@ let QuestionsController = class QuestionsController {
         this.questionsService = questionsService;
     }
     getQuestion(id) {
-        return this.questionsService.getQuestion(id);
+        try {
+            return this.questionsService.getQuestion(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     findAll() {
-        return this.questionsService.findAll();
+        try {
+            return this.questionsService.findAll();
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+    findAllWithLimit(limit) {
+        try {
+            if (limit === undefined) {
+                limit = '20';
+            }
+            return this.questionsService.findAllWithLimit(limit);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     searchQuestions(search, limit) {
-        if (limit === undefined) {
-            limit = '20';
+        try {
+            if (search === undefined) {
+                throw new Error('Search is required');
+            }
+            if (limit === undefined) {
+                limit = '20';
+            }
+            return this.questionsService.searchQuestions(search, limit);
         }
-        return this.questionsService.searchQuestions(search, limit);
+        catch (error) {
+            console.log(error);
+        }
     }
     searchQuestionsByFilter(filter, limit, order) {
-        if (limit === undefined) {
-            limit = '20';
+        try {
+            if (filter === undefined) {
+                throw new Error('Filter is required');
+            }
+            if (limit === undefined) {
+                limit = '20';
+            }
+            if (order === undefined) {
+                order = 'asc';
+            }
+            return this.questionsService.searchQuestionsByFilter(filter, limit, order);
         }
-        if (order === undefined) {
-            order = 'asc';
+        catch (error) {
+            console.log(error);
         }
-        if (filter === undefined) {
-            throw new Error('Filter is required');
-        }
-        return this.questionsService.searchQuestionsByFilter(filter, limit, order);
     }
     searchQuestionsByUser(id) {
-        return this.questionsService.searchQuestionsByUser(id);
+        try {
+            return this.questionsService.searchQuestionsByUser(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     async searchQuestionsByTags(tags) {
-        if (!tags) {
-            throw new common_1.BadRequestException('Tags query parameter is required');
+        try {
+            if (!tags) {
+                throw new common_1.BadRequestException('Tags query parameter is required');
+            }
+            const tagsArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+            if (tagsArray.length === 0) {
+                throw new common_1.BadRequestException('At least one tag is required');
+            }
+            return await this.questionsService.searchQuestionsByTags(tagsArray);
         }
-        const tagsArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
-        if (tagsArray.length === 0) {
-            throw new common_1.BadRequestException('At least one tag is required');
+        catch (error) {
+            console.log(error);
         }
-        return await this.questionsService.searchQuestionsByTags(tagsArray);
     }
     createQuestion(quest) {
         try {
@@ -67,10 +111,20 @@ let QuestionsController = class QuestionsController {
         }
     }
     editQuestion(question) {
-        return this.questionsService.editQuestion(question);
+        try {
+            return this.questionsService.editQuestion(question);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     deleteQuestion(id) {
-        return this.questionsService.deleteQuestion(id);
+        try {
+            return this.questionsService.deleteQuestion(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 };
 exports.QuestionsController = QuestionsController;
@@ -87,6 +141,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('all/limit?'),
+    __param(0, (0, common_1.Query)('limit')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], QuestionsController.prototype, "findAllWithLimit", null);
 __decorate([
     (0, common_1.Get)('findByName/name?'),
     __param(0, (0, common_1.Query)('search')),

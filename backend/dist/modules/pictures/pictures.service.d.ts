@@ -5,4 +5,5 @@ export declare class PicturesService {
     getPicture(id: string): Promise<Picture>;
     getPicturesByQuestion(id: string): Promise<Picture[]>;
     getPicturesByAnswer(id: string): Promise<Picture[]>;
+    deletePicture(id: string): Promise<Picture>;
 }

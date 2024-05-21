@@ -37,7 +37,7 @@ export class UsersService {
 
     }
 
-    async remove(id: string): Promise<void> {
+    async remove(id: string) {
         //const user = await this.findOne(id);
         //await user.destroy();
         const user = await this.userModel.findOne({
@@ -48,8 +48,8 @@ export class UsersService {
         if (!user) {
             throw new ForbiddenException('User not found');
         }
-
         await user.destroy();
+        return user;
     }
 
     async editMdp(mdpDto: UserEditMdpDto) {

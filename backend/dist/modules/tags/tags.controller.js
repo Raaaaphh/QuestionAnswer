@@ -16,21 +16,42 @@ exports.TagsController = void 0;
 const common_1 = require("@nestjs/common");
 const tags_service_1 = require("./tags.service");
 const tag_create_dto_1 = require("./dto/tag-create.dto");
+const admin_guard_1 = require("../../guards/admin.guard");
 let TagsController = class TagsController {
     constructor(tagsService) {
         this.tagsService = tagsService;
     }
     findAll() {
-        return this.tagsService.findAll();
+        try {
+            return this.tagsService.findAll();
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     getTag(id) {
-        return this.tagsService.getTag(id);
+        try {
+            return this.tagsService.getTag(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     createTag(tagDto) {
-        return this.tagsService.createTag(tagDto);
+        try {
+            return this.tagsService.createTag(tagDto);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     deleteTag(id) {
-        return this.tagsService.deleteTag(id);
+        try {
+            return this.tagsService.deleteTag(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 };
 exports.TagsController = TagsController;
@@ -49,6 +70,7 @@ __decorate([
 ], TagsController.prototype, "getTag", null);
 __decorate([
     (0, common_1.Post)('create'),
+    (0, common_1.UseGuards)(admin_guard_1.AdminGuard),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [tag_create_dto_1.TagCreateDto]),

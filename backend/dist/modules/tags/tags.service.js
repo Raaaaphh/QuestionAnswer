@@ -26,7 +26,14 @@ let TagsService = class TagsService {
         return this.tagModel.findAll();
     }
     async getTag(id) {
-        return "Tag not found";
+        if (!(0, uuid_1.validate)(id)) {
+            throw new common_2.HttpException('Invalid UUID', common_2.HttpStatus.BAD_REQUEST);
+        }
+        const tag = await this.tagModel.findOne({ where: { idTag: id } });
+        if (!tag) {
+            throw new common_2.HttpException('Tag not found', common_2.HttpStatus.NOT_FOUND);
+        }
+        return tag;
     }
     async createTag(tagDto) {
         const idTag = (0, uuid_1.v4)();
@@ -47,7 +54,15 @@ let TagsService = class TagsService {
         }
     }
     async deleteTag(id) {
-        return "Tag deleted";
+        if (!(0, uuid_1.validate)(id)) {
+            throw new common_2.HttpException('Invalid UUID', common_2.HttpStatus.BAD_REQUEST);
+        }
+        const tag = await this.tagModel.findOne({ where: { idTag: id } });
+        if (!tag) {
+            throw new common_2.HttpException('Tag not found', common_2.HttpStatus.NOT_FOUND);
+        }
+        await tag.destroy();
+        return tag;
     }
 };
 exports.TagsService = TagsService;

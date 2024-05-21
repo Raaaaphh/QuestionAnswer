@@ -61,4 +61,23 @@ export class PicturesService {
         }
         return pictures;
     }
+
+    async deletePicture(id: string) {
+        if (!isValidUUID(id)) {
+            throw new BadRequestException('Invalid picture ID');
+        }
+
+        const picture = await this.pictModel.findOne({
+            where: {
+                idPict: id
+            }
+        });
+
+        if (!picture) {
+            throw new ForbiddenException('Picture not found');
+        }
+
+        await picture.destroy();
+        return picture;
+    }
 }

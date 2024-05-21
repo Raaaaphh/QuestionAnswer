@@ -8,22 +8,42 @@ export class FavoritesController {
 
     @Get()
     async getFavorites() {
-        return await this.favService.getFavorites();
+        try {
+            return await this.favService.getFavorites();
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Get(':id')
     async getFavoritesType(@Param('id') id: string) {
-        return await this.favService.getFavoritesType(id);
+        try {
+            return await this.favService.getFavoritesType(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Post('add')
     async addFavorite(@Body() favDto: FavoriteDto) {
-        return await this.favService.addFavorite(favDto);
+        try {
+            return await this.favService.addFavorite(favDto);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Post('remove')
     async removeFavorite(@Body() favDto: FavoriteDto) {
-        return await this.favService.removeFavorite(favDto);
+        try {
+            return await this.favService.removeFavorite(favDto);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
 }

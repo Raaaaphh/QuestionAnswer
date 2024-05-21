@@ -63,6 +63,21 @@ let PicturesService = class PicturesService {
         }
         return pictures;
     }
+    async deletePicture(id) {
+        if (!(0, uuid_1.validate)(id)) {
+            throw new common_1.BadRequestException('Invalid picture ID');
+        }
+        const picture = await this.pictModel.findOne({
+            where: {
+                idPict: id
+            }
+        });
+        if (!picture) {
+            throw new common_1.ForbiddenException('Picture not found');
+        }
+        await picture.destroy();
+        return picture;
+    }
 };
 exports.PicturesService = PicturesService;
 exports.PicturesService = PicturesService = __decorate([

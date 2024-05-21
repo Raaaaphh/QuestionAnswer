@@ -24,11 +24,22 @@ let AuthController = class AuthController {
         return this.authService.test();
     }
     login(authlog) {
-        console.log(authlog);
-        return this.authService.login(authlog);
+        try {
+            console.log(authlog);
+            return this.authService.login(authlog);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     register(authreg) {
-        return this.authService.register(authreg);
+        try {
+            console.log(authreg);
+            return this.authService.register(authreg);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 };
 exports.AuthController = AuthController;

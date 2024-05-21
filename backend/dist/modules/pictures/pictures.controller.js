@@ -20,13 +20,36 @@ let PicturesController = class PicturesController {
         this.picturesService = picturesService;
     }
     getPicture(id) {
-        return this.picturesService.getPicture(id);
+        try {
+            return this.picturesService.getPicture(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     getPicturesByQuestion(id) {
-        return this.picturesService.getPicturesByQuestion(id);
+        try {
+            return this.picturesService.getPicturesByQuestion(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     getPicturesByAnswer(id) {
-        return this.picturesService.getPicturesByAnswer(id);
+        try {
+            return this.picturesService.getPicturesByAnswer(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+    deletePicture(id) {
+        try {
+            return this.picturesService.deletePicture(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 };
 exports.PicturesController = PicturesController;
@@ -51,6 +74,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], PicturesController.prototype, "getPicturesByAnswer", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], PicturesController.prototype, "deletePicture", null);
 exports.PicturesController = PicturesController = __decorate([
     (0, common_1.Controller)('pictures'),
     __metadata("design:paramtypes", [pictures_service_1.PicturesService])

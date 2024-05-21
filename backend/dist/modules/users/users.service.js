@@ -49,6 +49,7 @@ let UsersService = class UsersService {
             throw new common_1.ForbiddenException('User not found');
         }
         await user.destroy();
+        return user;
     }
     async editMdp(mdpDto) {
         const user = await this.userModel.findOne({
