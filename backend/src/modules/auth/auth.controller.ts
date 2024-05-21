@@ -15,12 +15,23 @@ export class AuthController {
 
     @Post('login')
     login(@Body() authlog: AuthLoginDto) {
-        console.log(authlog);
-        return this.authService.login(authlog);
+        try {
+            console.log(authlog);
+            return this.authService.login(authlog);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Post('register')
     register(@Body() authreg: AuthRegisterDto) {
-        return this.authService.register(authreg);
+        try {
+            console.log(authreg);
+            return this.authService.register(authreg);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 }

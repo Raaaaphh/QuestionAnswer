@@ -8,26 +8,51 @@ export class UsersController {
 
     @Get()
     async findAll() {
-        return this.usersService.findAll();
+        try {
+            return await this.usersService.findAll();
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Get(':id')
     async findOne(@Param('id') id: string) {
-        return this.usersService.findOne(id);
+        try {
+            return await this.usersService.findOne(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Delete(':id')
     async remove(@Param('id') id: string) {
-        return this.usersService.remove(id);
+        try {
+            return await this.usersService.remove(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Post('edit/mdp')
     async editMdp(@Body() mdpDto: UserEditMdpDto) {
-        return this.usersService.editMdp(mdpDto);
+        try {
+            return await this.usersService.editMdp(mdpDto);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Post('edit/name')
     async editName(@Body() nameDto: UserEditNameDto) {
-        return this.usersService.editName(nameDto);
+        try {
+            return await this.usersService.editName(nameDto);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 }

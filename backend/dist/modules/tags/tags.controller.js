@@ -21,16 +21,36 @@ let TagsController = class TagsController {
         this.tagsService = tagsService;
     }
     findAll() {
-        return this.tagsService.findAll();
+        try {
+            return this.tagsService.findAll();
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     getTag(id) {
-        return this.tagsService.getTag(id);
+        try {
+            return this.tagsService.getTag(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     createTag(tagDto) {
-        return this.tagsService.createTag(tagDto);
+        try {
+            return this.tagsService.createTag(tagDto);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     deleteTag(id) {
-        return this.tagsService.deleteTag(id);
+        try {
+            return this.tagsService.deleteTag(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 };
 exports.TagsController = TagsController;

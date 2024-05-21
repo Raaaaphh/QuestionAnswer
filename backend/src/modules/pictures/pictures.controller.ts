@@ -10,16 +10,31 @@ export class PicturesController {
 
     @Get(':id')
     getPicture(@Param('id') id: string) {
-        return this.picturesService.getPicture(id);
+        try {
+            return this.picturesService.getPicture(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Get('question/:id')
     getPicturesByQuestion(@Param('id') id: string) {
-        return this.picturesService.getPicturesByQuestion(id);
+        try {
+            return this.picturesService.getPicturesByQuestion(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Get('answer/:id')
     getPicturesByAnswer(@Param('id') id: string) {
-        return this.picturesService.getPicturesByAnswer(id);
+        try {
+            return this.picturesService.getPicturesByAnswer(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 }

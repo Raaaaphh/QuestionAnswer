@@ -10,62 +10,99 @@ export class QuestionsController {
 
     @Get(':id')
     getQuestion(@Param('id') id: string) {
-        return this.questionsService.getQuestion(id);
+        try {
+            return this.questionsService.getQuestion(id);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     @Get()
     findAll() {
-        return this.questionsService.findAll();
+        try {
+            return this.questionsService.findAll();
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Get('all/limit?')
     findAllWithLimit(@Query('limit') limit: string) {
-        if (limit === undefined) {
-            limit = '20';
+        try {
+            if (limit === undefined) {
+                limit = '20';
+            }
+            return this.questionsService.findAllWithLimit(limit);
         }
-        return this.questionsService.findAllWithLimit(limit);
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Get('findByName/name?')
     searchQuestions(@Query('search') search: string, @Query('limit') limit: string) {
-        if (limit === undefined) {
-            limit = '20';
+        try {
+            if (search === undefined) {
+                throw new Error('Search is required');
+            }
+            if (limit === undefined) {
+                limit = '20';
+            }
+            return this.questionsService.searchQuestions(search, limit);
         }
-        return this.questionsService.searchQuestions(search, limit);
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Get('findByFilter/filter?')
     searchQuestionsByFilter(@Query('filter') filter: string, @Query('limit') limit: string, @Query('order') order: string) {
-        if (limit === undefined) {
-            limit = '20';
+        try {
+            if (filter === undefined) {
+                throw new Error('Filter is required');
+            }
+            if (limit === undefined) {
+                limit = '20';
+            }
+            if (order === undefined) {
+                order = 'asc';
+            }
+            return this.questionsService.searchQuestionsByFilter(filter, limit, order);
         }
-        if (order === undefined) {
-            order = 'asc';
+        catch (error) {
+            console.log(error);
         }
-        if (filter === undefined) {
-            throw new Error('Filter is required');
-        }
-        return this.questionsService.searchQuestionsByFilter(filter, limit, order);
     }
 
     @Get('findByUser/:id')
     searchQuestionsByUser(@Param('id') id: string) {
-        return this.questionsService.searchQuestionsByUser(id);
+        try {
+            return this.questionsService.searchQuestionsByUser(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Get('findByTags/tags?')
     async searchQuestionsByTags(@Query('tags') tags: string) {
-        if (!tags) {
-            throw new BadRequestException('Tags query parameter is required');
+        try {
+            if (!tags) {
+                throw new BadRequestException('Tags query parameter is required');
+            }
+
+            const tagsArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+
+            if (tagsArray.length === 0) {
+                throw new BadRequestException('At least one tag is required');
+            }
+
+            return await this.questionsService.searchQuestionsByTags(tagsArray);
         }
-
-        const tagsArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
-
-        if (tagsArray.length === 0) {
-            throw new BadRequestException('At least one tag is required');
+        catch (error) {
+            console.log(error);
         }
-
-        return await this.questionsService.searchQuestionsByTags(tagsArray);
     }
 
     @Post('create')
@@ -80,11 +117,22 @@ export class QuestionsController {
 
     @Post('edit')
     editQuestion(@Body() question: QuestionEditDto) {
-        return this.questionsService.editQuestion(question);
+        try {
+            return this.questionsService.editQuestion(question);
+
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Delete(':id')
     deleteQuestion(@Param('id') id: string) {
-        return this.questionsService.deleteQuestion(id);
+        try {
+            return this.questionsService.deleteQuestion(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 }

@@ -20,13 +20,28 @@ let PicturesController = class PicturesController {
         this.picturesService = picturesService;
     }
     getPicture(id) {
-        return this.picturesService.getPicture(id);
+        try {
+            return this.picturesService.getPicture(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     getPicturesByQuestion(id) {
-        return this.picturesService.getPicturesByQuestion(id);
+        try {
+            return this.picturesService.getPicturesByQuestion(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     getPicturesByAnswer(id) {
-        return this.picturesService.getPicturesByAnswer(id);
+        try {
+            return this.picturesService.getPicturesByAnswer(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 };
 exports.PicturesController = PicturesController;

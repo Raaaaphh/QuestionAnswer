@@ -22,22 +22,52 @@ let AnswersController = class AnswersController {
         this.answersService = answersService;
     }
     getAnswer(id) {
-        return this.answersService.getAnswer(id);
+        try {
+            return this.answersService.getAnswer(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     findAll() {
-        return this.answersService.findAll();
+        try {
+            return this.answersService.findAll();
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     searchAnswersByQuestion(id) {
-        return this.answersService.searchAnswersByQuestion(id);
+        try {
+            return this.answersService.searchAnswersByQuestion(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     searchAnswersByUser(id) {
-        return this.answersService.searchAnswersByUser(id);
+        try {
+            return this.answersService.searchAnswersByUser(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     createAnswer(answer) {
-        return this.answersService.createAnswer(answer);
+        try {
+            return this.answersService.createAnswer(answer);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     deleteAnswer(id) {
-        return this.answersService.deleteAnswer(id);
+        try {
+            return this.answersService.deleteAnswer(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 };
 exports.AnswersController = AnswersController;
