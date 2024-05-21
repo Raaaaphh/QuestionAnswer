@@ -26,6 +26,12 @@ export class User extends Model {
     password: string;
 
     @Column
+    confirmed: boolean;
+
+    @Column
+    emailToken: string;
+
+    @Column
     role: Role;
 
     @Column

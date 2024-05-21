@@ -9,4 +9,8 @@ export declare class AuthController {
         token: string;
     }>;
     register(authreg: AuthRegisterDto): Promise<import("../users/user.model").User>;
+    verifyEmail(emailToken: string): Promise<{
+        status: string;
+        message: string;
+    }>;
 }

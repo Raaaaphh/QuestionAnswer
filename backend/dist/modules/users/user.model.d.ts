@@ -13,6 +13,8 @@ export declare class User extends Model {
     name: string;
     email: string;
     password: string;
+    confirmed: boolean;
+    emailToken: string;
     role: Role;
     color: string;
     questions: Question[];

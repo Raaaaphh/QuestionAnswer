@@ -13,4 +13,8 @@ export declare class AuthService {
         token: string;
     }>;
     register(authreg: AuthRegisterDto): Promise<User>;
+    verifyEmail(emailToken: string): Promise<{
+        status: string;
+        message: string;
+    }>;
 }

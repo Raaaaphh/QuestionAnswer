@@ -41,6 +41,15 @@ let AuthController = class AuthController {
             console.log(error);
         }
     }
+    async verifyEmail(emailToken) {
+        try {
+            return await this.authService.verifyEmail(emailToken);
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
@@ -63,6 +72,13 @@ __decorate([
     __metadata("design:paramtypes", [dto_1.AuthRegisterDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "register", null);
+__decorate([
+    (0, common_1.Patch)('verify-email'),
+    __param(0, (0, common_1.Body)('emailToken')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "verifyEmail", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
