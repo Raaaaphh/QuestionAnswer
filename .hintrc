@@ -15,7 +15,8 @@
       "default",
       {
         "ignore": [
-          "text-decoration-thickness"
+          "text-decoration-thickness",
+          "backdrop-filter"
         ]
       }
     ]
