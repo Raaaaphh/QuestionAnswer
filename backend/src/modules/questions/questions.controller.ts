@@ -17,6 +17,8 @@ export class QuestionsController {
         return this.questionsService.findAll();
     }
 
+    // Get avec limit
+
     @Get('findByName/name?')
     searchQuestions(@Query('search') search: string, @Query('limit') limit: string) {
         if (limit === undefined) {

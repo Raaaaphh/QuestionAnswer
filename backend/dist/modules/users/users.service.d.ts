@@ -8,4 +8,5 @@ export declare class UsersService {
     remove(id: string): Promise<void>;
     editMdp(mdpDto: UserEditMdpDto): Promise<User>;
     editName(userDto: UserEditNameDto): Promise<User>;
+    findById(id: string): Promise<User | null>;
 }

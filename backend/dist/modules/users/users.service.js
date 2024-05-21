@@ -84,6 +84,9 @@ let UsersService = class UsersService {
         await user.save();
         return user;
     }
+    async findById(id) {
+        return await this.userModel.findByPk(id);
+    }
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([
