@@ -95,7 +95,7 @@ export class AnswersService {
         if (!answer) {
             throw new ForbiddenException('Answer not found');
         }
-
         await answer.destroy();
+        return answer;
     }
 }

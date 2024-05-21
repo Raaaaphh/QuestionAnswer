@@ -97,6 +97,7 @@ let AnswersService = class AnswersService {
             throw new common_1.ForbiddenException('Answer not found');
         }
         await answer.destroy();
+        return answer;
     }
 };
 exports.AnswersService = AnswersService;

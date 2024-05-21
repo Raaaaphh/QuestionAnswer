@@ -51,6 +51,7 @@ export class FavoritesService {
         }
 
         await favorite.destroy();
+        return favorite;
     }
 
 }

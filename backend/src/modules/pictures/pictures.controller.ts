@@ -1,6 +1,6 @@
 // Recuperer les images avec id d'une question
 
-import { Controller, Get, Param } from "@nestjs/common";
+import { Controller, Delete, Get, Param } from "@nestjs/common";
 import { PicturesService } from "./pictures.service";
 
 @Controller('pictures')
@@ -32,6 +32,16 @@ export class PicturesController {
     getPicturesByAnswer(@Param('id') id: string) {
         try {
             return this.picturesService.getPicturesByAnswer(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    @Delete(':id')
+    deletePicture(@Param('id') id: string) {
+        try {
+            return this.picturesService.deletePicture(id);
         }
         catch (error) {
             console.log(error);

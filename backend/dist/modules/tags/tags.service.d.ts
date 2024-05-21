@@ -4,7 +4,7 @@ export declare class TagsService {
     private tagModel;
     constructor(tagModel: typeof Tag);
     findAll(): Promise<Tag[]>;
-    getTag(id: string): Promise<string>;
+    getTag(id: string): Promise<Tag>;
     createTag(tagDto: TagCreateDto): Promise<Tag>;
-    deleteTag(id: string): Promise<string>;
+    deleteTag(id: string): Promise<Tag>;
 }

@@ -18,6 +18,6 @@ export declare class QuestionsService {
     searchQuestionsByTags(tags: string[]): Promise<Question[]>;
     createQuestion(quest: QuestionCreateDto): Promise<Question>;
     editQuestion(question: QuestionEditDto): Promise<Question>;
-    deleteQuestion(id: string): Promise<void>;
+    deleteQuestion(id: string): Promise<Question>;
     findSimilarWordsCount(title1: string[], title2: string[]): number;
 }

@@ -12,5 +12,5 @@ export declare class AnswersService {
     searchAnswersByUser(id: string): Promise<Answer[]>;
     searchAnswersByQuestion(id: string): Promise<Answer[]>;
     createAnswer(answDto: AnswerCreateDto): Promise<Answer>;
-    deleteAnswer(id: string): Promise<void>;
+    deleteAnswer(id: string): Promise<Answer>;
 }

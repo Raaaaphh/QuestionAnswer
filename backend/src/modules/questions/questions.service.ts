@@ -197,6 +197,7 @@ export class QuestionsService {
         }
 
         await question.destroy();
+        return question;
     }
 
     // Find similar questions function

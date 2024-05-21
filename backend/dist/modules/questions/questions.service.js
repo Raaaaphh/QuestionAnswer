@@ -179,6 +179,7 @@ let QuestionsService = class QuestionsService {
             throw new common_1.ForbiddenException('Question not found');
         }
         await question.destroy();
+        return question;
     }
     findSimilarWordsCount(title1, title2) {
         const set1 = new Set(title1);

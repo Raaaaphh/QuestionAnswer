@@ -8,5 +8,5 @@ export declare class AnswersController {
     searchAnswersByQuestion(id: string): Promise<import("./answer.model").Answer[]>;
     searchAnswersByUser(id: string): Promise<import("./answer.model").Answer[]>;
     createAnswer(answer: AnswerCreateDto): Promise<import("./answer.model").Answer>;
-    deleteAnswer(id: string): Promise<void>;
+    deleteAnswer(id: string): Promise<import("./answer.model").Answer>;
 }
