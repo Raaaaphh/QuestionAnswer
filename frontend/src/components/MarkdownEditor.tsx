@@ -9,7 +9,10 @@ import "prismjs/components/prism-css";
 import "prismjs/components/prism-javascript";
 import "./MarkdownEditor.css";
 
-interface MarkdownEditorProps {}
+interface MarkdownEditorProps {
+  value: string;
+  onChange: (value: string) => void;
+}
 
 const MarkdownEditor: React.FC<MarkdownEditorProps> = () => {
   const [markdownText, setMarkdownText] = useState<string>("");
