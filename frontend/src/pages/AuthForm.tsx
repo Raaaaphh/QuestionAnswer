@@ -21,21 +21,20 @@ function AuthForm({ isRegister = false }: AuthFormProps) {
         e.preventDefault();
 
         try {
-            const url = isRegister ? 'YOUR_REGISTER_API_ENDPOINT forAnton' : 'YOUR_LOGIN_API_ENDPOINT forAnton';
+            const url = isRegister ? 'http://localhost:3000/auth/register' : 'http://localhost:3000/auth/login';
             const payload = isRegister ? { name, email, password } : { name, password };
             const response = await axios.post(url, payload);
 
             localStorage.setItem('token', response.data.token);
-            navigate('/dashboard');
+            navigate('/home');
         } catch (error: any) {
-            setError(error.response.data.error);
+            setError(error.response.data.message);
         }
     }
 
     return (
         <div>
             <Header />
-
             <div className="container">
                 <form onSubmit={handleSubmit} className="formLogin">
                     <h1 className="loginTitle">{isRegister ? 'Register' : 'Login'}</h1>
