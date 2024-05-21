@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Header from '../components/Header';
 import './AskAQuestion.css';
 
@@ -7,32 +7,63 @@ function AskAQuestion() {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  
-  const mockTags = ['JavaScript', 'CSS', 'HTML', 'React', 'Node.js', 'Express', 'MongoDB', 'SQL', 'Python', 'Django'];
+  const [isTagDropdownOpen, setIsTagDropdownOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const mockTags = [
+    'JavaScript', 'CSS', 'HTML', 'React', 'Node.js', 'Express', 'MongoDB', 'SQL', 'Python',
+    'Django', 'Flask', 'Ruby', 'Rails', 'Java', 'Spring', 'Kotlin', 'Swift', 'Objective-C',
+    'C#', 'ASP.NET', 'Angular', 'Vue.js', 'Svelte', 'TypeScript', 'GraphQL', 'REST',
+    'PostgreSQL', 'MySQL', 'SQLite', 'Redis', 'Docker', 'Kubernetes', 'AWS', 'Azure',
+    'GCP', 'Firebase', 'SASS', 'LESS', 'Bootstrap', 'Tailwind CSS', 'Webpack', 'Parcel',
+    'Babel', 'ESLint', 'Prettier', 'Git', 'GitHub', 'GitLab', 'Bitbucket', 'Jenkins',
+    'Travis CI', 'CircleCI', 'Heroku', 'Netlify', 'Vercel'
+  ];
+
+  const tagDropdownRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: { target: any; }) => {
+      if (tagDropdownRef.current && !tagDropdownRef.current.contains(event.target) && isTagDropdownOpen) {
+        setIsTagDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isTagDropdownOpen]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
       const validFiles = filesArray.filter((file: File) => file.type.startsWith("image/")).slice(0, 5);
-  
+
       if (validFiles.length !== filesArray.length) {
         setError("Please upload only image files.");
       } else {
         setError(null);
       }
-  
-      setImages((prevImages: File[]) => [...prevImages, ...validFiles]);
-  
-      const previews = validFiles.map((file: File) => URL.createObjectURL(file));
-      setImagePreviews((prevPreviews: string[]) => [...prevPreviews, ...previews]);
+
+      const newImages: File[] = [...images];
+      const newPreviews: string[] = [...imagePreviews];
+      validFiles.forEach((file: File, index: number) => {
+        newImages.push(file);
+        newPreviews.push(URL.createObjectURL(file));
+      });
+      setImages(newImages);
+      setImagePreviews(newPreviews);
     }
   };
 
-  useEffect(() => {
-    return () => {
-      imagePreviews.forEach(url => URL.revokeObjectURL(url));
-    };
-  }, [imagePreviews]);
+  const handleRemoveImage = (index: number) => {
+    const newImages: File[] = [...images];
+    const newPreviews: string[] = [...imagePreviews];
+    newImages.splice(index, 1);
+    newPreviews.splice(index, 1);
+    setImages(newImages);
+    setImagePreviews(newPreviews);
+  };
 
   const handleTagChange = (tag: string) => {
     if (selectedTags.includes(tag)) {
@@ -40,6 +71,10 @@ function AskAQuestion() {
     } else if (selectedTags.length < 5) {
       setSelectedTags([...selectedTags, tag]);
     }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -53,6 +88,8 @@ function AskAQuestion() {
     console.log('Form submitted with images:', images);
     console.log('Selected tags:', selectedTags);
   };
+
+  const filteredTags = mockTags.filter(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <div>
@@ -87,7 +124,6 @@ function AskAQuestion() {
 
             <label htmlFor="description">Description:</label>
             <textarea id="description" name="description" required></textarea>
-
             <div className="guideSection">
               <h2>How to write a clear context for your question :</h2>
               <ul>
@@ -100,7 +136,6 @@ function AskAQuestion() {
                 <li>Revise for Brevity: Remove any unnecessary information that doesn't contribute to understanding the question.</li>
               </ul>
             </div>
-
             <label htmlFor="context">Context:</label>
             <textarea id="context" name="context" required></textarea>
 
@@ -108,20 +143,45 @@ function AskAQuestion() {
             <div className="tagSection">
               <h2>Select Tags (up to 5):</h2>
               <div className="tagsContainer">
-                {mockTags.map((tag, index) => (
-                  <button
-                    type="button"
-                    key={index}
-                    className={`tagButton ${selectedTags.includes(tag) ? 'selected' : ''}`}
-                    onClick={() => handleTagChange(tag)}
-                  >
+                {selectedTags.map((tag, index) => (
+                  <span key={index} className="tag selected">
                     {tag}
-                  </button>
+                    <button type="button" onClick={() => handleTagChange(tag)}>x</button>
+                  </span>
                 ))}
+                {selectedTags.length < 5 && (
+                  <button type="button" className="addTagButton" onClick={() => setIsTagDropdownOpen(!isTagDropdownOpen)}>
+                    +
+                  </button>
+                )}
               </div>
+              {isTagDropdownOpen && (
+                <div className="tagDropdownWrapper" ref={tagDropdownRef}>
+                  <div className="tagDropdown">
+                    <input
+                      type="text"
+                      placeholder="Search tags..."
+                      value={searchTerm}
+                      onChange={handleSearchChange}
+                    />
+                    <div className="tagDropdownList">
+                      {filteredTags.map((tag, index) => (
+                        <div
+                          key={index}
+                          className="tagDropdownItem"
+                          onClick={() => handleTagChange(tag)}
+                        >
+                          {tag}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="fileSelectorContainer">
+            <h2>Select images or screenshots (up to 5):</h2>
               <input
                 type="file"
                 id="fileInput"
@@ -137,12 +197,17 @@ function AskAQuestion() {
               {error && <p className="error">{error}</p>}
               <div className="imagePreviews">
                 {imagePreviews.map((preview, index) => (
-                  <img key={index} src={preview} alt={`preview ${index}`} />
+                  <div key={index} className="imagePreview">
+                    <img src={preview} alt={`preview ${index}`} />
+                    <button type="button" onClick={() => handleRemoveImage(index)}>
+                      Remove
+                    </button>
+                  </div>
                 ))}
               </div>
             </div>
 
-            <button type="submit">Submit</button>
+            <button type="submit" className='submitButton'>Submit</button>
           </form>
         </div>
       </div>
