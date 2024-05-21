@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
 import UTPLogo from '../assets/logo.png';
 import Bell from '../assets/notif.svg';
@@ -150,17 +150,36 @@ const ProfileMenu: React.FC = () => {
 }
 
 const Header: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token);
+  }, []);
+
   return (
     <header className="header">
       <Link to='/'>
         <img src={UTPLogo} alt="logo" className='logoUTPHeader' />
       </Link>
-      <Link to='/' className='homeButton'><h1 className='homeButtonText'>Home</h1> <div className='underline'></div></Link>
+      <Link to='/' className='homeButton'>
+        <h1 className='homeButtonText'>Home</h1>
+        <div className='underline'></div>
+      </Link>
       <SearchBar />
-      <FilterMenu />
-      <BtnQuestion />
-      <NotificationMenu />
-      <ProfileMenu />
+      {isLoggedIn ? (
+        <>
+          <FilterMenu />
+          <BtnQuestion />
+          <NotificationMenu />
+          <ProfileMenu />
+        </>
+      ) : (
+        <div className="authButtons">
+          <Link to="/login" className="authButton">Login</Link>
+          <Link to="/register" className="authButton">Register</Link>
+        </div>
+      )}
     </header>
   );
 }
