@@ -6,6 +6,9 @@ function AskAQuestion() {
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  
+  const mockTags = ['JavaScript', 'CSS', 'HTML', 'React', 'Node.js', 'Express', 'MongoDB', 'SQL', 'Python', 'Django'];
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -31,6 +34,14 @@ function AskAQuestion() {
     };
   }, [imagePreviews]);
 
+  const handleTagChange = (tag: string) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter(t => t !== tag));
+    } else if (selectedTags.length < 5) {
+      setSelectedTags([...selectedTags, tag]);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -40,6 +51,7 @@ function AskAQuestion() {
     }
 
     console.log('Form submitted with images:', images);
+    console.log('Selected tags:', selectedTags);
   };
 
   return (
@@ -92,8 +104,24 @@ function AskAQuestion() {
             <label htmlFor="context">Context:</label>
             <textarea id="context" name="context" required></textarea>
 
+            {/* Tag selection section */}
+            <div className="tagSection">
+              <h2>Select Tags (up to 5):</h2>
+              <div className="tagsContainer">
+                {mockTags.map((tag, index) => (
+                  <button
+                    type="button"
+                    key={index}
+                    className={`tagButton ${selectedTags.includes(tag) ? 'selected' : ''}`}
+                    onClick={() => handleTagChange(tag)}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="fileSelectorContainer">
-              <label htmlFor="fileInput" className="fileInputLabel">Upload Images</label>
               <input
                 type="file"
                 id="fileInput"
@@ -101,7 +129,11 @@ function AskAQuestion() {
                 multiple
                 accept="image/*"
                 onChange={handleImageChange}
+                disabled={images.length >= 5}
               />
+              <label htmlFor="fileInput" className="fileInputLabel">
+                Upload Images
+              </label>
               {error && <p className="error">{error}</p>}
               <div className="imagePreviews">
                 {imagePreviews.map((preview, index) => (

@@ -58,6 +58,12 @@
     background-color: #00396a;
   }
   
+  input:disabled ~ .fileInputLabel {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+  }
+  
   .fileInput {
     display: none;
   }
@@ -81,3 +87,32 @@
     margin: 10px 0;
   }
   
+
+  .tagSection {
+    width: 80%;
+    margin: 20px;
+  }
+  
+  .tagsContainer {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .tagButton {
+    padding: 10px 15px;
+    margin: 5px;
+    border: 1px solid #004985;
+    border-radius: 5px;
+    background-color: white;
+    cursor: pointer;
+  }
+  
+  .tagButton.selected {
+    background-color: #004985;
+    color: white;
+  }
+  
+  .tagButton:hover {
+    background-color: #00396a;
+    color: white;
+  }
