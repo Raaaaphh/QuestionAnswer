@@ -43,6 +43,14 @@ __decorate([
 ], User.prototype, "password", void 0);
 __decorate([
     sequelize_typescript_1.Column,
+    __metadata("design:type", Boolean)
+], User.prototype, "confirmed", void 0);
+__decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", String)
+], User.prototype, "emailToken", void 0);
+__decorate([
+    sequelize_typescript_1.Column,
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
 __decorate([

@@ -122,6 +122,9 @@ let QuestionsService = class QuestionsService {
         const idQuest = (0, uuid_1.v4)();
         const transaction = await this.sequelize.transaction();
         try {
+            if (quest.title.length > 100) {
+                throw new common_1.HttpException('The title is too long', common_1.HttpStatus.BAD_REQUEST);
+            }
             const newTitleWords = quest.title.toLowerCase().split(' ').filter(word => word.length > 0);
             const existingQuestions = await this.questModel.findAll();
             for (const existingQuestion of existingQuestions) {

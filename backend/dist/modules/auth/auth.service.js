@@ -20,6 +20,7 @@ const user_model_1 = require("../users/user.model");
 const mailer_service_1 = require("../../mailers/mailer.service");
 const uuid_1 = require("uuid");
 const jwt_1 = require("@nestjs/jwt");
+const mail_utils_1 = require("../../mailers/mail.utils");
 let AuthService = class AuthService {
     constructor(userModel, mailerService, jwtService) {
         this.userModel = userModel;
@@ -51,15 +52,32 @@ let AuthService = class AuthService {
         console.log(idUser);
         const colors = ['FFB5B5', 'FFC8F0', 'FFD6A6', 'FEFFB4', 'C7FFF8', 'B7BEFF', 'ACACAC', 'C6FFCC'];
         const color = colors[Math.floor(Math.random() * colors.length)];
+        const crypto = require('crypto');
+        const emailToken = crypto.randomBytes(64).toString("hex");
         const newUser = await this.userModel.create({
             idUser: idUser,
             name: authreg.name,
             email: authreg.email,
             password: hash,
-            color: color
+            color: color,
+            emailToken: emailToken,
         });
         console.log("New user" + newUser);
+        (0, mail_utils_1.sendMail)(authreg.email, emailToken);
         return newUser;
+    }
+    async verifyEmail(emailToken) {
+        if (!emailToken) {
+            throw new common_1.BadRequestException('Email token is missing');
+        }
+        const user = await this.userModel.findOne({ where: { emailToken } });
+        if (!user) {
+            throw new common_1.ForbiddenException('User not found');
+        }
+        user.confirmed = true;
+        user.emailToken = null;
+        await user.save();
+        return { status: 'Success', message: 'User verified successfully' };
     }
 };
 exports.AuthService = AuthService;
