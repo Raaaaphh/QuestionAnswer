@@ -27,6 +27,12 @@ let QuestionsController = class QuestionsController {
     findAll() {
         return this.questionsService.findAll();
     }
+    findAllWithLimit(limit) {
+        if (limit === undefined) {
+            limit = '20';
+        }
+        return this.questionsService.findAllWithLimit(limit);
+    }
     searchQuestions(search, limit) {
         if (limit === undefined) {
             limit = '20';
@@ -87,6 +93,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('all/limit?'),
+    __param(0, (0, common_1.Query)('limit')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], QuestionsController.prototype, "findAllWithLimit", null);
 __decorate([
     (0, common_1.Get)('findByName/name?'),
     __param(0, (0, common_1.Query)('search')),

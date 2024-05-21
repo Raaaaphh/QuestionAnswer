@@ -18,7 +18,13 @@ export class QuestionsController {
         return this.questionsService.findAll();
     }
 
-    // Get avec limit
+    @Get('all/limit?')
+    findAllWithLimit(@Query('limit') limit: string) {
+        if (limit === undefined) {
+            limit = '20';
+        }
+        return this.questionsService.findAllWithLimit(limit);
+    }
 
     @Get('findByName/name?')
     searchQuestions(@Query('search') search: string, @Query('limit') limit: string) {

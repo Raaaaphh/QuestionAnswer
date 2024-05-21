@@ -45,6 +45,16 @@ let QuestionsService = class QuestionsService {
     findAll() {
         return this.questModel.findAll();
     }
+    async findAllWithLimit(limit) {
+        const intLimit = parseInt(limit, 10);
+        const questions = await this.questModel.findAll({
+            limit: intLimit
+        });
+        if (!questions || questions.length === 0) {
+            throw new common_1.ForbiddenException('Questions not found');
+        }
+        return questions;
+    }
     async searchQuestions(search, limit) {
         const intLimit = parseInt(limit, 10);
         const questions = await this.questModel.findAll({

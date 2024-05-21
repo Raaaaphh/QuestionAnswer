@@ -11,6 +11,7 @@ export declare class QuestionsService {
     constructor(questModel: typeof Question, questTagModel: typeof QuestionTag, pictureModel: typeof Picture, sequelize: Sequelize);
     getQuestion(id: string): Promise<Question>;
     findAll(): Promise<Question[]>;
+    findAllWithLimit(limit: string): Promise<Question[]>;
     searchQuestions(search: string, limit: string): Promise<Question[]>;
     searchQuestionsByFilter(filter: string, limit: string, order: string): Promise<Question[]>;
     searchQuestionsByUser(id: string): Promise<Question[]>;

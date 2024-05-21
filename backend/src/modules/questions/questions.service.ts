@@ -34,6 +34,19 @@ export class QuestionsService {
         return this.questModel.findAll();
     }
 
+    async findAllWithLimit(limit: string) {
+        const intLimit = parseInt(limit, 10);
+
+        const questions = await this.questModel.findAll({
+            limit: intLimit
+        });
+
+        if (!questions || questions.length === 0) {
+            throw new ForbiddenException('Questions not found');
+        }
+        return questions;
+    }
+
     async searchQuestions(search: string, limit: string) {
         const intLimit = parseInt(limit, 10);
 

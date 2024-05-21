@@ -53,6 +53,17 @@ let AnswersService = class AnswersService {
         }
         return answers;
     }
+    async searchAnswersByQuestion(id) {
+        const answers = await this.answModel.findAll({
+            where: {
+                idQuest: id
+            }
+        });
+        if (!answers || answers.length === 0) {
+            throw new common_1.ForbiddenException('Answers not found');
+        }
+        return answers;
+    }
     async createAnswer(answDto) {
         const idAnsw = (0, uuid_1.v4)();
         console.log(idAnsw);

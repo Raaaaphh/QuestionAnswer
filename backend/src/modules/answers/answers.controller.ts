@@ -17,7 +17,10 @@ export class AnswersController {
         return this.answersService.findAll();
     }
 
-    // Get en fonction id Question 
+    @Get('findByQuestion/:id')
+    searchAnswersByQuestion(@Param('id') id: string) {
+        return this.answersService.searchAnswersByQuestion(id);
+    }
 
     @Get('findByUser/:id')
     searchAnswersByUser(@Param('id') id: string) {
