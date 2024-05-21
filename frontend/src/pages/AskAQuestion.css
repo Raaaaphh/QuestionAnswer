@@ -1,0 +1,83 @@
+.askContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+  }
+  
+  .askFormSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 0px;
+    min-height: 200px;
+    width: 80%;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.212);
+  }
+  
+  .askForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .guideSection {
+    width: 80%;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.150);
+    padding: 20px;
+    margin: 20px;
+    border-radius: 20px;
+    background-color: #0049854f;
+  }
+  
+  .fileSelectorContainer {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+  }
+  
+  .fileInputLabel {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #004985;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  
+  .fileInputLabel:hover {
+    background-color: #00396a;
+  }
+  
+  .fileInput {
+    display: none;
+  }
+  
+  .imagePreviews {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .imagePreviews img {
+    max-width: 150px;
+    max-height: 150px;
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .error {
+    color: red;
+    margin: 10px 0;
+  }
+  
