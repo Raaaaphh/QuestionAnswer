@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { TagsService } from "./tags.service";
 import { TagCreateDto } from "./dto/tag-create.dto";
+import { AdminGuard } from "src/guards/admin.guard";
 
 @Controller('tags')
 export class TagsController {
@@ -27,6 +28,7 @@ export class TagsController {
     }
 
     @Post('create')
+    @UseGuards(AdminGuard)
     createTag(@Body() tagDto: TagCreateDto) {
         try {
             return this.tagsService.createTag(tagDto);
