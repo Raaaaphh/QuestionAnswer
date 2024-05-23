@@ -11,13 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const argon = require("argon2");
 const sequelize_1 = require("@nestjs/sequelize");
 const user_model_1 = require("../users/user.model");
-const mailer_service_1 = require("../../mailers/mailer.service");
+const mailer_service_1 = require("src/mailers/mailer.service");
 const uuid_1 = require("uuid");
 const jwt_1 = require("@nestjs/jwt");
 const mail_utils_1 = require("../../mailers/mail.utils");
@@ -84,6 +85,6 @@ exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)({}),
     __param(0, (0, sequelize_1.InjectModel)(user_model_1.User)),
-    __metadata("design:paramtypes", [Object, mailer_service_1.MailerService, jwt_1.JwtService])
+    __metadata("design:paramtypes", [Object, typeof (_a = typeof mailer_service_1.MailerService !== "undefined" && mailer_service_1.MailerService) === "function" ? _a : Object, jwt_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map
