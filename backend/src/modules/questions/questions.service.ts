@@ -204,7 +204,6 @@ export class QuestionsService {
         return question;
     }
 
-    // Find similar questions function
     findSimilarWordsCount(title1: string[], title2: string[]): number {
         const set1 = new Set(title1);
         const set2 = new Set(title2);

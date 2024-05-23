@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from '../components/Header';
+import MarkdownEditor from '../components/MarkdownEditor';
 import './AskAQuestion.css';
 
 function AskAQuestion() {
@@ -8,7 +9,9 @@ function AskAQuestion() {
   const [error, setError] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [isTagDropdownOpen, setIsTagDropdownOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [description, setDescription] = useState('');
+  const [context, setContext] = useState('');
 
   const mockTags = [
     'JavaScript', 'CSS', 'HTML', 'React', 'Node.js', 'Express', 'MongoDB', 'SQL', 'Python',
@@ -37,17 +40,17 @@ function AskAQuestion() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
-      const validFiles = filesArray.filter((file: File) => file.type.startsWith("image/")).slice(0, 5);
+      const validFiles = filesArray.filter((file: File) => file.type.startsWith('image/')).slice(0, 5);
 
       if (validFiles.length !== filesArray.length) {
-        setError("Please upload only image files.");
+        setError('Please upload only image files.');
       } else {
         setError(null);
       }
 
       const newImages: File[] = [...images];
       const newPreviews: string[] = [...imagePreviews];
-      validFiles.forEach((file: File, index: number) => {
+      validFiles.forEach((file: File) => {
         newImages.push(file);
         newPreviews.push(URL.createObjectURL(file));
       });
@@ -87,6 +90,8 @@ function AskAQuestion() {
 
     console.log('Form submitted with images:', images);
     console.log('Selected tags:', selectedTags);
+    console.log('Description:', description);
+    console.log('Context:', context);
   };
 
   const filteredTags = mockTags.filter(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -101,29 +106,30 @@ function AskAQuestion() {
               <h2>How to write a proper title :</h2>
               <p>Here are some tips for crafting an effective title :</p>
               <ul>
-                <li>Use Keywords: Include relevant keywords for searchability. Example: "HTML/CSS/JS: Animate button arrow to checkmark on click"</li>
-                <li>Be Concise: Keep it brief but informative. Example: "JavaScript: Rotate arrow to checkmark on button click"</li>
-                <li>Highlight Action: Indicate the desired outcome or action. Example: "Animate button to change arrow to checkmark on click"</li>
-                <li>Be Specific: Clearly state the main topic or problem. Example: "How to animate a button click to change an arrow into a checkmark?"</li>
+                <li>Use Keywords: Include relevant keywords for searchability. Example: 'HTML/CSS/JS: Animate button arrow to checkmark on click'</li>
+                <li>Be Concise: Keep it brief but informative. Example: 'JavaScript: Rotate arrow to checkmark on button click'</li>
+                <li>Highlight Action: Indicate the desired outcome or action. Example: 'Animate button to change arrow to checkmark on click'</li>
+                <li>Be Specific: Clearly state the main topic or problem. Example: 'How to animate a button click to change an arrow into a checkmark?'</li>
               </ul>
             </div>
 
             <label htmlFor="title"></label>
-            <input type="text" id="title" placeholder='Title of your question' name="title" required/>
+            <input type="text" id="title" placeholder='Title of your question' name="title" className='titleInput' required/>
 
             <div className="guideSection">
               <h2>How to write a good question :</h2>
               <ul>
-                <li>Briefly State the Problem: Summarize the issue you're facing in a sentence or two. Example: "Struggling to align navigation menu items on smaller screens."</li>
-                <li>Describe Efforts Made: Mention any steps you've already taken to solve the problem. Example: "Tried adjusting CSS flexbox properties without success."</li>
-                <li>Ask Clear Question: Clearly articulate the specific question you need help with. Example: "How can I ensure consistent alignment for menu items across screen sizes?"</li>
-                <li>Provide Relevant Context: Include any necessary details or constraints. Example: "Using HTML, CSS for navigation menu in a responsive website."</li>
-                <li>End with Appreciation: Conclude with a brief thank-you message. Example: "Appreciate any guidance. Thanks!"</li>
+                <li>Briefly State the Problem: Summarize the issue you're facing in a sentence or two. Example: 'Struggling to align navigation menu items on smaller screens.'</li>
+                <li>Describe Efforts Made: Mention any steps you've already taken to solve the problem. Example: 'Tried adjusting CSS flexbox properties without success.'</li>
+                <li>Ask Clear Question: Clearly articulate the specific question you need help with. Example: 'How can I ensure consistent alignment for menu items across screen sizes?'</li>
+                <li>Provide Relevant Context: Include any necessary details or constraints. Example: 'Using HTML, CSS for navigation menu in a responsive website.'</li>
+                <li>End with Appreciation: Conclude with a brief thank-you message. Example: 'Appreciate any guidance. Thanks!'</li>
               </ul>
             </div>
 
             <label htmlFor="description">Description:</label>
-            <textarea id="description" name="description" required></textarea>
+            <MarkdownEditor value={description} onChange={setDescription} />
+
             <div className="guideSection">
               <h2>How to write a clear context for your question :</h2>
               <ul>
@@ -136,8 +142,9 @@ function AskAQuestion() {
                 <li>Revise for Brevity: Remove any unnecessary information that doesn't contribute to understanding the question.</li>
               </ul>
             </div>
+
             <label htmlFor="context">Context:</label>
-            <textarea id="context" name="context" required></textarea>
+            <MarkdownEditor value={context} onChange={setContext} />
 
             {/* Tag selection section */}
             <div className="tagSection">
@@ -181,7 +188,7 @@ function AskAQuestion() {
             </div>
 
             <div className="fileSelectorContainer">
-            <h2>Select images or screenshots (up to 5):</h2>
+              <h2>Select images or screenshots (up to 5):</h2>
               <input
                 type="file"
                 id="fileInput"
