@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
-import { AdminGuard } from "src/guards/admin.guard";
+import { AdminGuard } from "../../../guards/admin.guard";
 import { TagsService } from "../services/tags.service";
 import { TagCreateDto } from "../dto/tag-create.dto";
 
