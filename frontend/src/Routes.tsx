@@ -16,6 +16,7 @@ export const Routes = () => {
         <Route path="/login" element={<AuthForm />} />
         <Route path="/register" element={<AuthForm isRegister />} />
         <Route path="/ask" element={<AskAQuestion />} />
+        <Route path="/question" element={<Question />} />
         {/* <Route
           path="/ask"
           element={
@@ -32,14 +33,14 @@ export const Routes = () => {
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/question"
           element={
             <ProtectedRoute>
               <Question />
             </ProtectedRoute>
           }
-        />
+        /> */}
         {/* <Route path="/question/:id" element={<Question />} /> */}
       </RoutesComponents>
     </Router>

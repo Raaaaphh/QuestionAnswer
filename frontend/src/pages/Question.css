@@ -56,8 +56,6 @@
 
 .avatarQuestion{
     border-radius: 50%;
-    display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     font-size: 50%;
@@ -91,6 +89,38 @@ h2{
     font-size: 2.5em;
     font-weight: 600;
     margin: 0;
+}
+
+.voteContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5%;
+    
+}
+
+.upVote{
+    position: absolute;
+    left: 2.5%;
+    top: 50vh;
+    width: 3.5%;
+}
+
+.upVoteCount{
+    position: absolute;
+    left: 3.7%;
+    top: 40vh;
+    width: 3.5%;
+    font-size: xx-large;
+}
+
+.answersSection{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 
