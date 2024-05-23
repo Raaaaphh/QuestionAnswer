@@ -3,7 +3,6 @@ import { AuthLoginDto, AuthRegisterDto } from "./dto";
 import * as argon from 'argon2';
 import { InjectModel } from "@nestjs/sequelize";
 import { User } from "../users/user.model";
-import { MailerService } from "src/mailers/mailer.service";
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { JwtService } from "@nestjs/jwt";
 import { sendMail } from "src/mailers/mail.utils";
@@ -11,7 +10,7 @@ import { sendMail } from "src/mailers/mail.utils";
 
 @Injectable({})
 export class AuthService {
-    constructor(@InjectModel(User) private userModel: typeof User, private mailerService: MailerService, private jwtService: JwtService) { }
+    constructor(@InjectModel(User) private userModel: typeof User, private jwtService: JwtService) { }
 
     test() {
         return 'Hello World ! depuis le Back';

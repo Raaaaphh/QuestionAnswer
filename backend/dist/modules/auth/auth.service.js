@@ -17,14 +17,12 @@ const common_1 = require("@nestjs/common");
 const argon = require("argon2");
 const sequelize_1 = require("@nestjs/sequelize");
 const user_model_1 = require("../users/user.model");
-const mailer_service_1 = require("../../mailers/mailer.service");
 const uuid_1 = require("uuid");
 const jwt_1 = require("@nestjs/jwt");
 const mail_utils_1 = require("../../mailers/mail.utils");
 let AuthService = class AuthService {
-    constructor(userModel, mailerService, jwtService) {
+    constructor(userModel, jwtService) {
         this.userModel = userModel;
-        this.mailerService = mailerService;
         this.jwtService = jwtService;
     }
     test() {
@@ -84,6 +82,6 @@ exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)({}),
     __param(0, (0, sequelize_1.InjectModel)(user_model_1.User)),
-    __metadata("design:paramtypes", [Object, mailer_service_1.MailerService, jwt_1.JwtService])
+    __metadata("design:paramtypes", [Object, jwt_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map
