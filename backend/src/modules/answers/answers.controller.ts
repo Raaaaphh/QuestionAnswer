@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { AnswersService } from "./answers.service";
 import { AnswerCreateDto } from "./dto";
+import { AdminGuard } from "src/guards/admin.guard";
 
 @Controller('answers')
 export class AnswersController {
@@ -8,26 +9,62 @@ export class AnswersController {
 
     @Get(':id')
     getAnswer(@Param('id') id: string) {
-        return this.answersService.getAnswer(id);
+        try {
+            return this.answersService.getAnswer(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Get()
     findAll() {
-        return this.answersService.findAll();
+        try {
+            return this.answersService.findAll();
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    @Get('findByQuestion/:id')
+    searchAnswersByQuestion(@Param('id') id: string) {
+        try {
+            return this.answersService.searchAnswersByQuestion(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Get('findByUser/:id')
     searchAnswersByUser(@Param('id') id: string) {
-        return this.answersService.searchAnswersByUser(id);
+        try {
+            return this.answersService.searchAnswersByUser(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Post('create')
+    @UseGuards(AdminGuard)
     createAnswer(@Body() answer: AnswerCreateDto) {
-        return this.answersService.createAnswer(answer);
+        try {
+            return this.answersService.createAnswer(answer);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Delete(':id')
     deleteAnswer(@Param('id') id: string) {
-        return this.answersService.deleteAnswer(id);
+        try {
+            return this.answersService.deleteAnswer(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 }

@@ -15,7 +15,14 @@ export class TagsService {
     }
 
     async getTag(id: string) {
-        return "Tag not found";
+        if (!isValidUUID(id)) {
+            throw new HttpException('Invalid UUID', HttpStatus.BAD_REQUEST);
+        }
+        const tag = await this.tagModel.findOne({ where: { idTag: id } });
+        if (!tag) {
+            throw new HttpException('Tag not found', HttpStatus.NOT_FOUND);
+        }
+        return tag;
     }
 
     async createTag(tagDto: TagCreateDto) {
@@ -39,6 +46,14 @@ export class TagsService {
     }
 
     async deleteTag(id: string) {
-        return "Tag deleted";
+        if (!isValidUUID(id)) {
+            throw new HttpException('Invalid UUID', HttpStatus.BAD_REQUEST);
+        }
+        const tag = await this.tagModel.findOne({ where: { idTag: id } });
+        if (!tag) {
+            throw new HttpException('Tag not found', HttpStatus.NOT_FOUND);
+        }
+        await tag.destroy();
+        return tag;
     }
 }

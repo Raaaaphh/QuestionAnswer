@@ -6,5 +6,5 @@ export declare class FavoritesController {
     getFavorites(): Promise<import("./favorite.model").Favorite[]>;
     getFavoritesType(id: string): Promise<import("./favorite.model").Favorite[]>;
     addFavorite(favDto: FavoriteDto): Promise<import("./favorite.model").Favorite>;
-    removeFavorite(favDto: FavoriteDto): Promise<void>;
+    removeFavorite(favDto: FavoriteDto): Promise<import("./favorite.model").Favorite>;
 }

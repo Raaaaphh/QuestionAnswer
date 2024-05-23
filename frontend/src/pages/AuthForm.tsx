@@ -26,7 +26,7 @@ function AuthForm({ isRegister = false }: AuthFormProps) {
             const response = await axios.post(url, payload);
 
             localStorage.setItem('token', response.data.token);
-            navigate('/home');
+            navigate('/');
         } catch (error: any) {
             setError(error.response.data.message);
         }

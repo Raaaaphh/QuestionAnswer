@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { TagsService } from "./tags.service";
 import { TagCreateDto } from "./dto/tag-create.dto";
+import { AdminGuard } from "src/guards/admin.guard";
 
 @Controller('tags')
 export class TagsController {
@@ -8,22 +9,43 @@ export class TagsController {
 
     @Get()
     findAll() {
-        return this.tagsService.findAll();
+        try {
+            return this.tagsService.findAll();
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Get(':id')
     getTag(@Param('id') id: string) {
-        return this.tagsService.getTag(id);
+        try {
+            return this.tagsService.getTag(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Post('create')
+    @UseGuards(AdminGuard)
     createTag(@Body() tagDto: TagCreateDto) {
-        return this.tagsService.createTag(tagDto);
+        try {
+            return this.tagsService.createTag(tagDto);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Delete(':id')
     deleteTag(@Param('id') id: string) {
-        return this.tagsService.deleteTag(id);
+        try {
+            return this.tagsService.deleteTag(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
 }

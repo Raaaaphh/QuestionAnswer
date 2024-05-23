@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Patch, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthRegisterDto, AuthLoginDto } from "./dto";
 
@@ -15,12 +15,33 @@ export class AuthController {
 
     @Post('login')
     login(@Body() authlog: AuthLoginDto) {
-        console.log(authlog);
-        return this.authService.login(authlog);
+        try {
+            console.log(authlog);
+            return this.authService.login(authlog);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     @Post('register')
     register(@Body() authreg: AuthRegisterDto) {
-        return this.authService.register(authreg);
+        try {
+            console.log(authreg);
+            return this.authService.register(authreg);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    @Patch('verify-email')
+    async verifyEmail(@Body('emailToken') emailToken: string) {
+        try {
+            return await this.authService.verifyEmail(emailToken);
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
     }
 }

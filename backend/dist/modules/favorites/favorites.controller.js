@@ -21,16 +21,36 @@ let FavoritesController = class FavoritesController {
         this.favService = favService;
     }
     async getFavorites() {
-        return await this.favService.getFavorites();
+        try {
+            return await this.favService.getFavorites();
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     async getFavoritesType(id) {
-        return await this.favService.getFavoritesType(id);
+        try {
+            return await this.favService.getFavoritesType(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     async addFavorite(favDto) {
-        return await this.favService.addFavorite(favDto);
+        try {
+            return await this.favService.addFavorite(favDto);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     async removeFavorite(favDto) {
-        return await this.favService.removeFavorite(favDto);
+        try {
+            return await this.favService.removeFavorite(favDto);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 };
 exports.FavoritesController = FavoritesController;

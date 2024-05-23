@@ -21,19 +21,44 @@ let UsersController = class UsersController {
         this.usersService = usersService;
     }
     async findAll() {
-        return this.usersService.findAll();
+        try {
+            return await this.usersService.findAll();
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     async findOne(id) {
-        return this.usersService.findOne(id);
+        try {
+            return await this.usersService.findOne(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     async remove(id) {
-        return this.usersService.remove(id);
+        try {
+            return await this.usersService.remove(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     async editMdp(mdpDto) {
-        return this.usersService.editMdp(mdpDto);
+        try {
+            return await this.usersService.editMdp(mdpDto);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     async editName(nameDto) {
-        return this.usersService.editName(nameDto);
+        try {
+            return await this.usersService.editName(nameDto);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 };
 exports.UsersController = UsersController;

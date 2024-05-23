@@ -56,6 +56,7 @@ let FavoritesService = class FavoritesService {
             throw new common_1.ForbiddenException('Favorite not found');
         }
         await favorite.destroy();
+        return favorite;
     }
 };
 exports.FavoritesService = FavoritesService;

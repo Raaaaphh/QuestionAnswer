@@ -45,6 +45,16 @@ let QuestionsService = class QuestionsService {
     findAll() {
         return this.questModel.findAll();
     }
+    async findAllWithLimit(limit) {
+        const intLimit = parseInt(limit, 10);
+        const questions = await this.questModel.findAll({
+            limit: intLimit
+        });
+        if (!questions || questions.length === 0) {
+            throw new common_1.ForbiddenException('Questions not found');
+        }
+        return questions;
+    }
     async searchQuestions(search, limit) {
         const intLimit = parseInt(limit, 10);
         const questions = await this.questModel.findAll({
@@ -112,6 +122,9 @@ let QuestionsService = class QuestionsService {
         const idQuest = (0, uuid_1.v4)();
         const transaction = await this.sequelize.transaction();
         try {
+            if (quest.title.length > 100) {
+                throw new common_1.HttpException('The title is too long', common_1.HttpStatus.BAD_REQUEST);
+            }
             const newTitleWords = quest.title.toLowerCase().split(' ').filter(word => word.length > 0);
             const existingQuestions = await this.questModel.findAll();
             for (const existingQuestion of existingQuestions) {
@@ -169,6 +182,7 @@ let QuestionsService = class QuestionsService {
             throw new common_1.ForbiddenException('Question not found');
         }
         await question.destroy();
+        return question;
     }
     findSimilarWordsCount(title1, title2) {
         const set1 = new Set(title1);

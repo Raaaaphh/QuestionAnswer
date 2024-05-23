@@ -5,4 +5,5 @@ export declare class PicturesController {
     getPicture(id: string): Promise<import("./picture.model").Picture>;
     getPicturesByQuestion(id: string): Promise<import("./picture.model").Picture[]>;
     getPicturesByAnswer(id: string): Promise<import("./picture.model").Picture[]>;
+    deletePicture(id: string): Promise<import("./picture.model").Picture>;
 }

@@ -53,8 +53,8 @@ const mockQuestions = [
 
 const Home = () => {
   const [questions, setQuestions] = useState(mockQuestions);
-  const [filter, setFilter] = useState('topUnsolved'); // Default filter
-  const [sectionTitle, setSectionTitle] = useState('Top Unsolved Questions'); // Default section title
+  const [filter, setFilter] = useState('topUnsolved');
+  const [sectionTitle, setSectionTitle] = useState('Top Unsolved Questions');
 
   useEffect(() => {
     fetchQuestions();
