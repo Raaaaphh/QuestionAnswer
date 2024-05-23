@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
@@ -11,7 +11,7 @@ interface MarkdownEditorProps {
 
 const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ value, onChange }) => {
   const [markdownText, setMarkdownText] = useState<string>(value);
-  const [editorKey, setEditorKey] = useState<number>(0); // Key for re-rendering SimpleMDE
+  const simpleMDERef = useRef<any>(null);
 
   useEffect(() => {
     setMarkdownText(value);
@@ -23,39 +23,40 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ value, onChange }) => {
   };
 
   const resetEditor = () => {
-    // Increment the editor key to force re-rendering SimpleMDE
-    setEditorKey((prevKey) => prevKey + 1);
+    if (simpleMDERef.current && simpleMDERef.current.codemirror && !simpleMDERef.current.codemirror.hasFocus()) {
+      simpleMDERef.current.codemirror.focus();
+    }
   };
 
   return (
     <div className="markdown-editor">
-      <SimpleMDE
-        key={editorKey} // Re-render SimpleMDE when the key changes
-        value={markdownText}
-        onChange={handleMarkdownChange}
-        options={{
-          spellChecker: false,
-          toolbar: [
-            "bold",
-            "italic",
-            "heading",
-            "|",
-            "quote",
-            "unordered-list",
-            "ordered-list",
-            "|",
-            "link",
-            "image",
-            "|",
-            "code",
-            "|",
-            "preview",
-            "side-by-side",
-            "fullscreen",
-          ],
-        }}
-        onBlur={resetEditor} // Reset editor on blur to prevent focus issues
-      />
+     <SimpleMDE
+      ref={simpleMDERef}
+      value={markdownText}
+      onChange={handleMarkdownChange}
+      options={{
+        spellChecker: false,
+        toolbar: [
+          "bold",
+          "italic",
+          "heading",
+          "|",
+          "quote",
+          "unordered-list",
+          "ordered-list",
+          "|",
+          "link",
+          "image",
+          "|",
+          "code",
+          "|",
+          "preview",
+          "side-by-side",
+          "fullscreen",
+        ],
+      }}
+      onBlur={resetEditor}
+    />
       <div className="markdown-preview">
         <ReactMarkdown children={markdownText} />
       </div>
