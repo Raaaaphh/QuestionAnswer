@@ -28,6 +28,7 @@ const questiontag_model_1 = require("./modules/questiontags/questiontag.model");
 const picture_model_1 = require("./modules/pictures/picture.model");
 const pictures_module_1 = require("./modules/pictures/pictures.module");
 const jwt_middleware_1 = require("./middlewares/jwt.middleware");
+const invitation_model_1 = require("./modules/invitations/invitation.model");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer
@@ -53,7 +54,7 @@ exports.AppModule = AppModule = __decorate([
                     username: configService.get('DB_USER'),
                     password: configService.get('DB_PASSWORD'),
                     database: configService.get('DB_NAME'),
-                    models: [user_model_1.User, question_model_1.Question, answer_model_1.Answer, favorite_model_1.Favorite, tag_model_1.Tag, questiontag_model_1.QuestionTag, picture_model_1.Picture],
+                    models: [user_model_1.User, question_model_1.Question, answer_model_1.Answer, favorite_model_1.Favorite, tag_model_1.Tag, questiontag_model_1.QuestionTag, picture_model_1.Picture, invitation_model_1.Invitation],
                 }),
                 inject: [config_1.ConfigService],
             }),

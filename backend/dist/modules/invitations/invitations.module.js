@@ -8,10 +8,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.InvitationsModule = void 0;
 const common_1 = require("@nestjs/common");
+const sequelize_1 = require("@nestjs/sequelize");
+const invitation_model_1 = require("./invitation.model");
+const invitations_service_1 = require("./invitations.service");
+const invitations_controller_1 = require("./invitations.controller");
 let InvitationsModule = class InvitationsModule {
 };
 exports.InvitationsModule = InvitationsModule;
 exports.InvitationsModule = InvitationsModule = __decorate([
-    (0, common_1.Module)({})
+    (0, common_1.Module)({
+        imports: [sequelize_1.SequelizeModule.forFeature([invitation_model_1.Invitation])],
+        providers: [invitations_service_1.InvitationsService],
+        controllers: [invitations_controller_1.InvitationsController],
+    })
 ], InvitationsModule);
 //# sourceMappingURL=invitations.module.js.map

@@ -8,11 +8,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AnswersModule = void 0;
 const common_1 = require("@nestjs/common");
-const answers_service_1 = require("./answers.service");
-const answers_controller_1 = require("./answers.controller");
+const answers_controller_1 = require("./controllers/answers.controller");
 const sequelize_1 = require("@nestjs/sequelize");
 const answer_model_1 = require("./answer.model");
 const pictures_module_1 = require("../pictures/pictures.module");
+const answers_service_1 = require("./services/answers.service");
 let AnswersModule = class AnswersModule {
 };
 exports.AnswersModule = AnswersModule;

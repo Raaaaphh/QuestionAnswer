@@ -20,6 +20,7 @@ import { QuestionTag } from './modules/questiontags/questiontag.model';
 import { Picture } from './modules/pictures/picture.model';
 import { PicturesModule } from './modules/pictures/pictures.module';
 import { JwtMiddleware } from './middlewares/jwt.middleware';
+import { Invitation } from './modules/invitations/invitation.model';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -36,7 +37,7 @@ import { JwtMiddleware } from './middlewares/jwt.middleware';
       username: configService.get('DB_USER'),
       password: configService.get('DB_PASSWORD'),
       database: configService.get('DB_NAME'),
-      models: [User, Question, Answer, Favorite, Tag, QuestionTag, Picture],
+      models: [User, Question, Answer, Favorite, Tag, QuestionTag, Picture, Invitation],
       //autoLoadModels: true,
       //synchronize: true,
     }),
@@ -51,15 +52,6 @@ import { JwtMiddleware } from './middlewares/jwt.middleware';
     TagsModule,
     QuestionsModule,
     PicturesModule,
-    // MailerModule.forRoot({
-    //   transport: {
-    //     host: 'smtp.gmail.com',
-    //     auth: {
-    //       user: 'corsica0107@gmail.com',
-    //       pass: 'raphael11022004',
-    //     },
-    //   },
-    // }),
   ],
   providers: [AppService],
 })
