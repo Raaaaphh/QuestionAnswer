@@ -1,7 +1,7 @@
 import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
 import { QuestionCreateDto, QuestionEditDto } from "../dto";
-import { StudentGuard } from "src/guards/student.guard";
 import { QuestionsService } from "../services/questions.service";
+import { StudentGuard } from "../../../guards/student.guard";
 
 @Controller('questions')
 export class QuestionsController {
@@ -115,6 +115,7 @@ export class QuestionsController {
         }
     }
 
+    //Modifier le edit car oublie des tags
     @Post('edit')
     editQuestion(@Body() question: QuestionEditDto) {
         try {
