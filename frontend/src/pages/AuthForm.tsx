@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import axios from "axios";
+import axiosInstance from "../utils/axiosInstance";
 import Header from "../components/Header";
 import './AuthForm.css';
 import logo from '../assets/logo.png';
@@ -21,9 +21,9 @@ function AuthForm({ isRegister = false }: AuthFormProps) {
         e.preventDefault();
 
         try {
-            const url = isRegister ? 'http://localhost:3000/auth/register' : 'http://localhost:3000/auth/login';
+            const url = isRegister ? '/auth/register' : '/auth/login';
             const payload = isRegister ? { name, email, password } : { name, password };
-            const response = await axios.post(url, payload);
+            const response = await axiosInstance.post(url, payload);
 
             localStorage.setItem('token', response.data.token);
             navigate('/');
