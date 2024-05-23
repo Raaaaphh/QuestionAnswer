@@ -128,7 +128,7 @@ function AskAQuestion() {
             </div>
 
             <label htmlFor="description">Description:</label>
-            <MarkdownEditor value={description} onChange={setDescription} />
+            <MarkdownEditor  value={description} onChange={(value) => setDescription(value)} />
 
             <div className="guideSection">
               <h2>How to write a clear context for your question :</h2>
@@ -144,7 +144,7 @@ function AskAQuestion() {
             </div>
 
             <label htmlFor="context">Context:</label>
-            <MarkdownEditor value={context} onChange={setContext} />
+            <MarkdownEditor  value={context} onChange={(value) => setContext(value)} />
 
             {/* Tag selection section */}
             <div className="tagSection">
