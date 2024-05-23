@@ -3,9 +3,9 @@ import * as argon from 'argon2';
 import { InjectModel } from "@nestjs/sequelize";
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { JwtService } from "@nestjs/jwt";
-import { sendMail } from "src/mailers/mail.utils";
-import { User } from "src/modules/users/user.model";
 import { AuthLoginDto, AuthRegisterDto } from "../dto";
+import { sendMail } from "../../../mailers/mail.utils";
+import { User } from "../../users/user.model";
 
 
 @Injectable({})
