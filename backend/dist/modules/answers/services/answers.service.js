@@ -17,8 +17,8 @@ const common_1 = require("@nestjs/common");
 const uuid_1 = require("uuid");
 const sequelize_1 = require("@nestjs/sequelize");
 const sequelize_typescript_1 = require("sequelize-typescript");
-const picture_model_1 = require("../../pictures/picture.model");
 const answer_model_1 = require("../answer.model");
+const picture_model_1 = require("../../pictures/picture.model");
 let AnswersService = class AnswersService {
     constructor(answModel, pictureModel, sequelize) {
         this.answModel = answModel;

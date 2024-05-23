@@ -16,10 +16,20 @@ export class FavoritesController {
         }
     }
 
-    @Get(':id')
-    async getFavoritesType(@Param('id') id: string) {
+    @Get('findByQuest/:id')
+    async getFavoritesQuestion(@Param('id') id: string) {
         try {
-            return await this.favService.getFavoritesType(id);
+            return await this.favService.getFavoritesQuestion(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    @Get('findByUser/:id')
+    async getFavoritesUser(@Param('id') id: string) {
+        try {
+            return await this.favService.getFavoritesUser(id);
         }
         catch (error) {
             console.log(error);

@@ -12,7 +12,7 @@ export class FavoritesService {
         return await this.favModel.findAll();
     }
 
-    async getFavoritesType(id: string) {
+    async getFavoritesQuestion(id: string) {
         if (!isValidUUID(id)) {
             throw new BadRequestException('Invalid question ID');
         }
@@ -20,6 +20,23 @@ export class FavoritesService {
         const favorites = await this.favModel.findAll({
             where: {
                 idQuest: id
+            }
+        });
+
+        if (!favorites) {
+            throw new ForbiddenException('Question or User not found');
+        }
+        return favorites;
+    }
+
+    async getFavoritesUser(id: string) {
+        if (!isValidUUID(id)) {
+            throw new BadRequestException('Invalid user ID');
+        }
+
+        const favorites = await this.favModel.findAll({
+            where: {
+                idUser: id
             }
         });
 

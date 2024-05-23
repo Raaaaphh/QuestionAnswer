@@ -28,9 +28,17 @@ let FavoritesController = class FavoritesController {
             console.log(error);
         }
     }
-    async getFavoritesType(id) {
+    async getFavoritesQuestion(id) {
         try {
-            return await this.favService.getFavoritesType(id);
+            return await this.favService.getFavoritesQuestion(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+    async getFavoritesUser(id) {
+        try {
+            return await this.favService.getFavoritesUser(id);
         }
         catch (error) {
             console.log(error);
@@ -61,12 +69,19 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], FavoritesController.prototype, "getFavorites", null);
 __decorate([
-    (0, common_1.Get)(':id'),
+    (0, common_1.Get)('findByQuest/:id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], FavoritesController.prototype, "getFavoritesType", null);
+], FavoritesController.prototype, "getFavoritesQuestion", null);
+__decorate([
+    (0, common_1.Get)('findByUser/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], FavoritesController.prototype, "getFavoritesUser", null);
 __decorate([
     (0, common_1.Post)('add'),
     __param(0, (0, common_1.Body)()),

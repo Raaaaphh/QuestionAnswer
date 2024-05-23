@@ -24,13 +24,27 @@ let FavoritesService = class FavoritesService {
     async getFavorites() {
         return await this.favModel.findAll();
     }
-    async getFavoritesType(id) {
+    async getFavoritesQuestion(id) {
         if (!(0, uuid_1.validate)(id)) {
             throw new common_1.BadRequestException('Invalid question ID');
         }
         const favorites = await this.favModel.findAll({
             where: {
                 idQuest: id
+            }
+        });
+        if (!favorites) {
+            throw new common_1.ForbiddenException('Question or User not found');
+        }
+        return favorites;
+    }
+    async getFavoritesUser(id) {
+        if (!(0, uuid_1.validate)(id)) {
+            throw new common_1.BadRequestException('Invalid user ID');
+        }
+        const favorites = await this.favModel.findAll({
+            where: {
+                idUser: id
             }
         });
         if (!favorites) {

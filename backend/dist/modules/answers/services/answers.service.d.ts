@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize-typescript";
-import { Picture } from "src/modules/pictures/picture.model";
 import { Answer } from "../answer.model";
 import { AnswerCreateDto } from "../dto";
+import { Picture } from "../../pictures/picture.model";
 export declare class AnswersService {
     private answModel;
     private pictureModel;
