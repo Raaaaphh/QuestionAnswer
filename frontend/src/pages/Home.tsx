@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from "../components/Header";
 import axios from "axios";
+import QuestionComp from '../components/QuestionComp';
 import './Home.css';
 
 const mockQuestions = [
@@ -106,11 +107,14 @@ const Home = () => {
           <h2 className="sectionTitle">{sectionTitle}</h2>
           <div className="questionsContainer">
             {questions.map((question:any) => (
-              <div key={question.idQuest} className="questionItem">
-                <h3>{question.title}</h3>
-                <p>{question.description}</p>
-                <p>Posted by: {question.user.username}</p>
-              </div>
+              <QuestionComp
+                key={question.idQuest}
+                idQuest={question.idQuest}
+                title={question.title}
+                description={question.description}
+                username={question.user.username}
+                status={question.status}
+              />
             ))}
           </div>
         </div>
