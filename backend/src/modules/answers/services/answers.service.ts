@@ -2,10 +2,9 @@ import { BadRequestException, ForbiddenException, HttpException, HttpStatus, Inj
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { InjectModel } from "@nestjs/sequelize";
 import { Sequelize } from "sequelize-typescript";
-import { Picture } from "src/modules/pictures/picture.model";
 import { Answer } from "../answer.model";
 import { AnswerCreateDto } from "../dto";
-
+import { Picture } from "../../pictures/picture.model";
 
 @Injectable()
 export class AnswersService {

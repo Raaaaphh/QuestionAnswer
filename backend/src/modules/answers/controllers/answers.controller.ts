@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { AnswerCreateDto } from "../dto";
-import { AdminGuard } from "src/guards/admin.guard";
 import { AnswersService } from "../services/answers.service";
+import { AdminGuard } from "../../../guards/admin.guard"
 
 @Controller('answers')
 export class AnswersController {

@@ -1,6 +1,7 @@
 import { Table, Model, PrimaryKey, ForeignKey, BelongsTo, Column } from "sequelize-typescript";
-import { Question } from "src/modules/questions/question.model";
-import { User } from "src/modules/users/user.model";
+import { User } from "../users/user.model";
+import { Question } from "../questions/question.model";
+
 
 @Table
 export class Favorite extends Model {
