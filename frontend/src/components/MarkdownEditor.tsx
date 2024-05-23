@@ -1,12 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
-import SimpleMDE from "simplemde";
-import { marked, MarkedOptions } from "marked"; // Import MarkedOptions from "marked"
-import "simplemde/dist/simplemde.min.css";
-import "prismjs/themes/prism.css";
-import Prism from "prismjs";
-import "prismjs/components/prism-markup-templating";
-import "prismjs/components/prism-css";
-import "prismjs/components/prism-javascript";
+import React, { useState, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
+import SimpleMDE from "react-simplemde-editor";
+import "easymde/dist/easymde.min.css";
 import "./MarkdownEditor.css";
 
 interface MarkdownEditorProps {
@@ -14,71 +9,56 @@ interface MarkdownEditorProps {
   onChange: (value: string) => void;
 }
 
-const MarkdownEditor: React.FC<MarkdownEditorProps> = () => {
-  const [markdownText, setMarkdownText] = useState<string>("");
-  const [markedUpText, setMarkedUpText] = useState<string>("");
-  const editorRef = useRef<HTMLTextAreaElement | null>(null);
+const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ value, onChange }) => {
+  const [markdownText, setMarkdownText] = useState<string>(value);
+  const [editorKey, setEditorKey] = useState<number>(0); // Key for re-rendering SimpleMDE
 
   useEffect(() => {
-    if (editorRef.current) {
-      const simplemde = new SimpleMDE({
-        element: editorRef.current,
-        toolbar: [
-          "bold",
-          "italic",
-          "heading",
-          "|",
-          "quote",
-          "unordered-list",
-          "ordered-list",
-          "|",
-          "link",
-          "image",
-          {
-            name: "code",
-            action: () => {
-              // Insert code block at the current cursor position
-              if (simplemde.codemirror) {
-                const cm = simplemde.codemirror;
-                const cursorPos = cm.getCursor();
-                cm.replaceRange("\n```language\nCode here\n```\n", cursorPos);
-              }
-            },
-            className: "fa fa-code",
-            title: "Insert Code",
-          },
-          "|",
-          "preview",
-          "side-by-side",
-          "fullscreen",
-        ],
-      });
+    setMarkdownText(value);
+  }, [value]);
 
-      simplemde.codemirror.on("change", () => {
-        const value = simplemde.value();
-        setMarkdownText(value);
-      });
-    }
-  }, []);
+  const handleMarkdownChange = (newValue: string) => {
+    setMarkdownText(newValue);
+    onChange(newValue);
+  };
 
-useEffect(() => {
-    const updateMarkedUpText = async () => {
-        const content = await marked(markdownText, {
-            highlight: (code: string, lang: string) => {
-                const language = Prism.languages[lang] || Prism.languages.markup;
-                return Prism.highlight(code, language, lang);
-            },
-        } as MarkedOptions);
-        setMarkedUpText(content);
-    };
-
-    updateMarkedUpText();
-}, [markdownText]);
+  const resetEditor = () => {
+    // Increment the editor key to force re-rendering SimpleMDE
+    setEditorKey((prevKey) => prevKey + 1);
+  };
 
   return (
-    <div>
-      <textarea ref={editorRef} title="Markdown Editor" />
-      <div dangerouslySetInnerHTML={{ __html: markedUpText }} />
+    <div className="markdown-editor">
+      <SimpleMDE
+        key={editorKey} // Re-render SimpleMDE when the key changes
+        value={markdownText}
+        onChange={handleMarkdownChange}
+        options={{
+          spellChecker: false,
+          toolbar: [
+            "bold",
+            "italic",
+            "heading",
+            "|",
+            "quote",
+            "unordered-list",
+            "ordered-list",
+            "|",
+            "link",
+            "image",
+            "|",
+            "code",
+            "|",
+            "preview",
+            "side-by-side",
+            "fullscreen",
+          ],
+        }}
+        onBlur={resetEditor} // Reset editor on blur to prevent focus issues
+      />
+      <div className="markdown-preview">
+        <ReactMarkdown children={markdownText} />
+      </div>
     </div>
   );
 };

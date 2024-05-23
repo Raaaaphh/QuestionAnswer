@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from "../utils/axiosInstance";
 import Header from "../components/Header";
@@ -16,6 +16,13 @@ function AuthForm({ isRegister = false }: AuthFormProps) {
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            navigate('/');
+        }
+    }, [navigate]);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
