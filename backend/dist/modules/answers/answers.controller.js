@@ -16,24 +16,58 @@ exports.AnswersController = void 0;
 const common_1 = require("@nestjs/common");
 const answers_service_1 = require("./answers.service");
 const dto_1 = require("./dto");
+const admin_guard_1 = require("../../guards/admin.guard");
 let AnswersController = class AnswersController {
     constructor(answersService) {
         this.answersService = answersService;
     }
     getAnswer(id) {
-        return this.answersService.getAnswer(id);
+        try {
+            return this.answersService.getAnswer(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     findAll() {
-        return this.answersService.findAll();
+        try {
+            return this.answersService.findAll();
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+    searchAnswersByQuestion(id) {
+        try {
+            return this.answersService.searchAnswersByQuestion(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     searchAnswersByUser(id) {
-        return this.answersService.searchAnswersByUser(id);
+        try {
+            return this.answersService.searchAnswersByUser(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     createAnswer(answer) {
-        return this.answersService.createAnswer(answer);
+        try {
+            return this.answersService.createAnswer(answer);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     deleteAnswer(id) {
-        return this.answersService.deleteAnswer(id);
+        try {
+            return this.answersService.deleteAnswer(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 };
 exports.AnswersController = AnswersController;
@@ -51,6 +85,13 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AnswersController.prototype, "findAll", null);
 __decorate([
+    (0, common_1.Get)('findByQuestion/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], AnswersController.prototype, "searchAnswersByQuestion", null);
+__decorate([
     (0, common_1.Get)('findByUser/:id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -59,6 +100,7 @@ __decorate([
 ], AnswersController.prototype, "searchAnswersByUser", null);
 __decorate([
     (0, common_1.Post)('create'),
+    (0, common_1.UseGuards)(admin_guard_1.AdminGuard),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [dto_1.AnswerCreateDto]),

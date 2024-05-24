@@ -8,6 +8,9 @@ body {
 }
 
 header {
+  position: sticky;
+  top: 0;
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.212);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -15,8 +18,10 @@ header {
   color: #000000;
   flex-direction: row;
   height: 85px;
-  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.212);
+  z-index: 2;
 }
+
+
 
 h1 {
   font-size: 1.5em;
@@ -30,103 +35,11 @@ h1 {
   object-fit: contain;
 }
 
-.searchBar {
-  display: flex;
-  align-items: center;
-  width: 60%;
-  position: relative;
-  margin-left: 10px;
-  margin-right: 10px;
-}
-
-.searchBarInput {
-  flex: 1;
-  padding: 10px 10px 10px 40px;
-  border: 1px solid #ccc;
-  border-radius: 100px;
-  font-family: 'Poppins', sans-serif;
-  font-size: medium;
-}
-
-.searchBarInput::placeholder {
-  font-family: 'Poppins', sans-serif;
-}
-
-
-.searchButton {
-  position: absolute;
-  left: 10px;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.searchIcon {
-  width: 20px;
-  height: 20px;
-}
-
-.btnQuestion {
-  padding: 10px 20px;
-  background-color: #004A85;
-  color: white;
-  border-radius: 5px;
-  text-decoration: none;
-  cursor: pointer;
-  margin-left: 20px;
-  text-align: center;
-}
-
-.notificationMenu, .profileMenu, .filterMenu {
-  position: relative;
-}
-
-.notificationButton, .profileButton, .filterButton {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 10px;
-}
-
-.notificationButton img, .profileButton img, .filterButton img{
-  width: 60px;
-  height: 60px;
-}
-
-.profileButton {
-  margin-right: 20px;
-}
-
-.dropdown {
-  position: absolute;
-  top: 90px;
-  right: 10px;
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  width: 250px;
-  z-index: 1;
-}
-
-.dropdownItem {
-  cursor: pointer;
-  display: flex;
-  flex-direction: row ;
-  padding:10px;
-}
-
-.dropdownItem:hover {
-  background-color: #f0f0f0;
-}
-
 .homeButton{
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-decoration: none;
 }
 
 .homeButton:visited{
@@ -152,12 +65,87 @@ h1 {
   text-decoration: none;
 }
 
-
-
-.dropdownItem img{
-    margin-right: 10px;
+.searchBar {
+  display: flex;
+  align-items: center;
+  width: 60%;
+  position: relative;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
-.dropdownItem:hover {
-  background-color: #f0f0f0;
+.searchBarInput {
+  flex: 1;
+  padding: 10px 10px 10px 40px;
+  border: 1px solid #ccc;
+  border-radius: 100px;
+  font-family: 'Poppins', sans-serif;
+  font-size: medium;
 }
+
+.searchBarInput::placeholder {
+  font-family: 'Poppins', sans-serif;
+}
+
+.searchButton {
+  position: absolute;
+  left: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.searchIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.authButtons {
+  display: flex;
+  gap: 5px;
+  margin-right: 2%;
+}
+
+.authButton {
+  padding: 10px 25px 14px 25px;
+  background-color: #004A85;
+  color: white;
+  border-radius: 200px;
+  text-decoration: none;
+  font-size: medium;
+  cursor: pointer;
+  margin: 0px 20px 0 20px;
+  max-height: 20px;
+}
+
+.authButton:hover {
+  background-color: #003b6a;
+}
+
+.btnQuestion {
+  padding: 10px 20px;
+  background-color: #004A85;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+  cursor: pointer;
+  margin-left: 20px;
+  text-align: center;
+}
+
+.notificationMenu, .profileMenu, .filterMenu {
+  position: relative;
+}
+
+.notificationButton, .profileButton, .filterButton {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.notificationButton img, .profileButton img, .filterButton img {
+  width: 60px;
+  height: 60px;
+}
+

@@ -1,15 +1,16 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable } from "@nestjs/common";
 import { AuthLoginDto, AuthRegisterDto } from "./dto";
 import * as argon from 'argon2';
 import { InjectModel } from "@nestjs/sequelize";
 import { User } from "../users/user.model";
-import { MailerService } from "src/mailers/mailer.service";
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
+import { JwtService } from "@nestjs/jwt";
+import { sendMail } from "src/mailers/mail.utils";
 
 
 @Injectable({})
 export class AuthService {
-    constructor(@InjectModel(User) private userModel: typeof User, private mailerService: MailerService) { }
+    constructor(@InjectModel(User) private userModel: typeof User, private jwtService: JwtService) { }
 
     test() {
         return 'Hello World ! depuis le Back';
@@ -17,10 +18,7 @@ export class AuthService {
 
     async login(authlog: AuthLoginDto) {
         const user = await this.userModel.findOne({
-            where:
-            {
-                name: authlog.name
-            }
+            where: { name: authlog.name }
         });
 
         if (!user) {
@@ -31,7 +29,10 @@ export class AuthService {
             throw new ForbiddenException('Invalid password');
         }
 
-        return user;
+        const payload = { id: user.idUser, role: user.role };
+        const token = this.jwtService.sign(payload);
+
+        return { user, token };
     }
 
     async register(authreg: AuthRegisterDto) {
@@ -45,15 +46,37 @@ export class AuthService {
 
         const color = colors[Math.floor(Math.random() * colors.length)];
 
+        const crypto = require('crypto');
+        const emailToken = crypto.randomBytes(64).toString("hex");
+
         const newUser = await this.userModel.create({
             idUser: idUser,
             name: authreg.name,
             email: authreg.email,
             password: hash,
-            color: color
+            color: color,
+            emailToken: emailToken,
         });
         console.log("New user" + newUser);
 
+        sendMail(authreg.email, emailToken);
         return newUser;
+    }
+
+    async verifyEmail(emailToken: string): Promise<{ status: string, message: string }> {
+        if (!emailToken) {
+            throw new BadRequestException('Email token is missing');
+        }
+
+        const user = await this.userModel.findOne({ where: { emailToken } });
+        if (!user) {
+            throw new ForbiddenException('User not found');
+        }
+
+        user.confirmed = true;
+        user.emailToken = null;
+        await user.save();
+
+        return { status: 'Success', message: 'User verified successfully' };
     }
 }

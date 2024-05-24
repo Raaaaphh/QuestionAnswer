@@ -34,6 +34,19 @@ export class QuestionsService {
         return this.questModel.findAll();
     }
 
+    async findAllWithLimit(limit: string) {
+        const intLimit = parseInt(limit, 10);
+
+        const questions = await this.questModel.findAll({
+            limit: intLimit
+        });
+
+        if (!questions || questions.length === 0) {
+            throw new ForbiddenException('Questions not found');
+        }
+        return questions;
+    }
+
     async searchQuestions(search: string, limit: string) {
         const intLimit = parseInt(limit, 10);
 
@@ -113,6 +126,10 @@ export class QuestionsService {
 
         const transaction = await this.sequelize.transaction();
         try {
+            if (quest.title.length > 100) {
+                throw new HttpException('The title is too long', HttpStatus.BAD_REQUEST);
+            }
+
             const newTitleWords = quest.title.toLowerCase().split(' ').filter(word => word.length > 0)
 
             const existingQuestions = await this.questModel.findAll();
@@ -184,9 +201,9 @@ export class QuestionsService {
         }
 
         await question.destroy();
+        return question;
     }
 
-    // Find similar questions function
     findSimilarWordsCount(title1: string[], title2: string[]): number {
         const set1 = new Set(title1);
         const set2 = new Set(title2);

@@ -11,7 +11,11 @@ const common_1 = require("@nestjs/common");
 let AdminGuard = class AdminGuard {
     canActivate(context) {
         const request = context.switchToHttp().getRequest();
-        return true;
+        const user = request.user;
+        if (!user) {
+            throw new common_1.UnauthorizedException('User not found');
+        }
+        return user.role === 'Lecturer' || user.role === 'SuperAdmin';
     }
 };
 exports.AdminGuard = AdminGuard;

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { AuthModule } from './modules/auth/auth.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -19,6 +19,7 @@ import { Tag } from './modules/tags/tag.model';
 import { QuestionTag } from './modules/questiontags/questiontag.model';
 import { Picture } from './modules/pictures/picture.model';
 import { PicturesModule } from './modules/pictures/pictures.module';
+import { JwtMiddleware } from './middlewares/jwt.middleware';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -62,4 +63,15 @@ import { PicturesModule } from './modules/pictures/pictures.module';
   ],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(JwtMiddleware)
+      .exclude(
+        { path: 'auth/register', method: RequestMethod.POST },
+        { path: 'auth/login', method: RequestMethod.POST },
+      )
+      .forRoutes('*');
+  }
+
+}

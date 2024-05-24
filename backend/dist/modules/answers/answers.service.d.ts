@@ -10,6 +10,7 @@ export declare class AnswersService {
     getAnswer(id: string): Promise<Answer>;
     findAll(): Promise<Answer[]>;
     searchAnswersByUser(id: string): Promise<Answer[]>;
+    searchAnswersByQuestion(id: string): Promise<Answer[]>;
     createAnswer(answDto: AnswerCreateDto): Promise<Answer>;
-    deleteAnswer(id: string): Promise<void>;
+    deleteAnswer(id: string): Promise<Answer>;
 }

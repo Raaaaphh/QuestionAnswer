@@ -16,6 +16,7 @@ Create table `Users` (
     `email` varchar(255) not null,
     `password` varchar(255) not null,
     `confirmed` boolean default false,
+    `emailToken` varchar(255),
     `role` enum(
         'SuperAdmin',
         'Lecturer',

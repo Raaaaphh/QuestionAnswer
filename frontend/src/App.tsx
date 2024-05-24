@@ -1,6 +1,7 @@
 import { Routes } from './Routes';
 import './App.css';
 
+
 function App() {
   fetch("http://localhost:3000/auth/test")
     .then(async (res) => {
