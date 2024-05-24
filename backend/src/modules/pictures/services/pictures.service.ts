@@ -1,7 +1,7 @@
 import { BadRequestException, ForbiddenException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-import { Picture } from "./picture.model";
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
+import { Picture } from "../picture.model";
 
 
 @Injectable()
