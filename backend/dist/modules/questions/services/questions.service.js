@@ -19,8 +19,8 @@ const sequelize_1 = require("@nestjs/sequelize");
 const sequelize_2 = require("sequelize");
 const sequelize_typescript_1 = require("sequelize-typescript");
 const question_model_1 = require("../question.model");
-const picture_model_1 = require("../../pictures/picture.model");
 const questiontag_model_1 = require("../../questiontags/questiontag.model");
+const picture_model_1 = require("../../pictures/picture.model");
 let QuestionsService = class QuestionsService {
     constructor(questModel, questTagModel, pictureModel, sequelize) {
         this.questModel = questModel;

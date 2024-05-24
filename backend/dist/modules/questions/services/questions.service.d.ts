@@ -1,8 +1,8 @@
 import { Sequelize } from "sequelize-typescript";
 import { Question } from "../question.model";
 import { QuestionCreateDto, QuestionEditDto } from "../dto";
-import { Picture } from "src/modules/pictures/picture.model";
-import { QuestionTag } from "src/modules/questiontags/questiontag.model";
+import { QuestionTag } from "../../questiontags/questiontag.model";
+import { Picture } from "../../pictures/picture.model";
 export declare class QuestionsService {
     private questModel;
     private questTagModel;
