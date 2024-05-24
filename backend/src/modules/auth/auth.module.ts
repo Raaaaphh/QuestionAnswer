@@ -3,6 +3,7 @@ import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './controllers/auth.controller';
 import { AuthService } from './services/auth.service';
+import { InvitationsModule } from '../invitations/invitations.module';
 
 @Module({
     imports: [UsersModule,
@@ -10,6 +11,7 @@ import { AuthService } from './services/auth.service';
             secret: 'questionanswer',
             signOptions: { expiresIn: '60m' },
         }),
+        InvitationsModule,
     ],
     controllers: [AuthController],
     providers: [AuthService]

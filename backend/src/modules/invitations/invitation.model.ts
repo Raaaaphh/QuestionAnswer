@@ -1,5 +1,10 @@
 import { PrimaryKey, Table, Model, Column, ForeignKey, BelongsTo } from "sequelize-typescript";
-import { User } from "../users/user.model";
+
+export enum Role {
+    SuperAdmin = 'SuperAdmin',
+    Lecturer = 'Lecturer',
+    Student = 'Student',
+}
 
 @Table
 export class Invitation extends Model {
@@ -8,15 +13,9 @@ export class Invitation extends Model {
     @Column
     idInvitation: string;
 
-    @ForeignKey(() => User)
     @Column
-    idSender: string;
+    email: string;
 
-    @BelongsTo(() => User)
-    sender: User;
-
-    @ForeignKey(() => User)
     @Column
-    idReceiver: string;
-
+    role: Role;
 }
