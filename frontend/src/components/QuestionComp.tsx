@@ -1,6 +1,7 @@
 import React from 'react';
 import './QuestionComp.css';
 import { Link } from 'react-router-dom';
+import upVoteLogo from '../assets/upVoteButton.svg';
 
 interface QuestionProps {
   idQuest: number;
@@ -8,20 +9,34 @@ interface QuestionProps {
   description: string;
   username: string;
   status: string;
+  tags: string[];
 }
 
-const Question: React.FC<QuestionProps> = ({ idQuest, title, description, username, status }) => {
+const QuestionComp: React.FC<QuestionProps> = ({ idQuest, title, description, username, tags }) => {
   return (
     <div key={idQuest} className="questionItem">
-      <div className="questionTop">
-      <h3>{title}</h3>
-      <Link to={`/question/${idQuest}`} className="seeMoreLink">See more ...</Link>
+      <div className='voteSection'>
+        <p>8</p>
+        <img src={upVoteLogo} alt="upVoteLogo" />
       </div>
-      <p>{description}</p>
-      <p>Posted by: {username}</p>
-      <p>Status: {status}</p>
+      <div className='textRightPart'>
+        <div className="questionTop">
+          <Link to={`/question/${idQuest}`} className="tilte">{title}</Link>
+          <Link to={`/question/${idQuest}`} className="seeMoreLink">See more ...</Link>
+        </div>
+        
+        <p className='description'>{description}</p>
+        <div className='questionBottom'>
+          <div className='tags'>
+            {tags && tags.map((tag, index) => (
+              <p key={index} className='tagQComp'>{tag}</p>
+            ))}
+          </div>
+          <p>Posted by: {username}</p>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default Question;
+export default QuestionComp;
