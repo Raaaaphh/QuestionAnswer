@@ -8,10 +8,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FavoritesModule = void 0;
 const common_1 = require("@nestjs/common");
-const favorites_service_1 = require("./favorites.service");
-const favorites_controller_1 = require("./favorites.controller");
+const favorites_controller_1 = require("./controllers/favorites.controller");
 const sequelize_1 = require("@nestjs/sequelize");
 const favorite_model_1 = require("./favorite.model");
+const favorites_service_1 = require("./services/favorites.service");
 let FavoritesModule = class FavoritesModule {
 };
 exports.FavoritesModule = FavoritesModule;

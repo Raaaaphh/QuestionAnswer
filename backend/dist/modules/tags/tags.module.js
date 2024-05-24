@@ -10,8 +10,8 @@ exports.TagsModule = void 0;
 const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
 const tag_model_1 = require("./tag.model");
-const tags_controller_1 = require("./tags.controller");
-const tags_service_1 = require("./tags.service");
+const tags_controller_1 = require("./controllers/tags.controller");
+const tags_service_1 = require("./services/tags.service");
 let TagsModule = class TagsModule {
 };
 exports.TagsModule = TagsModule;

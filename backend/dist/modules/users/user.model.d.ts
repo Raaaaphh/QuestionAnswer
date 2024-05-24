@@ -1,7 +1,7 @@
 import { Model } from 'sequelize-typescript';
-import { Answer } from 'src/modules/answers/answer.model';
-import { Favorite } from 'src/modules/favorites/favorite.model';
-import { Question } from 'src/modules/questions/question.model';
+import { Question } from '../questions/question.model';
+import { Answer } from '../answers/answer.model';
+import { Favorite } from '../favorites/favorite.model';
 import { Tag } from '../tags/tag.model';
 declare enum Role {
     SuperAdmin = "SuperAdmin",

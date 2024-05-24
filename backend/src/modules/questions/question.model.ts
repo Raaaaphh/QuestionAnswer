@@ -1,9 +1,10 @@
 import { BelongsTo, Column, ForeignKey, PrimaryKey, Table, Model, HasMany } from "sequelize-typescript";
-import { Answer } from "src/modules/answers/answer.model";
-import { Favorite } from "src/modules/favorites/favorite.model";
-import { User } from "src/modules/users/user.model";
+import { User } from "../users/user.model";
+import { Answer } from "../answers/answer.model";
+import { Favorite } from "../favorites/favorite.model";
 import { QuestionTag } from "../questiontags/questiontag.model";
 import { Picture } from "../pictures/picture.model";
+
 
 @Table
 export class Question extends Model {

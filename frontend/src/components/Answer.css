@@ -1,0 +1,24 @@
+.answerContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 25px;
+    background-color: white;
+    border-radius: 0px;
+    min-height: auto;
+    width: 80%;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px, rgba(0, 0, 0, 0.05) 0px 5px 10px;
+  }
+  
+  .answerHeader {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .answerContent {
+    width: 95%;
+  }
+  
