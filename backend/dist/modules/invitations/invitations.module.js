@@ -27,6 +27,7 @@ exports.InvitationsModule = InvitationsModule = __decorate([
         ],
         providers: [invitations_service_1.InvitationsService],
         controllers: [invitations_controller_1.InvitationsController],
+        exports: [invitations_service_1.InvitationsService],
     })
 ], InvitationsModule);
 //# sourceMappingURL=invitations.module.js.map

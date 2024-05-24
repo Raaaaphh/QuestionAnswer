@@ -20,9 +20,11 @@ const uuid_1 = require("uuid");
 const jwt_1 = require("@nestjs/jwt");
 const mail_utils_1 = require("../../../mailers/mail.utils");
 const user_model_1 = require("../../users/user.model");
+const invitations_service_1 = require("../../invitations/services/invitations.service");
 let AuthService = class AuthService {
-    constructor(userModel, jwtService) {
+    constructor(userModel, invitationService, jwtService) {
         this.userModel = userModel;
+        this.invitationService = invitationService;
         this.jwtService = jwtService;
     }
     test() {
@@ -77,32 +79,31 @@ let AuthService = class AuthService {
         await user.save();
         return { status: 'Success', message: 'User verified successfully' };
     }
-    async registerWithToken(token, authreg) {
-        if (!token || !(0, uuid_1.validate)(token)) {
-            throw new common_1.BadRequestException('Invalid token');
+    async registerWithToken(token, invitationReg) {
+        const hash = await argon.hash(invitationReg.password);
+        const idUser = (0, uuid_1.v4)();
+        const colors = ['FFB5B5', 'FFC8F0', 'FFD6A6', 'FEFFB4', 'C7FFF8', 'B7BEFF', 'ACACAC', 'C6FFCC'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const invitation = await this.invitationService.validateInvitation(token);
+        const role = invitation.role;
+        if (invitationReg.email !== invitation.email) {
+            throw new common_1.ForbiddenException('Email does not match invitation');
         }
-        const decoded = this.jwtService.decode(token);
-        if (!decoded) {
-            throw new common_1.BadRequestException('Invalid token');
-        }
-        const user = await this.userModel.findOne({ where: { email: decoded.email } });
-        if (!user) {
-            throw new common_1.ForbiddenException('User not found');
-        }
-        const hash = await argon.hash(authreg.password);
-        user.password = hash;
-        user.confirmed = true;
-        user.emailToken = null;
-        await user.save();
-        const payload = { id: user.idUser, role: user.role };
-        const newToken = this.jwtService.sign(payload);
-        return { user, token: newToken };
+        const newUser = await this.userModel.create({
+            idUser: idUser,
+            name: invitationReg.name,
+            email: invitationReg.email,
+            password: hash,
+            color: color,
+            role: role,
+        });
+        return newUser;
     }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)({}),
     __param(0, (0, sequelize_1.InjectModel)(user_model_1.User)),
-    __metadata("design:paramtypes", [Object, jwt_1.JwtService])
+    __metadata("design:paramtypes", [Object, invitations_service_1.InvitationsService, jwt_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

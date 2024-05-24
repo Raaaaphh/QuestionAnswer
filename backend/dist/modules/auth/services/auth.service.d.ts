@@ -1,10 +1,12 @@
 import { JwtService } from "@nestjs/jwt";
 import { AuthLoginDto, AuthRegisterDto } from "../dto";
 import { User } from "../../users/user.model";
+import { InvitationsService } from "src/modules/invitations/services/invitations.service";
 export declare class AuthService {
     private userModel;
+    private invitationService;
     private jwtService;
-    constructor(userModel: typeof User, jwtService: JwtService);
+    constructor(userModel: typeof User, invitationService: InvitationsService, jwtService: JwtService);
     test(): string;
     login(authlog: AuthLoginDto): Promise<{
         user: User;
@@ -15,8 +17,5 @@ export declare class AuthService {
         status: string;
         message: string;
     }>;
-    registerWithToken(token: string, authreg: AuthRegisterDto): Promise<{
-        user: User;
-        token: string;
-    }>;
+    registerWithToken(token: string, invitationReg: AuthRegisterDto): Promise<User>;
 }

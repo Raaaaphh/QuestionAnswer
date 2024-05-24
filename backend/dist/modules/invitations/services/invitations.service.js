@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
 const invitation_model_1 = require("../invitation.model");
 const jwt_1 = require("@nestjs/jwt");
+const uuid_1 = require("uuid");
 const mail_utils_1 = require("../../../mailers/mail.utils");
 let InvitationsService = class InvitationsService {
     constructor(questModel, jwtService) {
@@ -25,6 +26,7 @@ let InvitationsService = class InvitationsService {
     }
     async sendInvitation(email, role) {
         const invitation = new invitation_model_1.Invitation();
+        invitation.idInvitation = (0, uuid_1.v4)();
         invitation.email = email;
         invitation.role = role;
         await invitation.save();

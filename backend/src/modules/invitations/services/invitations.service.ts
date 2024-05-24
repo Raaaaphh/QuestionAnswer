@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { Invitation, Role } from "../invitation.model";
 import { JwtService } from "@nestjs/jwt";
+import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { sendMailInvitation } from "../../../mailers/mail.utils";
 
 @Injectable()
@@ -10,6 +11,7 @@ export class InvitationsService {
 
     async sendInvitation(email: string, role: string) {
         const invitation = new Invitation();
+        invitation.idInvitation = uuidv4();
         invitation.email = email;
         invitation.role = role as Role;
         await invitation.save();

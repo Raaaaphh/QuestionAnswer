@@ -13,8 +13,5 @@ export declare class AuthController {
         status: string;
         message: string;
     }>;
-    registerWithToken(token: string, authreg: AuthRegisterDto): Promise<{
-        user: import("../../users/user.model").User;
-        token: string;
-    }>;
+    registerWithToken(token: string, authreg: AuthRegisterDto): Promise<import("../../users/user.model").User>;
 }

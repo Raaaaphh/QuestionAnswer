@@ -6,11 +6,12 @@ import { JwtService } from "@nestjs/jwt";
 import { AuthLoginDto, AuthRegisterDto } from "../dto";
 import { sendMail } from "../../../mailers/mail.utils";
 import { User } from "../../users/user.model";
+import { InvitationsService } from "src/modules/invitations/services/invitations.service";
 
 
 @Injectable({})
 export class AuthService {
-    constructor(@InjectModel(User) private userModel: typeof User, private jwtService: JwtService) { }
+    constructor(@InjectModel(User) private userModel: typeof User, private invitationService: InvitationsService, private jwtService: JwtService) { }
 
     test() {
         return 'Hello World ! depuis le Back';
@@ -80,30 +81,30 @@ export class AuthService {
         return { status: 'Success', message: 'User verified successfully' };
     }
 
-    async registerWithToken(token: string, authreg: AuthRegisterDto) {
-        if (!token || !isValidUUID(token)) {
-            throw new BadRequestException('Invalid token');
+    async registerWithToken(token: string, invitationReg: AuthRegisterDto) {
+        const hash = await argon.hash(invitationReg.password);
+        const idUser = uuidv4();
+
+        const colors = ['FFB5B5', 'FFC8F0', 'FFD6A6', 'FEFFB4', 'C7FFF8', 'B7BEFF', 'ACACAC', 'C6FFCC'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+        const invitation = await this.invitationService.validateInvitation(token);
+        const role = invitation.role;
+
+        if (invitationReg.email !== invitation.email) {
+            throw new ForbiddenException('Email does not match invitation');
         }
 
-        const decoded = this.jwtService.decode(token) as any;
-        if (!decoded) {
-            throw new BadRequestException('Invalid token');
-        }
+        const newUser = await this.userModel.create({
+            idUser: idUser,
+            name: invitationReg.name,
+            email: invitationReg.email,
+            password: hash,
+            color: color,
+            role: role,
+        });
 
-        const user = await this.userModel.findOne({ where: { email: decoded.email } });
-        if (!user) {
-            throw new ForbiddenException('User not found');
-        }
-
-        const hash = await argon.hash(authreg.password);
-        user.password = hash;
-        user.confirmed = true;
-        user.emailToken = null;
-        await user.save();
-
-        const payload = { id: user.idUser, role: user.role };
-        const newToken = this.jwtService.sign(payload);
-
-        return { user, token: newToken };
+        return newUser;
     }
+
 }
