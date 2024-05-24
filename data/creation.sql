@@ -91,12 +91,14 @@ Create table `Favorites` (
 
 CREATE TABLE `Invitations` (
     `idInvitation` INT AUTO_INCREMENT PRIMARY KEY,
-    `idSender` varchar(100) NOT NULL,
-    `idRecipient` varchar(100) NOT NULL,
+    `email` varchar(255) NOT NULL,
+    `role` enum(
+        'SuperAdmin',
+        'Lecturer',
+        'Student'
+    ) default 'Student',
     `createdAt` datetime NOT NULL,
     `updatedAt` datetime NOT NULL,
-    FOREIGN KEY (`idSender`) REFERENCES `User` (`idUser`) ON DELETE CASCADE,
-    FOREIGN KEY (`idRecipient`) REFERENCES `User` (`idUser`) ON DELETE CASCADE
 );
 
 CREATE TABLE `Pictures` (

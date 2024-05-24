@@ -79,4 +79,31 @@ export class AuthService {
 
         return { status: 'Success', message: 'User verified successfully' };
     }
+
+    async registerWithToken(token: string, authreg: AuthRegisterDto) {
+        if (!token || !isValidUUID(token)) {
+            throw new BadRequestException('Invalid token');
+        }
+
+        const decoded = this.jwtService.decode(token) as any;
+        if (!decoded) {
+            throw new BadRequestException('Invalid token');
+        }
+
+        const user = await this.userModel.findOne({ where: { email: decoded.email } });
+        if (!user) {
+            throw new ForbiddenException('User not found');
+        }
+
+        const hash = await argon.hash(authreg.password);
+        user.password = hash;
+        user.confirmed = true;
+        user.emailToken = null;
+        await user.save();
+
+        const payload = { id: user.idUser, role: user.role };
+        const newToken = this.jwtService.sign(payload);
+
+        return { user, token: newToken };
+    }
 }

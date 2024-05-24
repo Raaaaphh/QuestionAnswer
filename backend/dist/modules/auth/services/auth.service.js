@@ -77,6 +77,27 @@ let AuthService = class AuthService {
         await user.save();
         return { status: 'Success', message: 'User verified successfully' };
     }
+    async registerWithToken(token, authreg) {
+        if (!token || !(0, uuid_1.validate)(token)) {
+            throw new common_1.BadRequestException('Invalid token');
+        }
+        const decoded = this.jwtService.decode(token);
+        if (!decoded) {
+            throw new common_1.BadRequestException('Invalid token');
+        }
+        const user = await this.userModel.findOne({ where: { email: decoded.email } });
+        if (!user) {
+            throw new common_1.ForbiddenException('User not found');
+        }
+        const hash = await argon.hash(authreg.password);
+        user.password = hash;
+        user.confirmed = true;
+        user.emailToken = null;
+        await user.save();
+        const payload = { id: user.idUser, role: user.role };
+        const newToken = this.jwtService.sign(payload);
+        return { user, token: newToken };
+    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([

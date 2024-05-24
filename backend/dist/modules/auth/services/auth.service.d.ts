@@ -15,4 +15,8 @@ export declare class AuthService {
         status: string;
         message: string;
     }>;
+    registerWithToken(token: string, authreg: AuthRegisterDto): Promise<{
+        user: User;
+        token: string;
+    }>;
 }
