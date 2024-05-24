@@ -31,79 +31,105 @@ let AuthService = class AuthService {
         return 'Hello World ! depuis le Back';
     }
     async login(authlog) {
-        const user = await this.userModel.findOne({
-            where: { name: authlog.name }
-        });
-        if (!user) {
-            throw new common_1.ForbiddenException('User not found');
+        try {
+            const user = await this.userModel.findOne({ where: { name: authlog.name } });
+            if (!user) {
+                throw new common_1.ForbiddenException('User not found');
+            }
+            const valid = await argon.verify(user.password, authlog.password);
+            if (!valid) {
+                throw new common_1.ForbiddenException('Invalid password');
+            }
+            const payload = { id: user.idUser, role: user.role };
+            const token = this.jwtService.sign(payload);
+            return { user, token };
         }
-        const valid = await argon.verify(user.password, authlog.password);
-        if (!valid) {
-            throw new common_1.ForbiddenException('Invalid password');
+        catch (error) {
+            if (error instanceof common_1.ForbiddenException) {
+                throw error;
+            }
+            throw new common_1.InternalServerErrorException('An unexpected error occurred during login');
         }
-        const payload = { id: user.idUser, role: user.role };
-        const token = this.jwtService.sign(payload);
-        return { user, token };
     }
     async register(authreg) {
-        const hash = await argon.hash(authreg.password);
-        console.log(hash);
-        const idUser = (0, uuid_1.v4)();
-        console.log(idUser);
-        const colors = ['FFB5B5', 'FFC8F0', 'FFD6A6', 'FEFFB4', 'C7FFF8', 'B7BEFF', 'ACACAC', 'C6FFCC'];
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        const crypto = require('crypto');
-        const emailToken = crypto.randomBytes(64).toString("hex");
-        const newUser = await this.userModel.create({
-            idUser: idUser,
-            name: authreg.name,
-            email: authreg.email,
-            password: hash,
-            color: color,
-            emailToken: emailToken,
-        });
-        console.log("New user" + newUser);
-        (0, mail_utils_1.sendMail)(authreg.email, emailToken);
-        return newUser;
+        try {
+            const hash = await argon.hash(authreg.password);
+            const idUser = (0, uuid_1.v4)();
+            const colors = ['FFB5B5', 'FFC8F0', 'FFD6A6', 'FEFFB4', 'C7FFF8', 'B7BEFF', 'ACACAC', 'C6FFCC'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const crypto = require('crypto');
+            const emailToken = crypto.randomBytes(64).toString("hex");
+            const newUser = await this.userModel.create({
+                idUser,
+                name: authreg.name,
+                email: authreg.email,
+                password: hash,
+                color,
+                emailToken,
+            });
+            (0, mail_utils_1.sendMail)(authreg.email, emailToken);
+            return newUser;
+        }
+        catch (error) {
+            throw new common_1.InternalServerErrorException('An unexpected error occurred during registration');
+        }
     }
     async verifyEmail(emailToken) {
-        if (!emailToken) {
-            throw new common_1.BadRequestException('Email token is missing');
+        try {
+            if (!emailToken) {
+                throw new common_1.BadRequestException('Email token is missing');
+            }
+            const user = await this.userModel.findOne({ where: { emailToken } });
+            if (!user) {
+                throw new common_1.ForbiddenException('User not found');
+            }
+            user.confirmed = true;
+            user.emailToken = null;
+            await user.save();
+            return { status: 'Success', message: 'User verified successfully' };
         }
-        const user = await this.userModel.findOne({ where: { emailToken } });
-        if (!user) {
-            throw new common_1.ForbiddenException('User not found');
+        catch (error) {
+            if (error instanceof common_1.BadRequestException || error instanceof common_1.ForbiddenException) {
+                throw error;
+            }
+            throw new common_1.InternalServerErrorException('An unexpected error occurred during email verification');
         }
-        user.confirmed = true;
-        user.emailToken = null;
-        await user.save();
-        return { status: 'Success', message: 'User verified successfully' };
     }
     async registerWithToken(token, invitationReg) {
-        const hash = await argon.hash(invitationReg.password);
-        const idUser = (0, uuid_1.v4)();
-        const colors = ['FFB5B5', 'FFC8F0', 'FFD6A6', 'FEFFB4', 'C7FFF8', 'B7BEFF', 'ACACAC', 'C6FFCC'];
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        const invitation = await this.invitationService.validateInvitation(token);
-        const role = invitation.role;
-        if (invitationReg.email !== invitation.email) {
-            throw new common_1.ForbiddenException('Email does not match invitation');
+        try {
+            const hash = await argon.hash(invitationReg.password);
+            const idUser = (0, uuid_1.v4)();
+            const colors = ['FFB5B5', 'FFC8F0', 'FFD6A6', 'FEFFB4', 'C7FFF8', 'B7BEFF', 'ACACAC', 'C6FFCC'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const invitation = await this.invitationService.validateInvitation(token);
+            const role = invitation.role;
+            if (invitationReg.email !== invitation.email) {
+                throw new common_1.ForbiddenException('Email does not match invitation');
+            }
+            const newUser = await this.userModel.create({
+                idUser,
+                name: invitationReg.name,
+                email: invitationReg.email,
+                password: hash,
+                confirmed: true,
+                color,
+                role,
+            });
+            return newUser;
         }
-        const newUser = await this.userModel.create({
-            idUser: idUser,
-            name: invitationReg.name,
-            email: invitationReg.email,
-            password: hash,
-            color: color,
-            role: role,
-        });
-        return newUser;
+        catch (error) {
+            if (error instanceof common_1.ForbiddenException) {
+                throw error;
+            }
+            throw new common_1.InternalServerErrorException('An unexpected error occurred during registration with token');
+        }
     }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)({}),
     __param(0, (0, sequelize_1.InjectModel)(user_model_1.User)),
-    __metadata("design:paramtypes", [Object, invitations_service_1.InvitationsService, jwt_1.JwtService])
+    __metadata("design:paramtypes", [Object, invitations_service_1.InvitationsService,
+        jwt_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

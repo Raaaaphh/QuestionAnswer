@@ -15,13 +15,11 @@ export class AnswersService {
         if (!isValidUUID(id)) {
             throw new BadRequestException('Invalid answer ID');
         }
-
         const answer = await this.answModel.findOne({
             where: {
                 idAnsw: id
             }
         });
-
         if (!answer) {
             throw new ForbiddenException('Answer not found');
         }
