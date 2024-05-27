@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.InvitationsController = void 0;
 const common_1 = require("@nestjs/common");
 const invitations_service_1 = require("../services/invitations.service");
+const admin_guard_1 = require("../../../guards/admin.guard");
 let InvitationsController = class InvitationsController {
     constructor(invitService) {
         this.invitService = invitService;
@@ -39,6 +40,7 @@ let InvitationsController = class InvitationsController {
 exports.InvitationsController = InvitationsController;
 __decorate([
     (0, common_1.Post)('send'),
+    (0, common_1.UseGuards)(admin_guard_1.AdminGuard),
     __param(0, (0, common_1.Body)('email')),
     __param(1, (0, common_1.Body)('role')),
     __metadata("design:type", Function),

@@ -1,24 +1,20 @@
-import axios, { AxiosRequestConfig, AxiosHeaders } from 'axios';
+import axios from 'axios';
 
-interface InternalAxiosRequestConfig<T = any> extends AxiosRequestConfig<T> {
-  headers: AxiosHeaders;
-}
-
-const instance = axios.create({
-  baseURL: 'http://localhost:3000', // To cahnge once the website is deployed
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:3000',
 });
 
-instance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers = {
-      ...config.headers,
-      Authorization: `Bearer ${token}`,
-    } as unknown as AxiosHeaders;
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  return config;
-}, error => {
-  return Promise.reject(error);
-});
+);
 
-export default instance;
+export default axiosInstance;

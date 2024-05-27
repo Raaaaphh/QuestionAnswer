@@ -1,110 +1,132 @@
-import { BadRequestException, ForbiddenException, Injectable } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import * as argon from 'argon2';
 import { InjectModel } from "@nestjs/sequelize";
-import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { JwtService } from "@nestjs/jwt";
 import { AuthLoginDto, AuthRegisterDto } from "../dto";
 import { sendMail } from "../../../mailers/mail.utils";
 import { User } from "../../users/user.model";
-import { InvitationsService } from "src/modules/invitations/services/invitations.service";
-
+import { InvitationsService } from "../../invitations/services/invitations.service";
 
 @Injectable({})
 export class AuthService {
-    constructor(@InjectModel(User) private userModel: typeof User, private invitationService: InvitationsService, private jwtService: JwtService) { }
+    constructor(
+        @InjectModel(User) private userModel: typeof User,
+        private invitationService: InvitationsService,
+        private jwtService: JwtService
+    ) { }
 
     test() {
         return 'Hello World ! depuis le Back';
     }
 
     async login(authlog: AuthLoginDto) {
-        const user = await this.userModel.findOne({
-            where: { name: authlog.name }
-        });
+        try {
+            const user = await this.userModel.findOne({ where: { name: authlog.name } });
 
-        if (!user) {
-            throw new ForbiddenException('User not found');
+            if (!user) {
+                throw new ForbiddenException('User not found');
+            }
+
+            const valid = await argon.verify(user.password, authlog.password);
+            if (!valid) {
+                throw new ForbiddenException('Invalid password');
+            }
+
+            const payload = { id: user.idUser, role: user.role };
+            const token = this.jwtService.sign(payload);
+
+            return { user, token };
+        } catch (error) {
+            if (error instanceof ForbiddenException) {
+                throw error;
+            }
+            throw new InternalServerErrorException('An unexpected error occurred during login');
         }
-        const valid = await argon.verify(user.password, authlog.password);
-        if (!valid) {
-            throw new ForbiddenException('Invalid password');
-        }
-
-        const payload = { id: user.idUser, role: user.role };
-        const token = this.jwtService.sign(payload);
-
-        return { user, token };
     }
 
     async register(authreg: AuthRegisterDto) {
-        const hash = await argon.hash(authreg.password);
-        console.log(hash);
+        try {
+            const hash = await argon.hash(authreg.password);
+            const idUser = uuidv4();
 
-        const idUser = uuidv4();
-        console.log(idUser);
+            const colors = ['FFB5B5', 'FFC8F0', 'FFD6A6', 'FEFFB4', 'C7FFF8', 'B7BEFF', 'ACACAC', 'C6FFCC'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
 
-        const colors = ['FFB5B5', 'FFC8F0', 'FFD6A6', 'FEFFB4', 'C7FFF8', 'B7BEFF', 'ACACAC', 'C6FFCC'];
+            const crypto = require('crypto');
+            const emailToken = crypto.randomBytes(64).toString("hex");
 
-        const color = colors[Math.floor(Math.random() * colors.length)];
+            const newUser = await this.userModel.create({
+                idUser,
+                name: authreg.name,
+                email: authreg.email,
+                password: hash,
+                color,
+                emailToken,
+            });
 
-        const crypto = require('crypto');
-        const emailToken = crypto.randomBytes(64).toString("hex");
-
-        const newUser = await this.userModel.create({
-            idUser: idUser,
-            name: authreg.name,
-            email: authreg.email,
-            password: hash,
-            color: color,
-            emailToken: emailToken,
-        });
-        console.log("New user" + newUser);
-
-        sendMail(authreg.email, emailToken);
-        return newUser;
+            sendMail(authreg.email, emailToken);
+            return newUser;
+        } catch (error) {
+            throw new InternalServerErrorException('An unexpected error occurred during registration');
+        }
     }
 
     async verifyEmail(emailToken: string): Promise<{ status: string, message: string }> {
-        if (!emailToken) {
-            throw new BadRequestException('Email token is missing');
+        try {
+            if (!emailToken) {
+                throw new BadRequestException('Email token is missing');
+            }
+
+            const user = await this.userModel.findOne({ where: { emailToken } });
+            if (!user) {
+                throw new ForbiddenException('User not found');
+            }
+
+            user.confirmed = true;
+            user.emailToken = null;
+            await user.save();
+
+            return { status: 'Success', message: 'User verified successfully' };
+        } catch (error) {
+            if (error instanceof BadRequestException || error instanceof ForbiddenException) {
+                throw error;
+            }
+            throw new InternalServerErrorException('An unexpected error occurred during email verification');
         }
-
-        const user = await this.userModel.findOne({ where: { emailToken } });
-        if (!user) {
-            throw new ForbiddenException('User not found');
-        }
-
-        user.confirmed = true;
-        user.emailToken = null;
-        await user.save();
-
-        return { status: 'Success', message: 'User verified successfully' };
     }
 
     async registerWithToken(token: string, invitationReg: AuthRegisterDto) {
-        const hash = await argon.hash(invitationReg.password);
-        const idUser = uuidv4();
+        try {
+            const hash = await argon.hash(invitationReg.password);
+            const idUser = uuidv4();
 
-        const colors = ['FFB5B5', 'FFC8F0', 'FFD6A6', 'FEFFB4', 'C7FFF8', 'B7BEFF', 'ACACAC', 'C6FFCC'];
-        const color = colors[Math.floor(Math.random() * colors.length)];
+            const colors = ['FFB5B5', 'FFC8F0', 'FFD6A6', 'FEFFB4', 'C7FFF8', 'B7BEFF', 'ACACAC', 'C6FFCC'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
 
-        const invitation = await this.invitationService.validateInvitation(token);
-        const role = invitation.role;
+            const invitation = await this.invitationService.validateInvitation(token);
+            const role = invitation.role;
 
-        if (invitationReg.email !== invitation.email) {
-            throw new ForbiddenException('Email does not match invitation');
+            if (invitationReg.email !== invitation.email) {
+                throw new ForbiddenException('Email does not match invitation');
+            }
+
+            const newUser = await this.userModel.create({
+                idUser,
+                name: invitationReg.name,
+                email: invitationReg.email,
+                password: hash,
+                confirmed: true,
+                color,
+                role,
+            });
+
+            return newUser;
+        } catch (error) {
+            if (error instanceof ForbiddenException) {
+                throw error;
+            }
+            throw new InternalServerErrorException('An unexpected error occurred during registration with token');
         }
-
-        const newUser = await this.userModel.create({
-            idUser: idUser,
-            name: invitationReg.name,
-            email: invitationReg.email,
-            password: hash,
-            color: color,
-            role: role,
-        });
-
-        return newUser;
     }
-
 }

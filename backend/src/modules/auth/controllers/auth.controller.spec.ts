@@ -12,6 +12,7 @@ describe('AuthController', () => {
         login: jest.fn(),
         register: jest.fn(),
         verifyEmail: jest.fn(),
+        registerWithToken: jest.fn(),
     };
 
     beforeEach(async () => {
@@ -93,4 +94,22 @@ describe('AuthController', () => {
         });
     });
 
+    describe('registerWithToken', () => {
+        it('should call authService.registerWithToken with correct data', async () => {
+            const token = 'test';
+            const dto: AuthRegisterDto = { email: 'test@utp.edu.my', name: 'test', password: 'password' };
+            await controller.registerWithToken(token, dto);
+            expect(service.registerWithToken).toHaveBeenCalledWith(token, dto);
+        });
+
+        it('should log error and throw if token is missing', async () => {
+            const consoleSpy = jest.spyOn(console, 'log');
+            const dto: AuthRegisterDto = { email: 'test@utp.edu.my', name: 'test', password: 'password' };
+            jest.spyOn(service, 'registerWithToken').mockImplementation(() => { throw new BadRequestException('Token is missing') });
+
+            await expect(controller.registerWithToken(null, dto)).rejects.toThrow(BadRequestException);
+            expect(consoleSpy).toHaveBeenCalledWith(new BadRequestException('Token is missing'));
+        });
+
+    });
 });

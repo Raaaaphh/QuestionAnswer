@@ -15,8 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PicturesService = void 0;
 const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
-const picture_model_1 = require("./picture.model");
 const uuid_1 = require("uuid");
+const picture_model_1 = require("../picture.model");
 let PicturesService = class PicturesService {
     constructor(pictModel) {
         this.pictModel = pictModel;

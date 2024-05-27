@@ -6,44 +6,43 @@ import AuthForm from './pages/AuthForm';
 import Profile from './pages/Profile';
 import Question from './pages/Question';
 import ProtectedRoute from './components/ProtectedRoute';
+import { AuthProvider } from './context/AuthContext'; // Make sure you have AuthProvider in your imports
 
 export const Routes = () => {
   return (
     <Router>
-      <RoutesComponents>
-        <Route path="/" element={<Home />} />
-        <Route path="*" element={<NotFound />} />
-        <Route path="/login" element={<AuthForm />} />
-        <Route path="/register" element={<AuthForm isRegister />} />
-        <Route path="/ask" element={<AskAQuestion />} />
-        <Route path="/question" element={<Question />} />
-        <Route path="/profile" element={<Profile />} />
-        {/* <Route
-          path="/ask"
-          element={
-            <ProtectedRoute>
-              <AskAQuestion />        // This is the protected route
-            </ProtectedRoute>
-          }
-        /> */}
-        {/* <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        /> */}
-        {/* <Route
-          path="/question"
-          element={
-            <ProtectedRoute>
-              <Question />
-            </ProtectedRoute>
-          }
-        /> */}
-        {/* <Route path="/question/:id" element={<Question />} /> */}
-      </RoutesComponents>
+      <AuthProvider>
+        <RoutesComponents>
+          <Route path="/" element={<Home />} />
+          <Route path="*" element={<NotFound />} />
+          <Route path="/login" element={<AuthForm />} />
+          <Route path="/register" element={<AuthForm isRegister />} />
+          <Route
+            path="/ask"
+            element={
+              <ProtectedRoute>
+                <AskAQuestion />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/question/:id"
+            element={
+              <ProtectedRoute>
+                <Question />
+              </ProtectedRoute>
+            }
+          />
+        </RoutesComponents>
+      </AuthProvider>
     </Router>
   );
 };
