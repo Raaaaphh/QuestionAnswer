@@ -21,11 +21,13 @@ const sequelize_typescript_1 = require("sequelize-typescript");
 const question_model_1 = require("../question.model");
 const questiontag_model_1 = require("../../questiontags/questiontag.model");
 const picture_model_1 = require("../../pictures/picture.model");
+const vote_model_1 = require("../../votes/vote.model");
 let QuestionsService = class QuestionsService {
-    constructor(questModel, questTagModel, pictureModel, sequelize) {
+    constructor(questModel, questTagModel, pictureModel, voteModel, sequelize) {
         this.questModel = questModel;
         this.questTagModel = questTagModel;
         this.pictureModel = pictureModel;
+        this.voteModel = voteModel;
         this.sequelize = sequelize;
     }
     async getQuestion(id) {
@@ -156,21 +158,106 @@ let QuestionsService = class QuestionsService {
             throw new common_1.HttpException(error.message || 'Error during the creation of the question', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    async editQuestion(question) {
-        const quest = await this.questModel.findOne({
-            where: {
-                idQuest: question.idQuest
+    async addVote(dto) {
+        const idVote = (0, uuid_1.v4)();
+        const { idUser, idQuest } = dto;
+        const transaction = await this.sequelize.transaction();
+        try {
+            const existingVote = await this.voteModel.findOne({
+                where: { idUser, idQuest },
+                transaction,
+            });
+            if (existingVote) {
+                throw new common_1.HttpException('User has already voted for this question', common_1.HttpStatus.BAD_REQUEST);
             }
-        });
-        if (!quest) {
-            throw new common_1.ForbiddenException('Question not found');
+            const quest = await this.questModel.findOne({
+                where: { idQuest },
+                transaction,
+            });
+            if (!quest) {
+                throw new common_1.HttpException('Question not found', common_1.HttpStatus.NOT_FOUND);
+            }
+            quest.votes += 1;
+            await quest.save({ transaction });
+            await this.voteModel.create({
+                idVote,
+                idUser,
+                idQuest,
+            }, { transaction });
+            await transaction.commit();
+            return quest;
         }
-        quest.title = question.title;
-        quest.description = question.description;
-        quest.context = question.context;
-        quest.idUser = question.idUser;
-        await quest.save();
-        return quest;
+        catch (error) {
+            await transaction.rollback();
+            console.error(error);
+            throw new common_1.HttpException(error.message || 'Error during the upload of votes', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async removeVote(dto) {
+        const { idUser, idQuest } = dto;
+        const transaction = await this.sequelize.transaction();
+        try {
+            const vote = await this.voteModel.findOne({
+                where: { idUser, idQuest },
+                transaction,
+            });
+            if (!vote) {
+                throw new common_1.HttpException('Vote not found', common_1.HttpStatus.NOT_FOUND);
+            }
+            const quest = await this.questModel.findOne({
+                where: { idQuest },
+                transaction,
+            });
+            if (!quest) {
+                throw new common_1.HttpException('Question not found', common_1.HttpStatus.NOT_FOUND);
+            }
+            quest.votes -= 1;
+            await quest.save({ transaction });
+            await this.voteModel.destroy({
+                where: { idVote: vote.idVote },
+                transaction,
+            });
+            await transaction.commit();
+            return quest;
+        }
+        catch (error) {
+            await transaction.rollback();
+            console.error(error);
+            throw new common_1.HttpException(error.message || 'Error during the removal of vote', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async editQuestion(question) {
+        const transaction = await this.sequelize.transaction();
+        try {
+            const quest = await this.questModel.findOne({
+                where: {
+                    idQuest: question.idQuest
+                },
+                transaction
+            });
+            if (!quest) {
+                throw new common_1.ForbiddenException('Question not found');
+            }
+            quest.title = question.title;
+            quest.description = question.description;
+            quest.context = question.context;
+            quest.idUser = question.idUser;
+            await quest.save({ transaction });
+            await this.questTagModel.destroy({
+                where: {
+                    idQuest: question.idQuest
+                },
+                transaction
+            });
+            const tagsData = question.listTags.map(tag => ({ idQuest: question.idQuest, idTag: tag }));
+            await this.questTagModel.bulkCreate(tagsData, { transaction });
+            await transaction.commit();
+            return quest;
+        }
+        catch (error) {
+            console.error(error);
+            throw new common_1.HttpException(error.message || 'Error during the edition of the question', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     async deleteQuestion(id) {
         const question = await this.questModel.findOne({
@@ -203,6 +290,7 @@ exports.QuestionsService = QuestionsService = __decorate([
     __param(0, (0, sequelize_1.InjectModel)(question_model_1.Question)),
     __param(1, (0, sequelize_1.InjectModel)(questiontag_model_1.QuestionTag)),
     __param(2, (0, sequelize_1.InjectModel)(picture_model_1.Picture)),
-    __metadata("design:paramtypes", [Object, Object, Object, sequelize_typescript_1.Sequelize])
+    __param(3, (0, sequelize_1.InjectModel)(vote_model_1.Vote)),
+    __metadata("design:paramtypes", [Object, Object, Object, Object, sequelize_typescript_1.Sequelize])
 ], QuestionsService);
 //# sourceMappingURL=questions.service.js.map

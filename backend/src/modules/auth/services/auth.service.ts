@@ -33,6 +33,10 @@ export class AuthService {
                 throw new ForbiddenException('Invalid password');
             }
 
+            if (user.banned) {
+                throw new ForbiddenException('User is banned');
+            }
+
             const payload = { id: user.idUser, role: user.role };
             const token = this.jwtService.sign(payload);
 
@@ -68,6 +72,7 @@ export class AuthService {
             sendMail(authreg.email, emailToken);
             return newUser;
         } catch (error) {
+            console.log(error);
             throw new InternalServerErrorException('An unexpected error occurred during registration');
         }
     }

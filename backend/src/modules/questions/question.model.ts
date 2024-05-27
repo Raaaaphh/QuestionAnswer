@@ -4,6 +4,7 @@ import { Answer } from "../answers/answer.model";
 import { Favorite } from "../favorites/favorite.model";
 import { QuestionTag } from "../questiontags/questiontag.model";
 import { Picture } from "../pictures/picture.model";
+import { Vote } from "../votes/vote.model";
 
 
 @Table
@@ -51,5 +52,8 @@ export class Question extends Model {
 
     @HasMany(() => Picture)
     pictures: Picture[];
+
+    @HasMany(() => Vote)
+    listVotes: Vote[];
 
 }

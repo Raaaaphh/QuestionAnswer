@@ -16,6 +16,7 @@ const answer_model_1 = require("../answers/answer.model");
 const favorite_model_1 = require("../favorites/favorite.model");
 const questiontag_model_1 = require("../questiontags/questiontag.model");
 const picture_model_1 = require("../pictures/picture.model");
+const vote_model_1 = require("../votes/vote.model");
 let Question = class Question extends sequelize_typescript_1.Model {
 };
 exports.Question = Question;
@@ -77,6 +78,10 @@ __decorate([
     (0, sequelize_typescript_1.HasMany)(() => picture_model_1.Picture),
     __metadata("design:type", Array)
 ], Question.prototype, "pictures", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => vote_model_1.Vote),
+    __metadata("design:type", Array)
+], Question.prototype, "listVotes", void 0);
 exports.Question = Question = __decorate([
     sequelize_typescript_1.Table
 ], Question);

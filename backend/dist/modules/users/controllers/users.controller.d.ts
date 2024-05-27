@@ -9,4 +9,5 @@ export declare class UsersController {
     remove(id: string): Promise<import("../user.model").User>;
     editMdp(mdpDto: UserEditMdpDto): Promise<import("../user.model").User>;
     editName(nameDto: UserEditNameDto): Promise<import("../user.model").User>;
+    ban(id: string): Promise<import("../user.model").User>;
 }

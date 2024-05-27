@@ -4,6 +4,7 @@ import { Answer } from "../answers/answer.model";
 import { Favorite } from "../favorites/favorite.model";
 import { QuestionTag } from "../questiontags/questiontag.model";
 import { Picture } from "../pictures/picture.model";
+import { Vote } from "../votes/vote.model";
 export declare class Question extends Model {
     idQuest: string;
     idUser: string;
@@ -19,4 +20,5 @@ export declare class Question extends Model {
     favorites: Favorite[];
     questiontags: QuestionTag[];
     pictures: Picture[];
+    listVotes: Vote[];
 }
