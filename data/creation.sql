@@ -29,6 +29,7 @@ Create table `Users` (
         'Student'
     ) default 'Student',
     `color` varchar(100) not NULL,
+    `banned` boolean default false,
     `createdAt` datetime not null,
     `updatedAt` datetime not null,
     primary key (`idUser`),

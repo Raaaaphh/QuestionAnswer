@@ -33,6 +33,10 @@ export class AuthService {
                 throw new ForbiddenException('Invalid password');
             }
 
+            if (user.banned) {
+                throw new ForbiddenException('User is banned');
+            }
+
             const payload = { id: user.idUser, role: user.role };
             const token = this.jwtService.sign(payload);
 

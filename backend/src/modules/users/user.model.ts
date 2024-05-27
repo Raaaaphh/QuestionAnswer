@@ -39,6 +39,9 @@ export class User extends Model {
     @Column
     color: string;
 
+    @Column
+    banned: boolean;
+
     @HasMany(() => Question)
     questions: Question[];
 

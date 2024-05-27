@@ -18,6 +18,7 @@ export declare class User extends Model {
     emailToken: string;
     role: Role;
     color: string;
+    banned: boolean;
     questions: Question[];
     answers: Answer[];
     favorites: Favorite[];

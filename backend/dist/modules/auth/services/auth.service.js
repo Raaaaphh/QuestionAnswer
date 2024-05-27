@@ -40,6 +40,9 @@ let AuthService = class AuthService {
             if (!valid) {
                 throw new common_1.ForbiddenException('Invalid password');
             }
+            if (user.banned) {
+                throw new common_1.ForbiddenException('User is banned');
+            }
             const payload = { id: user.idUser, role: user.role };
             const token = this.jwtService.sign(payload);
             return { user, token };
