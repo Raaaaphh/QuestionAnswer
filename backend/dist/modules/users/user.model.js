@@ -15,6 +15,7 @@ const question_model_1 = require("../questions/question.model");
 const answer_model_1 = require("../answers/answer.model");
 const favorite_model_1 = require("../favorites/favorite.model");
 const tag_model_1 = require("../tags/tag.model");
+const vote_model_1 = require("../votes/vote.model");
 var Role;
 (function (Role) {
     Role["SuperAdmin"] = "SuperAdmin";
@@ -73,6 +74,10 @@ __decorate([
     (0, sequelize_typescript_1.HasMany)(() => tag_model_1.Tag),
     __metadata("design:type", Array)
 ], User.prototype, "tags", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => vote_model_1.Vote),
+    __metadata("design:type", Array)
+], User.prototype, "listVotes", void 0);
 exports.User = User = __decorate([
     sequelize_typescript_1.Table
 ], User);

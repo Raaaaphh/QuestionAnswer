@@ -2,7 +2,7 @@ import { IsNotEmpty, IsString, IsUUID } from "class-validator";
 
 export class QuestionEditDto {
 
-    @IsString()
+    @IsUUID()
     @IsNotEmpty()
     idQuest: string;
 

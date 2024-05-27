@@ -9,34 +9,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.QuestionEditDto = void 0;
+exports.QuestionVoteDto = void 0;
 const class_validator_1 = require("class-validator");
-class QuestionEditDto {
+class QuestionVoteDto {
 }
-exports.QuestionEditDto = QuestionEditDto;
+exports.QuestionVoteDto = QuestionVoteDto;
 __decorate([
     (0, class_validator_1.IsUUID)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], QuestionEditDto.prototype, "idQuest", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], QuestionEditDto.prototype, "title", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], QuestionEditDto.prototype, "description", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], QuestionEditDto.prototype, "context", void 0);
+], QuestionVoteDto.prototype, "idUser", void 0);
 __decorate([
     (0, class_validator_1.IsUUID)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], QuestionEditDto.prototype, "idUser", void 0);
-//# sourceMappingURL=question-edit.dto.js.map
+], QuestionVoteDto.prototype, "idQuest", void 0);
+//# sourceMappingURL=question-vote.dto.js.map

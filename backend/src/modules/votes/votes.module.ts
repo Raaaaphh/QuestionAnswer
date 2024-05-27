@@ -1,4 +1,9 @@
 import { Module } from '@nestjs/common';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { Vote } from './vote.model';
 
-@Module({})
-export class VotesModule {}
+@Module({
+    imports: [SequelizeModule.forFeature([Vote])],
+    exports: [SequelizeModule],
+})
+export class VotesModule { }

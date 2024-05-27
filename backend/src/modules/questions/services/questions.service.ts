@@ -4,14 +4,15 @@ import { InjectModel } from "@nestjs/sequelize";
 import { Op } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
 import { Question } from "../question.model";
-import { QuestionCreateDto, QuestionEditDto } from "../dto";
+import { QuestionCreateDto, QuestionEditDto, QuestionVoteDto } from "../dto";
 import { QuestionTag } from "../../questiontags/questiontag.model";
 import { Picture } from "../../pictures/picture.model";
+import { Vote } from "src/modules/votes/vote.model";
 
 @Injectable()
 export class QuestionsService {
 
-    constructor(@InjectModel(Question) private questModel: typeof Question, @InjectModel(QuestionTag) private questTagModel: typeof QuestionTag, @InjectModel(Picture) private pictureModel: typeof Picture, private readonly sequelize: Sequelize) { }
+    constructor(@InjectModel(Question) private questModel: typeof Question, @InjectModel(QuestionTag) private questTagModel: typeof QuestionTag, @InjectModel(Picture) private pictureModel: typeof Picture, @InjectModel(Vote) private voteModel: typeof Vote, private readonly sequelize: Sequelize) { }
 
     async getQuestion(id: string) {
         if (!isValidUUID(id)) {
@@ -64,6 +65,7 @@ export class QuestionsService {
         }
         return questions;
     }
+
 
     async searchQuestionsByFilter(filter: string, limit: string, order: string) {
         const intLimit = parseInt(limit, 10);
@@ -168,6 +170,86 @@ export class QuestionsService {
         }
     }
 
+    async addVote(dto: QuestionVoteDto) {
+        const idVote = uuidv4();
+        const { idUser, idQuest } = dto;
+
+        const transaction = await this.sequelize.transaction();
+        try {
+            const existingVote = await this.voteModel.findOne({
+                where: { idUser, idQuest },
+                transaction,
+            });
+
+            if (existingVote) {
+                throw new HttpException('User has already voted for this question', HttpStatus.BAD_REQUEST);
+            }
+
+            const quest = await this.questModel.findOne({
+                where: { idQuest },
+                transaction,
+            });
+
+            if (!quest) {
+                throw new HttpException('Question not found', HttpStatus.NOT_FOUND);
+            }
+
+            quest.votes += 1;
+            await quest.save({ transaction });
+
+            await this.voteModel.create({
+                idVote,
+                idUser,
+                idQuest,
+            }, { transaction });
+
+            await transaction.commit();
+            return quest;
+        } catch (error) {
+            await transaction.rollback();
+            console.error(error);
+            throw new HttpException(error.message || 'Error during the upload of votes', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async removeVote(dto: QuestionVoteDto) {
+        const { idUser, idQuest } = dto;
+        const transaction = await this.sequelize.transaction();
+        try {
+            const vote = await this.voteModel.findOne({
+                where: { idUser, idQuest },
+                transaction,
+            });
+
+            if (!vote) {
+                throw new HttpException('Vote not found', HttpStatus.NOT_FOUND);
+            }
+
+            const quest = await this.questModel.findOne({
+                where: { idQuest },
+                transaction,
+            });
+
+            if (!quest) {
+                throw new HttpException('Question not found', HttpStatus.NOT_FOUND);
+            }
+
+            quest.votes -= 1;
+            await quest.save({ transaction });
+
+            await this.voteModel.destroy({
+                where: { idVote: vote.idVote },
+                transaction,
+            });
+
+            await transaction.commit();
+            return quest;
+        } catch (error) {
+            await transaction.rollback();
+            console.error(error);
+            throw new HttpException(error.message || 'Error during the removal of vote', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     async editQuestion(question: QuestionEditDto) {
 
