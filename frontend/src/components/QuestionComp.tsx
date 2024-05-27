@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 import upVoteLogo from '../assets/upVoteButton.svg';
 
 interface QuestionProps {
-  idQuest: number;
+  idQuest: string;
   title: string;
   description: string;
   username: string;
-  status: string;
+  status: boolean;
   tags: string[];
 }
 

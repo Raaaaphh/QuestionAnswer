@@ -176,8 +176,8 @@ const Header: React.FC = () => {
         </>
       ) : (
         <div className="authButtons">
-          <Link to="/login" className="authButton">Login</Link>
-          <Link to="/register" className="authButton">Register</Link>
+          <Link to="/auth/login" className="authButton">Login</Link>
+          <Link to="/auth/register" className="authButton">Register</Link>
         </div>
       )}
     </header>

@@ -37,7 +37,7 @@ export class User extends Model {
 
     @Column
     color: string;
-
+    
     @HasMany(() => Question)
     questions: Question[];
 
