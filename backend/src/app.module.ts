@@ -21,6 +21,7 @@ import { Picture } from './modules/pictures/picture.model';
 import { PicturesModule } from './modules/pictures/pictures.module';
 import { JwtMiddleware } from './middlewares/jwt.middleware';
 import { Invitation } from './modules/invitations/invitation.model';
+import { VotesModule } from './modules/votes/votes.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -52,6 +53,7 @@ import { Invitation } from './modules/invitations/invitation.model';
     TagsModule,
     QuestionsModule,
     PicturesModule,
+    VotesModule,
   ],
   providers: [AppService],
 })

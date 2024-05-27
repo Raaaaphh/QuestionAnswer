@@ -68,6 +68,7 @@ export class AuthService {
             sendMail(authreg.email, emailToken);
             return newUser;
         } catch (error) {
+            console.log(error);
             throw new InternalServerErrorException('An unexpected error occurred during registration');
         }
     }

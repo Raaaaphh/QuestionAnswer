@@ -71,6 +71,7 @@ let AuthService = class AuthService {
             return newUser;
         }
         catch (error) {
+            console.log(error);
             throw new common_1.InternalServerErrorException('An unexpected error occurred during registration');
         }
     }
