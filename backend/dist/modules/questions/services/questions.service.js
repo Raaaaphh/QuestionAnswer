@@ -227,20 +227,37 @@ let QuestionsService = class QuestionsService {
         }
     }
     async editQuestion(question) {
-        const quest = await this.questModel.findOne({
-            where: {
-                idQuest: question.idQuest
+        const transaction = await this.sequelize.transaction();
+        try {
+            const quest = await this.questModel.findOne({
+                where: {
+                    idQuest: question.idQuest
+                },
+                transaction
+            });
+            if (!quest) {
+                throw new common_1.ForbiddenException('Question not found');
             }
-        });
-        if (!quest) {
-            throw new common_1.ForbiddenException('Question not found');
+            quest.title = question.title;
+            quest.description = question.description;
+            quest.context = question.context;
+            quest.idUser = question.idUser;
+            await quest.save({ transaction });
+            await this.questTagModel.destroy({
+                where: {
+                    idQuest: question.idQuest
+                },
+                transaction
+            });
+            const tagsData = question.listTags.map(tag => ({ idQuest: question.idQuest, idTag: tag }));
+            await this.questTagModel.bulkCreate(tagsData, { transaction });
+            await transaction.commit();
+            return quest;
         }
-        quest.title = question.title;
-        quest.description = question.description;
-        quest.context = question.context;
-        quest.idUser = question.idUser;
-        await quest.save();
-        return quest;
+        catch (error) {
+            console.error(error);
+            throw new common_1.HttpException(error.message || 'Error during the edition of the question', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     async deleteQuestion(id) {
         const question = await this.questModel.findOne({

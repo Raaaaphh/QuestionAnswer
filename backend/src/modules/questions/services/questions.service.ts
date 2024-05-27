@@ -252,24 +252,42 @@ export class QuestionsService {
     }
 
     async editQuestion(question: QuestionEditDto) {
+        const transaction = await this.sequelize.transaction();
+        try {
+            const quest = await this.questModel.findOne({
+                where: {
+                    idQuest: question.idQuest
+                },
+                transaction
+            });
 
-        const quest = await this.questModel.findOne({
-            where: {
-                idQuest: question.idQuest
+            if (!quest) {
+                throw new ForbiddenException('Question not found');
             }
-        });
 
-        if (!quest) {
-            throw new ForbiddenException('Question not found');
+            quest.title = question.title;
+            quest.description = question.description;
+            quest.context = question.context;
+            quest.idUser = question.idUser;
+
+            await quest.save({ transaction });
+
+            await this.questTagModel.destroy({
+                where: {
+                    idQuest: question.idQuest
+                },
+                transaction
+            });
+
+            const tagsData = question.listTags.map(tag => ({ idQuest: question.idQuest, idTag: tag }));
+            await this.questTagModel.bulkCreate(tagsData, { transaction });
+
+            await transaction.commit();
+            return quest;
+        } catch (error) {
+            console.error(error);
+            throw new HttpException(error.message || 'Error during the edition of the question', HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        quest.title = question.title;
-        quest.description = question.description;
-        quest.context = question.context;
-        quest.idUser = question.idUser;
-
-        await quest.save();
-        return quest;
     }
 
     async deleteQuestion(id: string) {

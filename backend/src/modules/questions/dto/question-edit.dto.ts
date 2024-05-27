@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsUUID } from "class-validator";
+import { IsNotEmpty, IsString, IsUUID, IsArray, ArrayNotEmpty, ArrayMinSize } from "class-validator";
 
 export class QuestionEditDto {
 
@@ -21,4 +21,10 @@ export class QuestionEditDto {
     @IsUUID()
     @IsNotEmpty()
     idUser: string;
+
+    @IsArray()
+    @ArrayNotEmpty()
+    @ArrayMinSize(1)
+    @IsString({ each: true })
+    listTags: string[];
 }
