@@ -23,7 +23,7 @@ const SearchBar: React.FC = () => {
 
 const BtnQuestion: React.FC = () => {
   return (
-    <Link to='/question'>
+    <Link to='/ask'>
       <div className='btnQuestion'>Ask a question</div>
     </Link>
   );
