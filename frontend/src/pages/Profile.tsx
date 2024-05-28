@@ -17,22 +17,6 @@ export interface Question {
   flagsSpam: number;
   flagsInappropiate: number;
   status: boolean;
-  user: {
-    idUser: string;
-    name: string;
-    email: string;
-    password: string;
-    confirmed: boolean;
-    emailToken: string;
-    role: any;
-    color: string;
-    banned: boolean;
-  };
-  answers: any[];
-  favorites: any[];
-  questiontags: { tag: { name: string } }[];
-  pictures: any[];
-  listVotes: any[];
 }
 
 const Profile: React.FC = () => {
