@@ -47,14 +47,12 @@ h1 {
   color: #8F8F8F;
 }
 
-.underline {
-  border-bottom: 2px solid #C88A12;
-  width: 90%;
-}
+
 
 .homeButtonText {
-  margin: 0px 10px 0px 10px;
+  margin: 0px 30px -5px 30px;
   font-weight: 300;
+  font-size: 30px;
   color: #8F8F8F;
   text-decoration: none;
 }
@@ -123,14 +121,27 @@ h1 {
 }
 
 .btnQuestion {
-  padding: 10px 20px;
+  padding: 0px 30px;
+  border: #004A85 5px solid;
   background-color: #004A85;
   color: white;
-  border-radius: 5px;
+  white-space: nowrap;
+  border-radius: 35px;
   text-decoration: none;
+  font-size: 20px;
   cursor: pointer;
-  margin-left: 20px;
   text-align: center;
+}
+
+.btnQuestion:hover {
+  border: #C88A12 5px solid;
+  text-decoration: none;
+  box-shadow: 0px 0px 10px 0px rgba(255, 184, 43, 0.5);
+}
+
+.btnQuestion:active {
+  text-decoration: none;
+  scale: 95%;
 }
 
 .notificationMenu, .profileMenu, .filterMenu {
@@ -141,11 +152,11 @@ h1 {
   background-color: transparent;
   border: none;
   cursor: pointer;
-  padding: 10px;
+  padding: 15px;
 }
 
 .notificationButton img, .profileButton img, .filterButton img {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
 }
 

@@ -12,6 +12,7 @@ const users_module_1 = require("../users/users.module");
 const jwt_1 = require("@nestjs/jwt");
 const auth_controller_1 = require("./controllers/auth.controller");
 const auth_service_1 = require("./services/auth.service");
+const invitations_module_1 = require("../invitations/invitations.module");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -22,6 +23,7 @@ exports.AuthModule = AuthModule = __decorate([
                 secret: 'questionanswer',
                 signOptions: { expiresIn: '60m' },
             }),
+            invitations_module_1.InvitationsModule,
         ],
         controllers: [auth_controller_1.AuthController],
         providers: [auth_service_1.AuthService]

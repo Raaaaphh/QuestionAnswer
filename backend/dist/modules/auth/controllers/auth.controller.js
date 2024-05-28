@@ -50,6 +50,15 @@ let AuthController = class AuthController {
             throw error;
         }
     }
+    async registerWithToken(token, authreg) {
+        try {
+            return await this.authService.registerWithToken(token, authreg);
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
@@ -79,6 +88,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "verifyEmail", null);
+__decorate([
+    (0, common_1.Post)('register/invitation?'),
+    __param(0, (0, common_1.Query)('token')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, dto_1.AuthRegisterDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "registerWithToken", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

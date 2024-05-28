@@ -10,16 +10,24 @@ exports.InvitationsModule = void 0;
 const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
 const invitation_model_1 = require("./invitation.model");
-const invitations_service_1 = require("./invitations.service");
-const invitations_controller_1 = require("./invitations.controller");
+const invitations_controller_1 = require("./controllers/invitations.controller");
+const invitations_service_1 = require("./services/invitations.service");
+const jwt_1 = require("@nestjs/jwt");
 let InvitationsModule = class InvitationsModule {
 };
 exports.InvitationsModule = InvitationsModule;
 exports.InvitationsModule = InvitationsModule = __decorate([
     (0, common_1.Module)({
-        imports: [sequelize_1.SequelizeModule.forFeature([invitation_model_1.Invitation])],
+        imports: [
+            sequelize_1.SequelizeModule.forFeature([invitation_model_1.Invitation]),
+            jwt_1.JwtModule.register({
+                secret: 'questionanswer',
+                signOptions: { expiresIn: '7d' },
+            }),
+        ],
         providers: [invitations_service_1.InvitationsService],
         controllers: [invitations_controller_1.InvitationsController],
+        exports: [invitations_service_1.InvitationsService],
     })
 ], InvitationsModule);
 //# sourceMappingURL=invitations.module.js.map

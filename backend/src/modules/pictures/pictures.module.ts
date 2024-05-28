@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Picture } from './picture.model';
-import { PicturesService } from './pictures.service';
-import { PicturesController } from './pictures.controller';
+import { PicturesController } from './controllers/pictures.controller';
+import { PicturesService } from './services/pictures.service';
 
 @Module({
     imports: [SequelizeModule.forFeature([Picture])],

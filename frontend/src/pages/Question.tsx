@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import MarkdownRenderer from "../components/MarkdownRenderer";
 import Answer from "../components/Answer";
 import upVote from "../assets/upVoteButton.svg";
+import AnimatedUpVote from "../components/AnimatedUpVote";
 
 const fetchMarkdownFromDatabase = async () => {
   // Simulate a database fetch
@@ -74,10 +75,10 @@ const Question: React.FC = () => {
     <div>
       <Header />
       <div className="questionPage">
-        <div className="voteContainer">
-          <p className="upVoteCount">5</p>
-          <img src={upVote} alt="avatar" className="upVote" />
+        <div className="upVote">
+          <AnimatedUpVote />
         </div>
+
         <div className="questionHeader">
           <div className="avatarAndUsername">
             <img

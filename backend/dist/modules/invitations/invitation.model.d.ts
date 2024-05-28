@@ -1,8 +1,11 @@
 import { Model } from "sequelize-typescript";
-import { User } from "../users/user.model";
+export declare enum Role {
+    SuperAdmin = "SuperAdmin",
+    Lecturer = "Lecturer",
+    Student = "Student"
+}
 export declare class Invitation extends Model {
     idInvitation: string;
-    idSender: string;
-    sender: User;
-    idReceiver: string;
+    email: string;
+    role: Role;
 }
