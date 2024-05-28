@@ -21,6 +21,7 @@ const mockQuestions = [
 
 const Home = () => {
   const [questions, setQuestions] = useState([]);
+  const [users, setUsers] = useState({});
   const [filter, setFilter] = useState("topUnsolved");
   const [sectionTitle, setSectionTitle] = useState("Top Unsolved Questions");
 
@@ -96,7 +97,7 @@ const Home = () => {
                 idQuest={question.idQuest}
                 title={question.title}
                 description={question.description}
-                username={question.user.username}
+                username="ee"
                 status={question.status}
                 tags={question.tags}
               />
