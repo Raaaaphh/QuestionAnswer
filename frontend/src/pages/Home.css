@@ -8,6 +8,11 @@
     background-color: #ffffff;
 }
 
+.underline {
+  border-bottom: 2px solid #C88A12;
+  width: 65%;
+}
+
 .sectionContainer{
     display: flex;
     flex-direction: column;

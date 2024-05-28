@@ -6,7 +6,7 @@
     width: 100%;
     min-height: 180px;
     padding: 15px 20px;
-    position: relative; /* Add position relative */
+    position: relative; 
     border-radius: 10px;
   }
 
@@ -32,7 +32,7 @@
   
   .tilte {
     margin: 0 0 10px 0;
-    min-width: 80%;
+    min-width: 89%;
     text-decoration: underline;
     font-size: x-large;
     color: #000;
@@ -57,6 +57,9 @@
   .seeMoreLink{
     text-decoration: none;
     color: #004A85;
+    text-align: right;
+    justify-content: end;
+    align-items: end;
   }
 
   .seeMoreLink:visited{
@@ -69,11 +72,11 @@
     flex-direction: column;
     align-items: center;
     margin-right: 10px;
-    width: 8%;
-    min-width: 40px;
+    width: 25px;
+    min-width: 50px;
     align-items: center;
     justify-content: center;
-    height: 150px;
+    height: 100px;
   }
 
   .questionItem img{
@@ -88,6 +91,11 @@
     width: 80%;
   }
 
+  .postedBy{
+    text-align: right;
+    font-size: small;
+  }
+
   .tagQComp{
     background-color: #004A85;
     color: white;
@@ -98,7 +106,7 @@
   
   .description {
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* Number of lines to display */
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;

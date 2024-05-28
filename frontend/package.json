@@ -13,6 +13,7 @@
     "@types/simplemde": "^1.11.11",
     "axios": "^1.6.8",
     "codemirror": "^5.65.16",
+    "easymde": "^2.18.0",
     "marked": "^12.0.2",
     "prismjs": "^1.29.0",
     "react": "^18.3.1",

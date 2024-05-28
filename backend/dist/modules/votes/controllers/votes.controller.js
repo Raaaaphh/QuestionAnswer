@@ -31,9 +31,9 @@ let VotesController = class VotesController {
 };
 exports.VotesController = VotesController;
 __decorate([
-    (0, common_1.Get)('check/:idUser/:idQuestion'),
-    __param(0, (0, common_1.Param)('idUser')),
-    __param(1, (0, common_1.Param)('idQuestion')),
+    (0, common_1.Get)('check'),
+    __param(0, (0, common_1.Query)('idUser')),
+    __param(1, (0, common_1.Query)('idQuestion')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)

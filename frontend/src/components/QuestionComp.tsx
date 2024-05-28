@@ -3,6 +3,7 @@ import './QuestionComp.css';
 import { Link } from 'react-router-dom';
 import upVoteLogo from '../assets/upVoteButton.svg';
 import axiosInstance from '../utils/axiosInstance';
+import AnimatedUpVote from './AnimatedUpVote';
 
 interface QuestionProps {
   idQuest: string;
@@ -50,25 +51,28 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, title, description, st
 
   return (
     <div key={idQuest} className="questionItem">
-      <div className='voteSection'>
-        <p>8</p> {/* Assuming static votes for now */}
-        <img src={upVoteLogo} alt="upVoteLogo" />
-      </div>
-      <div className='textRightPart'>
+      <AnimatedUpVote />
+      <div className="textRightPart">
         <div className="questionTop">
-          <Link to={`/question/${idQuest}`} className="title">{title}</Link>
-          <Link to={`/question/${idQuest}`} className="seeMoreLink">See more ...</Link>
+          <Link to={`/question/${idQuest}`} className="tilte">
+            {title}
+          </Link>
+          <Link to={`/question/${idQuest}`} className="seeMoreLink">
+            See more ...
+          </Link>
         </div>
-        
-        <p className='description'>{description}</p>
-        <div className='questionBottom'>
-          <div className='tags'>
-            {tags && tags.map((tag, index) => (
-              <p key={index} className='tagQComp'>{tag}</p>
-            ))}
+
+        <p className="description">{description}</p>
+        <div className="questionBottom">
+          <div className="tags">
+            {tags &&
+              tags.map((tag, index) => (
+                <p key={index} className="tagQComp">
+                  {tag}
+                </p>
+              ))}
           </div>
           <p>Posted by: {user?.name}</p>
-          {status && <p className='status'>Active</p>}
         </div>
       </div>
     </div>

@@ -1,12 +1,16 @@
-import { BrowserRouter as Router, Routes as RoutesComponents, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import NotFound from './pages/NotFound';
-import AskAQuestion from './pages/AskAQuestion';
-import AuthForm from './pages/AuthForm';
-import Profile from './pages/Profile';
-import Question from './pages/Question';
-import ProtectedRoute from './components/ProtectedRoute';
-import { AuthProvider } from './context/AuthContext'; // Make sure you have AuthProvider in your imports
+import {
+  BrowserRouter as Router,
+  Routes as RoutesComponents,
+  Route,
+} from "react-router-dom";
+import Home from "./pages/Home";
+import NotFound from "./pages/NotFound";
+import AskAQuestion from "./pages/AskAQuestion";
+import AuthForm from "./pages/AuthForm";
+import Profile from "./pages/Profile";
+import Question from "./pages/Question";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext"; // Make sure you have AuthProvider in your imports
 
 export const Routes = () => {
   return (
