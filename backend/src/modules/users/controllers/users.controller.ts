@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { UsersService } from "../services/users.service";
 import { UserEditMdpDto, UserEditNameDto } from "../dto";
+import { AdminGuard } from "src/guards/admin.guard";
 
 @Controller('users')
 export class UsersController {
@@ -60,6 +61,17 @@ export class UsersController {
     async editName(@Body() nameDto: UserEditNameDto) {
         try {
             return await this.usersService.editName(nameDto);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    @Post('ban/:id')
+    @UseGuards(AdminGuard)
+    async ban(@Param('id') id: string) {
+        try {
+            return await this.usersService.ban(id);
         }
         catch (error) {
             console.log(error);

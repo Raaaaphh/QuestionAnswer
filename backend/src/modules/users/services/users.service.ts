@@ -123,4 +123,21 @@ export class UsersService {
         return await this.userModel.findByPk(id);
     }
 
+    async ban(id: string) {
+        const user = await this.userModel.findOne({
+            where: {
+                idUser: id
+            }
+        });
+
+        if (!user) {
+            throw new ForbiddenException('User not found');
+        }
+
+        user.banned = !user.banned;
+
+        await user.save();
+        return user;
+    }
+
 }

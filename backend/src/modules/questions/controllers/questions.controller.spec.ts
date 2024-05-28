@@ -161,14 +161,14 @@ describe('QuestionsController', () => {
 
     describe('editQuestion', () => {
         it('should call questionsService.editQuestion with correct data', async () => {
-            const dto: QuestionEditDto = { idQuest: '1', title: 'title', description: 'description', context: 'context', idUser: '1' };
+            const dto: QuestionEditDto = { idQuest: '1', title: 'title', description: 'description', context: 'context', idUser: '1', listTags: ['tag1', 'tag2'] };
             await controller.editQuestion(dto);
             expect(service.editQuestion).toHaveBeenCalledWith(dto);
         });
 
         it('should log error if questionsService.editQuestion throws', async () => {
             const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
-            const dto: QuestionEditDto = { idQuest: '1', title: 'title', description: 'description', context: 'context', idUser: '1' };
+            const dto: QuestionEditDto = { idQuest: '1', title: 'title', description: 'description', context: 'context', idUser: '1', listTags: ['tag1', 'tag2'] };
             jest.spyOn(service, 'editQuestion').mockImplementation(() => { throw new Error('Test Error') });
             try {
                 await controller.editQuestion(dto);

@@ -10,8 +10,8 @@ exports.PicturesModule = void 0;
 const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
 const picture_model_1 = require("./picture.model");
-const pictures_service_1 = require("./pictures.service");
-const pictures_controller_1 = require("./pictures.controller");
+const pictures_controller_1 = require("./controllers/pictures.controller");
+const pictures_service_1 = require("./services/pictures.service");
 let PicturesModule = class PicturesModule {
 };
 exports.PicturesModule = PicturesModule;

@@ -29,6 +29,8 @@ const picture_model_1 = require("./modules/pictures/picture.model");
 const pictures_module_1 = require("./modules/pictures/pictures.module");
 const jwt_middleware_1 = require("./middlewares/jwt.middleware");
 const invitation_model_1 = require("./modules/invitations/invitation.model");
+const votes_module_1 = require("./modules/votes/votes.module");
+const vote_model_1 = require("./modules/votes/vote.model");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer
@@ -54,7 +56,7 @@ exports.AppModule = AppModule = __decorate([
                     username: configService.get('DB_USER'),
                     password: configService.get('DB_PASSWORD'),
                     database: configService.get('DB_NAME'),
-                    models: [user_model_1.User, question_model_1.Question, answer_model_1.Answer, favorite_model_1.Favorite, tag_model_1.Tag, questiontag_model_1.QuestionTag, picture_model_1.Picture, invitation_model_1.Invitation],
+                    models: [user_model_1.User, question_model_1.Question, answer_model_1.Answer, favorite_model_1.Favorite, tag_model_1.Tag, questiontag_model_1.QuestionTag, picture_model_1.Picture, invitation_model_1.Invitation, vote_model_1.Vote],
                 }),
                 inject: [config_1.ConfigService],
             }),
@@ -66,7 +68,8 @@ exports.AppModule = AppModule = __decorate([
             invitations_module_1.InvitationsModule,
             tags_module_1.TagsModule,
             questions_module_1.QuestionsModule,
-            pictures_module_1.PicturesModule,],
+            pictures_module_1.PicturesModule,
+            votes_module_1.VotesModule,],
         providers: [app_service_1.AppService],
     })
 ], AppModule);

@@ -35,7 +35,7 @@ function AuthForm({ isRegister = false }: AuthFormProps) {
             localStorage.setItem('token', response.data.token);
             navigate('/');
         } catch (error: any) {
-            setError(error.response.data.message);
+            setError(error.response?.data?.message || 'An error occurred');
         }
     }
 

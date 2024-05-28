@@ -23,8 +23,13 @@ const SearchBar: React.FC = () => {
 
 const BtnQuestion: React.FC = () => {
   return (
+<<<<<<< HEAD
     <Link to="/question">
       <div className="btnQuestion">Ask a question</div>
+=======
+    <Link to='/ask'>
+      <div className='btnQuestion'>Ask a question</div>
+>>>>>>> 1fc7bfca0f160a6a37935dfc8e7d865cb889045e
     </Link>
   );
 };

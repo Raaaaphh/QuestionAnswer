@@ -108,6 +108,19 @@ let UsersService = class UsersService {
     async findById(id) {
         return await this.userModel.findByPk(id);
     }
+    async ban(id) {
+        const user = await this.userModel.findOne({
+            where: {
+                idUser: id
+            }
+        });
+        if (!user) {
+            throw new common_1.ForbiddenException('User not found');
+        }
+        user.banned = !user.banned;
+        await user.save();
+        return user;
+    }
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([

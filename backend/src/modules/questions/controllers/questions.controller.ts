@@ -1,5 +1,5 @@
 import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
-import { QuestionCreateDto, QuestionEditDto } from "../dto";
+import { QuestionCreateDto, QuestionEditDto, QuestionVoteDto } from "../dto";
 import { QuestionsService } from "../services/questions.service";
 import { StudentGuard } from "../../../guards/student.guard";
 
@@ -111,6 +111,26 @@ export class QuestionsController {
         try {
             return this.questionsService.createQuestion(quest);
         } catch (error) {
+            console.log(error);
+        }
+    }
+
+    @Post('addVote')
+    addVote(@Body() dto: QuestionVoteDto) {
+        try {
+            return this.questionsService.addVote(dto);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    @Post('removeVote')
+    removeVote(@Body() dto: QuestionVoteDto) {
+        try {
+            return this.questionsService.removeVote(dto);
+        }
+        catch (error) {
             console.log(error);
         }
     }

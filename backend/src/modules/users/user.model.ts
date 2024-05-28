@@ -3,6 +3,7 @@ import { Question } from '../questions/question.model';
 import { Answer } from '../answers/answer.model';
 import { Favorite } from '../favorites/favorite.model';
 import { Tag } from '../tags/tag.model';
+import { Vote } from '../votes/vote.model';
 
 
 enum Role {
@@ -38,6 +39,9 @@ export class User extends Model {
     @Column
     color: string;
 
+    @Column
+    banned: boolean;
+
     @HasMany(() => Question)
     questions: Question[];
 
@@ -49,5 +53,8 @@ export class User extends Model {
 
     @HasMany(() => Tag)
     tags: Tag[];
+
+    @HasMany(() => Vote)
+    listVotes: Vote[];
 }
 

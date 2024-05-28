@@ -10,4 +10,5 @@ export declare class UsersService {
     editMdp(mdpDto: UserEditMdpDto): Promise<User>;
     editName(userDto: UserEditNameDto): Promise<User>;
     findById(id: string): Promise<User | null>;
+    ban(id: string): Promise<User>;
 }

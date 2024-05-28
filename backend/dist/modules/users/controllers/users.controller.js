@@ -16,6 +16,7 @@ exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
 const users_service_1 = require("../services/users.service");
 const dto_1 = require("../dto");
+const admin_guard_1 = require("../../../guards/admin.guard");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -68,6 +69,14 @@ let UsersController = class UsersController {
             console.log(error);
         }
     }
+    async ban(id) {
+        try {
+            return await this.usersService.ban(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
 };
 exports.UsersController = UsersController;
 __decorate([
@@ -111,6 +120,14 @@ __decorate([
     __metadata("design:paramtypes", [dto_1.UserEditNameDto]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "editName", null);
+__decorate([
+    (0, common_1.Post)('ban/:id'),
+    (0, common_1.UseGuards)(admin_guard_1.AdminGuard),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "ban", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])

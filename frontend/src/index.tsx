@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
@@ -17,14 +18,23 @@ axios.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+=======
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+import { AuthProvider } from './context/AuthContext';
+
+>>>>>>> 1fc7bfca0f160a6a37935dfc8e7d865cb889045e
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+    <AuthProvider>
+        <App />
+    </AuthProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function
