@@ -51,6 +51,7 @@ let AuthService = class AuthService {
             if (error instanceof common_1.ForbiddenException) {
                 throw error;
             }
+            console.log(error);
             throw new common_1.InternalServerErrorException('An unexpected error occurred during login');
         }
     }

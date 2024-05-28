@@ -26,7 +26,7 @@ import { Vote } from './modules/votes/vote.model';
 @Module({
   imports: [ConfigModule.forRoot({
     isGlobal: true,
-    envFilePath: '.env',
+    envFilePath: '../.env',
   }),
     AuthModule,
   SequelizeModule.forRootAsync({
@@ -67,5 +67,4 @@ export class AppModule {
       )
       .forRoutes('*');
   }
-
 }

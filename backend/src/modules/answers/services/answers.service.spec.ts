@@ -26,6 +26,10 @@ const mockSequelize = {
     transaction: jest.fn().mockReturnValue(mockTransaction)
 };
 
+const mockJwtService = {
+    sign: jest.fn()
+};
+
 describe('AnswersService', () => {
     let service: AnswersService;
 
@@ -36,6 +40,7 @@ describe('AnswersService', () => {
                 { provide: getModelToken(Answer), useValue: mockAnswerModel },
                 { provide: getModelToken(Picture), useValue: mockPictureModel },
                 { provide: Sequelize, useValue: mockSequelize },
+                { provide: 'JwtService', useValue: mockJwtService }
             ],
         }).compile();
 
@@ -129,7 +134,7 @@ describe('AnswersService', () => {
             mockAnswerModel.create.mockRejectedValue(new Error('Creation error'));
 
             await expect(service.createAnswer(answDto)).rejects.toThrow(HttpException);
-            expect(mockTransaction.rollback).toHaveBeenCalled(); // Correction ici
+            expect(mockTransaction.rollback).toHaveBeenCalled();
         });
     });
 

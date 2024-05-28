@@ -45,6 +45,7 @@ export class AuthService {
             if (error instanceof ForbiddenException) {
                 throw error;
             }
+            console.log(error);
             throw new InternalServerErrorException('An unexpected error occurred during login');
         }
     }
