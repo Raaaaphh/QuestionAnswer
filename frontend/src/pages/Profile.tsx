@@ -17,22 +17,6 @@ export interface Question {
   flagsSpam: number;
   flagsInappropiate: number;
   status: boolean;
-  user: {
-    idUser: string;
-    name: string;
-    email: string;
-    password: string;
-    confirmed: boolean;
-    emailToken: string;
-    role: any;
-    color: string;
-    banned: boolean;
-  };
-  answers: any[]; 
-  favorites: any[]; 
-  questiontags: { tag: { name: string } }[];
-  pictures: any[];
-  listVotes: any[];
 }
 
 const Profile: React.FC = () => {
@@ -55,6 +39,8 @@ const Profile: React.FC = () => {
 
         const favoritesQuestions = await axios.get('/favorites/${id}');
         setFavorites(favoritesQuestions.data);
+
+
       } catch (error) {
         console.error('Error fetching data', error);
       } finally {
@@ -100,10 +86,10 @@ const Profile: React.FC = () => {
                     idQuest={question.idQuest}
                     title={question.title}
                     description={question.description}
-                    username={question.user.name} // Pass the username prop
+                    username={user.name} // Pass the username prop
                     status={question.status}
-                    tags={question.questiontags.map((qt) => qt.tag.name)}
-                  />
+                    tags={tags.map((qt) => qt)} 
+                    votes={0}                  />
                 ))}
               </div>
             </div>
@@ -116,9 +102,9 @@ const Profile: React.FC = () => {
                     idQuest={question.idQuest}
                     title={question.title}
                     description={question.description}
-                    username={question.user.name}
+                    username={user.name}
                     status={question.status}
-                    tags={question.questiontags.map(qt => qt.tag.name)}
+                    tags={tags.map((qt) => qt)}
                   />
                 ))}
               </div>
