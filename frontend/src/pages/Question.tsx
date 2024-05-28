@@ -23,7 +23,6 @@ And some other content.
 };
 
 const fetchAnswersFromDatabase = async () => {
-  // Simulate a database fetch for the answers
   return [
     {
       idAnsw: "1",
@@ -76,7 +75,7 @@ const Question: React.FC = () => {
       <Header />
       <div className="questionPage">
         <div className="upVote">
-          <AnimatedUpVote />
+          <AnimatedUpVote voteCount={1} />
         </div>
 
         <div className="questionHeader">

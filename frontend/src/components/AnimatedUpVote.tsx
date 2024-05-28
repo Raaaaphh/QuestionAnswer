@@ -1,16 +1,41 @@
 import React, { useState } from "react";
 import "./AnimatedUpVote.css";
 
-const AnimatedUpVote: React.FC = () => {
-  const [clicked, setClicked] = useState(false);
-  const [count, setCount] = useState(0);
+interface AnimatedUpVoteProps {
+  voteCount: number;
+}
 
-  const handleClick = () => {
-    setClicked(!clicked);
-    if (count === 0) {
-      setCount(count + 1);
-    } else {
-      setCount(count - 1);
+const AnimatedUpVote: React.FC<AnimatedUpVoteProps> = ({ voteCount }) => {
+  const [clicked, setClicked] = useState(false);
+  const [hasVoted, setHasVoted] = useState(false);
+  const [count, setCount] = useState(voteCount);
+
+  const handleClick = async () => {
+    if (!clicked) {
+      setClicked(true);
+      setTimeout(() => setClicked(false), 3000);
+
+      if (!hasVoted) {
+        setHasVoted(true);
+        setCount(count + 1);
+        await fetch("http://localhost:3000/addVote", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ questionId: "yourQuestionId" }), // Replace 'yourQuestionId' with the actual question ID
+        });
+      } else {
+        setHasVoted(false);
+        setCount(count - 1);
+        await fetch("http://localhost:3000/removeVote", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ questionId: "yourQuestionId" }), // Replace 'yourQuestionId' with the actual question ID
+        });
+      }
     }
   };
 
