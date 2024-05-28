@@ -33,6 +33,10 @@ export class AuthService {
                 throw new ForbiddenException('Invalid password');
             }
 
+            if (!user.confirmed) {
+                throw new ForbiddenException('User not confirmed');
+            }
+
             if (user.banned) {
                 throw new ForbiddenException('User is banned');
             }
