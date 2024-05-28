@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import Header from '../components/Header';
-import './Profile.css';
-import QuestionComp from '../components/QuestionComp';
-import { mockUsers, mockFavorites, mockQuestions } from '../mocks/mockData';
-import Question from './Question';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import Header from "../components/Header";
+import "./Profile.css";
+import QuestionComp from "../components/QuestionComp";
+import { mockUsers, mockFavorites, mockQuestions } from "../mocks/mockData";
+import Question from "./Question";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
 export interface Question {
   idQuest: string;
@@ -21,7 +21,11 @@ export interface Question {
 
 const Profile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [user, setUser] = useState<{ name: string; email: string; idUser: string} | null>(null);
+  const [user, setUser] = useState<{
+    name: string;
+    email: string;
+    idUser: string;
+  } | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [favorites, setFavorites] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,20 +33,18 @@ const Profile: React.FC = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // Fetch user data
-        const userResponse = await axios.get('/users/${id}'); 
+        const userResponse = await axios.get("/users/${id}");
         setUser(userResponse.data);
 
-        // Fetch questions and favorites
-        const previousQuestions = await axios.get('/questions/findByUser/${id}');
+        const previousQuestions = await axios.get(
+          "/questions/findByUser/${id}"
+        );
         setQuestions(previousQuestions.data);
 
-        const favoritesQuestions = await axios.get('/favorites/${id}');
+        const favoritesQuestions = await axios.get("/favorites/${id}");
         setFavorites(favoritesQuestions.data);
-
-
       } catch (error) {
-        console.error('Error fetching data', error);
+        console.error("Error fetching data", error);
       } finally {
         setLoading(false);
       }
@@ -58,26 +60,26 @@ const Profile: React.FC = () => {
   return (
     <div>
       <Header />
-      <div className='profileContainer'>
+      <div className="profileContainer">
         {user ? (
-          <div className='profileSection'>
-            <div className='userInfos'>
-              <div className='avatarUsername'>
-                <img src='' alt='avatar' className='avatar' />
+          <div className="profileSection">
+            <div className="userInfos">
+              <div className="avatarUsername">
+                <img src="" alt="avatar" className="avatar" />
                 <h2>PROFILE</h2>
               </div>
-              <div className='userDetails'>
-                <div className='userDetail'>
+              <div className="userDetails">
+                <div className="userDetail">
                   <h3>First Name</h3>
                   <p>{user.name}</p>
                 </div>
-                <div className='userDetail'>
+                <div className="userDetail">
                   <h3>Email</h3>
                   <p>{user.email}</p>
                 </div>
               </div>
             </div>
-            <div className='previousQuestions'>
+            <div className="previousQuestions">
               <h3>Previous Questions</h3>
               <div className="questionsContainer">
                 {questions.map((question) => (
@@ -85,13 +87,14 @@ const Profile: React.FC = () => {
                     key={question.idQuest}
                     idQuest={question.idQuest}
                     title={question.title}
-                    description={question.description}
+                    description={question.description} // Pass the username prop
                     status={question.status}
-                    votes={question.votes}                  />
+                    votes={question.votes}
+                  />
                 ))}
               </div>
             </div>
-            <div className='followedQuestions'>
+            <div className="followedQuestions">
               <h3>Followed Questions</h3>
               <div className="questionsContainer">
                 {favorites.map((question) => (
@@ -99,7 +102,7 @@ const Profile: React.FC = () => {
                     key={question.idQuest}
                     idQuest={question.idQuest}
                     title={question.title}
-                    description={question.description}
+                    description={question.description} // Pass the username prop
                     status={question.status}
                     votes={question.votes}
                   />
