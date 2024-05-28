@@ -139,10 +139,18 @@ const ProfileMenu: React.FC = () => {
         <img src={Profile} alt="profile" className="profileIcon" />
       </button>
       {isOpen && (
+<<<<<<< HEAD
         <ul className="dropdown">
           <li className="dropdownItem">Profile</li>
           <li className="dropdownItem">Settings</li>
           <li className="dropdownItem">Logout</li>
+=======
+        <ul className='dropdown'>
+          <li><Link to={'/profile/${idUser}'} className='dropdownItem'>Profile</Link></li>
+          
+          <li className='dropdownItem'>Settings</li>
+          <li className='dropdownItem'>Logout</li>
+>>>>>>> cd9ab8e77d31dde51cdb18757665a40cd53d34b0
         </ul>
       )}
     </div>
@@ -176,12 +184,17 @@ const Header: React.FC = () => {
         </>
       ) : (
         <div className="authButtons">
+<<<<<<< HEAD
           <Link to="/login" className="authButton">
             Login
           </Link>
           <Link to="/register" className="authButton">
             Register
           </Link>
+=======
+          <Link to="/auth/login" className="authButton">Login</Link>
+          <Link to="/auth/register" className="authButton">Register</Link>
+>>>>>>> cd9ab8e77d31dde51cdb18757665a40cd53d34b0
         </div>
       )}
     </header>

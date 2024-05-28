@@ -5,14 +5,15 @@ import upVoteLogo from "../assets/upVoteButton.svg";
 import AnimatedUpVote from "./AnimatedUpVote";
 
 interface QuestionProps {
-  idQuest: number;
+  idQuest: string;
   title: string;
   description: string;
   username: string;
-  status: string;
+  status: boolean;
   tags: string[];
 }
 
+<<<<<<< HEAD
 const QuestionComp: React.FC<QuestionProps> = ({
   idQuest,
   title,
@@ -31,6 +32,20 @@ const QuestionComp: React.FC<QuestionProps> = ({
           <Link to={`/question/${idQuest}`} className="seeMoreLink">
             See more ...
           </Link>
+=======
+const QuestionComp: React.FC<QuestionProps> = ({ idQuest, title, description, username, status, tags }) => {
+  
+  return (
+    <div key={idQuest} className="questionItem">
+      <div className='voteSection'>
+        <p>8</p> {/* Assuming static votes for now */}
+        <img src={upVoteLogo} alt="upVoteLogo" />
+      </div>
+      <div className='textRightPart'>
+        <div className="questionTop">
+          <Link to={`/question/${idQuest}`} className="title">{title}</Link>
+          <Link to={`/question/${idQuest}`} className="seeMoreLink">See more ...</Link>
+>>>>>>> cd9ab8e77d31dde51cdb18757665a40cd53d34b0
         </div>
 
         <p className="description">{description}</p>
@@ -43,7 +58,12 @@ const QuestionComp: React.FC<QuestionProps> = ({
                 </p>
               ))}
           </div>
+<<<<<<< HEAD
           <p className="postedBy">Posted by: {username}</p>
+=======
+          <p>Posted by: {username}</p>
+          {status && <p className='status'>Active</p>}
+>>>>>>> cd9ab8e77d31dde51cdb18757665a40cd53d34b0
         </div>
       </div>
     </div>

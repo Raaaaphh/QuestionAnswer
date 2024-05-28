@@ -62,7 +62,11 @@ export class AppModule {
   //   consumer
   //     .apply(JwtMiddleware)
   //     .exclude(
+<<<<<<< HEAD
   //       { path: 'auth/register', method: RequestMethod.POST },
+=======
+  //       { path: 'auth/register', method: RequestMethod.POST },    //to remove
+>>>>>>> cd9ab8e77d31dde51cdb18757665a40cd53d34b0
   //       { path: 'auth/login', method: RequestMethod.POST },
   //     )
   //     .forRoutes('*');
