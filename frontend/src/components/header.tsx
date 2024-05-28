@@ -140,7 +140,8 @@ const ProfileMenu: React.FC = () => {
       </button>
       {isOpen && (
         <ul className='dropdown'>
-          <li className='dropdownItem'>Profile</li>
+          <li><Link to={'/profile/${idUser}'} className='dropdownItem'>Profile</Link></li>
+          
           <li className='dropdownItem'>Settings</li>
           <li className='dropdownItem'>Logout</li>
         </ul>

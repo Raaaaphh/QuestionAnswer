@@ -12,16 +12,17 @@ interface QuestionProps {
   tags: string[];
 }
 
-const QuestionComp: React.FC<QuestionProps> = ({ idQuest, title, description, username, tags }) => {
+const QuestionComp: React.FC<QuestionProps> = ({ idQuest, title, description, username, status, tags }) => {
+  
   return (
     <div key={idQuest} className="questionItem">
       <div className='voteSection'>
-        <p>8</p>
+        <p>8</p> {/* Assuming static votes for now */}
         <img src={upVoteLogo} alt="upVoteLogo" />
       </div>
       <div className='textRightPart'>
         <div className="questionTop">
-          <Link to={`/question/${idQuest}`} className="tilte">{title}</Link>
+          <Link to={`/question/${idQuest}`} className="title">{title}</Link>
           <Link to={`/question/${idQuest}`} className="seeMoreLink">See more ...</Link>
         </div>
         
@@ -33,6 +34,7 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, title, description, us
             ))}
           </div>
           <p>Posted by: {username}</p>
+          {status && <p className='status'>Active</p>}
         </div>
       </div>
     </div>

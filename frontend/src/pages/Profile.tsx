@@ -1,76 +1,69 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import './Profile.css';
 import QuestionComp from '../components/QuestionComp';
+import { mockUsers, mockFavorites, mockQuestions } from '../mocks/mockData';
+import Question from './Question';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
-// Define the interfaces for your data structures
-interface User {
-  idUser: string;
-  name: string;
-  email: string;
-  avatar: string;
-}
-
-interface Tag {
-  idTag: string;
-  name: string;
-}
-
-interface Question {
+export interface Question {
   idQuest: string;
+  idUser: string;
   title: string;
   description: string;
-  user: User;
+  context: string;
+  votes: number;
+  flagsSpam: number;
+  flagsInappropiate: number;
   status: boolean;
-  questiontags: { tag: Tag }[];
+  user: {
+    idUser: string;
+    name: string;
+    email: string;
+    password: string;
+    confirmed: boolean;
+    emailToken: string;
+    role: any;
+    color: string;
+    banned: boolean;
+  };
+  answers: any[]; 
+  favorites: any[]; 
+  questiontags: { tag: { name: string } }[];
+  pictures: any[];
+  listVotes: any[];
 }
 
-interface Favorite {
-  idQuest: string;
-  question: Question;
-}
-
-function Profile() {
-  const [user, setUser] = useState<User | null>(null);
+const Profile: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const [user, setUser] = useState<{ name: string; email: string; idUser: string} | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [favorites, setFavorites] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
-  const userId = '1';
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`/users/${userId}`);
-        setUser(response.data);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
+        // Fetch user data
+        const userResponse = await axios.get('/users/${id}'); 
+        setUser(userResponse.data);
 
-    const fetchUserQuestions = async () => {
-      try {
-        const response = await axios.get(`/questions/findByUser/${userId}`);
-        setQuestions(response.data);
-      } catch (error) {
-        console.error('Error fetching user questions:', error);
-      }
-    };
+        // Fetch questions and favorites
+        const previousQuestions = await axios.get('/questions/findByUser/${id}');
+        setQuestions(previousQuestions.data);
 
-    const fetchUserFavorites = async () => {
-      try {
-        const response = await axios.get(`/favorites/findByUser/${userId}`);
-        setFavorites(response.data.map((fav: Favorite) => fav.question));
+        const favoritesQuestions = await axios.get('/favorites/${id}');
+        setFavorites(favoritesQuestions.data);
       } catch (error) {
-        console.error('Error fetching user favorites:', error);
+        console.error('Error fetching data', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchUserData();
-    fetchUserQuestions();
-    fetchUserFavorites();
-    setLoading(false);
-  }, [userId]);
+  }, [id]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -84,7 +77,7 @@ function Profile() {
           <div className='profileSection'>
             <div className='userInfos'>
               <div className='avatarUsername'>
-                <img src={user.avatar} alt='avatar' className='avatar' />
+                <img src='' alt='avatar' className='avatar' />
                 <h2>PROFILE</h2>
               </div>
               <div className='userDetails'>
@@ -107,9 +100,9 @@ function Profile() {
                     idQuest={question.idQuest}
                     title={question.title}
                     description={question.description}
-                    username={question.user.name} 
+                    username={question.user.name} // Pass the username prop
                     status={question.status}
-                    tags={question.questiontags.map(qt => qt.tag.name)}
+                    tags={question.questiontags.map((qt) => qt.tag.name)}
                   />
                 ))}
               </div>
@@ -123,9 +116,9 @@ function Profile() {
                     idQuest={question.idQuest}
                     title={question.title}
                     description={question.description}
-                    username={question.user.name} 
+                    username={question.user.name}
                     status={question.status}
-                    tags={question.questiontags.map(qt => qt.tag.name)} 
+                    tags={question.questiontags.map(qt => qt.tag.name)}
                   />
                 ))}
               </div>
@@ -137,6 +130,6 @@ function Profile() {
       </div>
     </div>
   );
-}
+};
 
 export default Profile;

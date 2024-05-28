@@ -17,6 +17,7 @@ export const mockUsers = [
       emailToken: 'token123',
       role: Role.Student,
       color: '#FFA500',
+      banned: false,
     },
     {
       idUser: '2',
@@ -27,6 +28,7 @@ export const mockUsers = [
       emailToken: 'token456',
       role: Role.Lecturer,
       color: '#00FF00',
+      banned: false,
     },
     
 

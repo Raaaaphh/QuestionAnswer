@@ -26,7 +26,7 @@ import { Vote } from './modules/votes/vote.model';
 @Module({
   imports: [ConfigModule.forRoot({
     isGlobal: true,
-    envFilePath: '.env',
+    envFilePath: '../.env',
   }),
     AuthModule,
   SequelizeModule.forRootAsync({
@@ -58,14 +58,14 @@ import { Vote } from './modules/votes/vote.model';
   providers: [AppService],
 })
 export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(JwtMiddleware)
-      .exclude(
-        { path: 'auth/register', method: RequestMethod.POST },
-        { path: 'auth/login', method: RequestMethod.POST },
-      )
-      .forRoutes('*');
-  }
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer
+  //     .apply(JwtMiddleware)
+  //     .exclude(
+  //       { path: 'auth/register', method: RequestMethod.POST },    //to remove
+  //       { path: 'auth/login', method: RequestMethod.POST },
+  //     )
+  //     .forRoutes('*');
+  // }
 
 }
