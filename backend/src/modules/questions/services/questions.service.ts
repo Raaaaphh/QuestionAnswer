@@ -7,7 +7,7 @@ import { Question } from "../question.model";
 import { QuestionCreateDto, QuestionEditDto, QuestionVoteDto } from "../dto";
 import { QuestionTag } from "../../questiontags/questiontag.model";
 import { Picture } from "../../pictures/picture.model";
-import { Vote } from "src/modules/votes/vote.model";
+import { Vote } from "../../votes/vote.model";
 
 @Injectable()
 export class QuestionsService {
