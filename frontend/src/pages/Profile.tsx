@@ -86,10 +86,8 @@ const Profile: React.FC = () => {
                     idQuest={question.idQuest}
                     title={question.title}
                     description={question.description}
-                    username={user.name} // Pass the username prop
                     status={question.status}
-                    tags={tags.map((qt) => qt)} 
-                    votes={0}                  />
+                    votes={question.votes}                  />
                 ))}
               </div>
             </div>
@@ -102,9 +100,8 @@ const Profile: React.FC = () => {
                     idQuest={question.idQuest}
                     title={question.title}
                     description={question.description}
-                    username={user.name}
                     status={question.status}
-                    tags={tags.map((qt) => qt)}
+                    votes={question.votes}
                   />
                 ))}
               </div>

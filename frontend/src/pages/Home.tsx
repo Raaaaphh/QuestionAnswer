@@ -97,9 +97,8 @@ const Home = () => {
                 idQuest={question.idQuest}
                 title={question.title}
                 description={question.description}
-                username="ee"
                 status={question.status}
-                tags={question.tags}
+                votes={question.votes}
               />
             ))}
           </div>

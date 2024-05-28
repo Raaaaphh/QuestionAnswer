@@ -13,8 +13,7 @@ interface QuestionProps {
   votes: number;
 }
 
-const QuestionComp: React.FC<QuestionProps> = ({ idQuest, title, description, status }) => {
-  const [question, setQuestion] = useState<{ idUser: string } | null>(null);
+const QuestionComp: React.FC<QuestionProps> = ({ idQuest, title, description}) => {
   const [user, setUser] = useState<{ name: string } | null>(null);
   const [loading, setLoading] = useState(true); // Add loading state
   const [tags, setTags] = useState<string[]>([]);
@@ -24,7 +23,6 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, title, description, st
       try {
         // Fetch question data
         const questionResponse = await axiosInstance.get(`/questions/${idQuest}`);
-        setQuestion(questionResponse.data);
 
         const userId = questionResponse.data.idUser; // Use the response data directly
 
