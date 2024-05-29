@@ -40,6 +40,9 @@ let AuthService = class AuthService {
             if (!valid) {
                 throw new common_1.ForbiddenException('Invalid password');
             }
+            if (!user.confirmed) {
+                throw new common_1.ForbiddenException('User not confirmed');
+            }
             if (user.banned) {
                 throw new common_1.ForbiddenException('User is banned');
             }
