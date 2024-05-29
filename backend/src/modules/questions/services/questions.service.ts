@@ -286,9 +286,13 @@ export class QuestionsService {
             return quest;
         } catch (error) {
             console.error(error);
+            if (error instanceof ForbiddenException) {
+                throw error;
+            }
             throw new HttpException(error.message || 'Error during the edition of the question', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     async deleteQuestion(id: string) {
         const question = await this.questModel.findOne({
