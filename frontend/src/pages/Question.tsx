@@ -5,70 +5,61 @@ import MarkdownRenderer from "../components/MarkdownRenderer";
 import Answer from "../components/Answer";
 import upVote from "../assets/upVoteButton.svg";
 import AnimatedUpVote from "../components/AnimatedUpVote";
+import axiosInstance from "../utils/axiosInstance";
+import { useParams } from "react-router-dom";
 
-const fetchMarkdownFromDatabase = async () => {
-  // Simulate a database fetch
-  return `
-
-Here is a code snippet:
-
-\`\`\`javascript
-function sayHello() {
-  console.log("Hello, world!");
+interface Question {
+  idQuest: string;
+  idUser: string;
+  title: string;
+  description: string;
+  context: string;
 }
-\`\`\`
-
-And some other content.
-  `;
-};
-
-const fetchAnswersFromDatabase = async () => {
-  return [
-    {
-      idAnsw: "1",
-      idUser: "user1",
-      content: `
-      Here is a code snippet:
-      
-      \`\`\`javascript
-      function sayHello() {
-        console.log("Answer n°1!");
-      }
-      \`\`\`
-      
-      And some other content.
-        `,
-      final: false,
-    },
-    {
-      idAnsw: "2",
-      idUser: "user2",
-      content: `
-\`\`\`javascript
-function answerTwo() {
-  console.log("This is answer two!");
-}
-\`\`\`
-      `,
-      final: true,
-    },
-  ];
-};
 
 const Question: React.FC = () => {
   const [markdownContent, setMarkdownContent] = useState<string>("");
   const [answers, setAnswers] = useState<any[]>([]);
+  const [question, setQuestion] = useState<Question | null>(null);
+  const [user, setUser] = useState();
+  const { idQuest } = useParams<{ idQuest: string }>();
+
+  const fetchQuestionsFromDatabase = async () => {
+    try {
+      const response = await axiosInstance.get(`questions/${idQuest}`);
+      setQuestion(response.data);
+      console.log("Question fetched from database:", response.data);
+    } catch (error) {
+      console.error("Error fetching questions from database:", error);
+    }
+  };
+
+  const fetchUserFromDatabase = async (userId: string) => {
+    try {
+      const response = await axiosInstance.get(`users/${userId}`);
+      setUser(response.data);
+      console.log("User fetched from database:", user);
+    } catch (error) {
+      console.error("Error fetching user from database:", error);
+    }
+  };
 
   useEffect(() => {
-    const getData = async () => {
-      const data = await fetchMarkdownFromDatabase();
-      setMarkdownContent(data);
-      const answerData = await fetchAnswersFromDatabase();
-      setAnswers(answerData);
+    const fetchQuestionsAndUser = async () => {
+      await fetchQuestionsFromDatabase();
+      if (question && question.idUser) {
+        fetchUserFromDatabase(question.idUser);
+      }
     };
 
-    getData();
-  }, []);
+    fetchQuestionsAndUser();
+  }, [idQuest]);
+
+  useEffect(() => {
+    if (question && question.idUser) {
+      fetchUserFromDatabase(question.idUser);
+      console.log("LALALALA", typeof question.idUser);
+    }
+  }, [question]);
 
   return (
     <div>
