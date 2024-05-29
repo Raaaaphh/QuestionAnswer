@@ -1,38 +1,89 @@
-import React from 'react';
-import './QuestionComp.css';
-import { Link } from 'react-router-dom';
-import upVoteLogo from '../assets/upVoteButton.svg';
+import React, { useEffect, useState } from "react";
+import "./QuestionComp.css";
+import { Link } from "react-router-dom";
+import upVoteLogo from "../assets/upVoteButton.svg";
+import axiosInstance from "../utils/axiosInstance";
+import AnimatedUpVote from "./AnimatedUpVote";
+import { stripVTControlCharacters } from "util";
 
 interface QuestionProps {
-  idQuest: number;
+  idQuest: string;
   title: string;
   description: string;
-  username: string;
-  status: string;
-  tags: string[];
+  status: boolean;
+  votes: number;
 }
 
-const QuestionComp: React.FC<QuestionProps> = ({ idQuest, title, description, username, tags }) => {
+const QuestionComp: React.FC<QuestionProps> = ({
+  idQuest,
+  title,
+  description,
+  status,
+  votes,
+}) => {
+  const [question, setQuestion] = useState<{ idUser: string } | null>(null);
+  const [user, setUser] = useState<{ name: string } | null>(null);
+  const [loading, setLoading] = useState(true); // Add loading state
+  const [tags, setTags] = useState<string[]>([]);
+  const [voteCount, setVoteCount] = useState<number>(votes);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // Fetch question data
+        const questionResponse = await axiosInstance.get(
+          `/questions/${idQuest}`
+        );
+        setQuestion(questionResponse.data);
+
+        const userId = questionResponse.data.idUser; // Use the response data directly
+        setVoteCount(questionResponse.data.votes);
+        // Fetch user data
+        const userResponse = await axiosInstance.get(`/users/${userId}`);
+        setUser(userResponse.data);
+
+        const questionTagsResponse = await axiosInstance.get(
+          `/tags/${idQuest}`
+        );
+        setTags(questionTagsResponse.data);
+      } catch (error) {
+        console.error("Error fetching data", error);
+      } finally {
+        setLoading(false); // Ensure loading state is set correctly
+      }
+    };
+
+    fetchUserData();
+  }, [idQuest]); // Include idQuest in the dependency array
+
+  if (loading) {
+    return <div>Loading...</div>; // Add loading state handling
+  }
+
   return (
     <div key={idQuest} className="questionItem">
-      <div className='voteSection'>
-        <p>8</p>
-        <img src={upVoteLogo} alt="upVoteLogo" />
-      </div>
-      <div className='textRightPart'>
+      <AnimatedUpVote voteCount={voteCount} />
+      <div className="textRightPart">
         <div className="questionTop">
-          <Link to={`/question/${idQuest}`} className="tilte">{title}</Link>
-          <Link to={`/question/${idQuest}`} className="seeMoreLink">See more ...</Link>
+          <Link to={`/question/${idQuest}`} className="tilte">
+            {title}
+          </Link>
+          <Link to={`/question/${idQuest}`} className="seeMoreLink">
+            See more ...
+          </Link>
         </div>
-        
-        <p className='description'>{description}</p>
-        <div className='questionBottom'>
-          <div className='tags'>
-            {tags && tags.map((tag, index) => (
-              <p key={index} className='tagQComp'>{tag}</p>
-            ))}
+
+        <p className="description">{description}</p>
+        <div className="questionBottom">
+          <div className="tags">
+            {tags &&
+              tags.map((tag, index) => (
+                <p key={index} className="tagQComp">
+                  {tag}
+                </p>
+              ))}
           </div>
-          <p>Posted by: {username}</p>
+          <p className="postedBy">Posted by: {user?.name}</p>
         </div>
       </div>
     </div>
