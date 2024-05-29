@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {jwtDecode} from "jwt-decode"; // Default import for jwt-decode
+import axios from "axios";
 import "./Header.css";
 import UTPLogo from "../assets/logo.png";
 import Bell from "../assets/notif.svg";
@@ -9,6 +11,11 @@ import Filter from "../assets/filter.svg";
 import User from "../assets/user.svg";
 import Key from "../assets/key.svg";
 import Tag from "../assets/tag.svg";
+
+interface MyJwtPayload {
+  idUser: string;
+  // Add other properties if your payload has more fields
+}
 
 const SearchBar: React.FC = () => {
   return (
@@ -112,7 +119,7 @@ const FilterMenu: React.FC = () => {
   );
 };
 
-const ProfileMenu: React.FC = () => {
+const ProfileMenu: React.FC<{ idUser: string }> = ({ idUser }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -141,11 +148,10 @@ const ProfileMenu: React.FC = () => {
       {isOpen && (
         <ul className="dropdown">
           <li>
-            <Link to={"/profile/${idUser}"} className="dropdownItem">
+            <Link to={`/profile/${idUser}`} className="dropdownItem">
               Profile
             </Link>
           </li>
-
           <li className="dropdownItem">Settings</li>
           <li className="dropdownItem">Logout</li>
         </ul>
@@ -155,12 +161,31 @@ const ProfileMenu: React.FC = () => {
 };
 
 const Header: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [userStatus, setUserStatus] = useState<string | null>(null);
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   setIsLoggedIn(!!token);
-  // }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode<MyJwtPayload>(token);
+        console.log("Decoded token", decodedToken);
+        setIsLoggedIn(true);
+        axios.get(`/users/${decodedToken.idUser}`)
+          .then(response => {
+            setUserStatus(response.data.status);
+          })
+          .catch(error => {
+            console.error("Error fetching user status", error);
+          });
+      } catch (error) {
+        console.error("Error decoding token", error);
+        setIsLoggedIn(false);
+      }
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
 
   return (
     <header className="header">
@@ -174,13 +199,14 @@ const Header: React.FC = () => {
       <SearchBar />
       {isLoggedIn ? (
         <>
-          <FilterMenu />
+          {/* Render components for logged-in user */}
           <BtnQuestion />
           <NotificationMenu />
-          <ProfileMenu />
+          <ProfileMenu idUser="user-id" />
         </>
       ) : (
         <div className="authButtons">
+          {/* Redirect to login/register if not logged in */}
           <Link to="/auth/login" className="authButton">
             Login
           </Link>
@@ -189,6 +215,7 @@ const Header: React.FC = () => {
           </Link>
         </div>
       )}
+      {userStatus && <div>User Status: {userStatus}</div>}
     </header>
   );
 };

@@ -9,7 +9,7 @@ import { InvitationsModule } from '../invitations/invitations.module';
     imports: [UsersModule,
         JwtModule.register({
             secret: 'questionanswer',
-            signOptions: { expiresIn: '60m' },
+            signOptions: { expiresIn: '0s' },
         }),
         InvitationsModule,
     ],
