@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import "./Profile.css";
 import QuestionComp from "../components/QuestionComp";
-import { mockUsers, mockFavorites, mockQuestions } from "../mocks/mockData";
-import Question from "./Question";
 import axios from "axios";
+import {jwtDecode} from "jwt-decode"; // Import jwtDecode
 import { useParams } from "react-router-dom";
+import axiosInstance from "../utils/axiosInstance";
 
 export interface Question {
   idQuest: string;
@@ -33,15 +33,20 @@ const Profile: React.FC = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userResponse = await axios.get("/users/${id}");
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No token found");
+        }
+        const decodedToken = jwtDecode(token) as { id: string };
+        const userId = decodedToken.id;
+
+        const userResponse = await axiosInstance.get(`/users/${userId}`);
         setUser(userResponse.data);
 
-        const previousQuestions = await axios.get(
-          "/questions/findByUser/${id}"
-        );
+        const previousQuestions = await axiosInstance.get(`/questions/findByUser/${userId}`);
         setQuestions(previousQuestions.data);
 
-        const favoritesQuestions = await axios.get("/favorites/${id}");
+        const favoritesQuestions = await axiosInstance.get(`/favorites/${userId}`);
         setFavorites(favoritesQuestions.data);
       } catch (error) {
         console.error("Error fetching data", error);
