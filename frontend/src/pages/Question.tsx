@@ -3,10 +3,10 @@ import "./Question.css";
 import Header from "../components/Header";
 import MarkdownRenderer from "../components/MarkdownRenderer";
 import Answer from "../components/Answer";
-import upVote from "../assets/upVoteButton.svg";
 import AnimatedUpVote from "../components/AnimatedUpVote";
 import axiosInstance from "../utils/axiosInstance";
 import { useParams } from "react-router-dom";
+import { use } from "marked";
 
 interface Question {
   idQuest: string;
@@ -14,13 +14,29 @@ interface Question {
   title: string;
   description: string;
   context: string;
+  updatedAt: string;
+  votes: number;
+}
+
+interface User {
+  idUser: string;
+  name: string;
+  email: string;
+  password: string;
+  confirmed: boolean;
+  banned: boolean;
+  color: string;
+  createdAt: string;
+  emailToken: string;
+  role: string;
+  updatedAt: string;
 }
 
 const Question: React.FC = () => {
   const [markdownContent, setMarkdownContent] = useState<string>("");
   const [answers, setAnswers] = useState<any[]>([]);
   const [question, setQuestion] = useState<Question | null>(null);
-  const [user, setUser] = useState();
+  const [user, setUser] = useState<User | null>(null);
   const { idQuest } = useParams<{ idQuest: string }>();
 
   const fetchQuestionsFromDatabase = async () => {
@@ -43,6 +59,18 @@ const Question: React.FC = () => {
     }
   };
 
+  const fetchAnswersFromDatabase = async (idQuestion: string) => {
+    try {
+      const response = await axiosInstance.get(
+        `answers/findByQuestion/${idQuestion}`
+      );
+      setAnswers(response.data);
+      console.log("Answers fetched from database:", response.data);
+    } catch (error) {
+      console.error("Error fetching answers from database:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchQuestionsAndUser = async () => {
       await fetchQuestionsFromDatabase();
@@ -57,16 +85,24 @@ const Question: React.FC = () => {
   useEffect(() => {
     if (question && question.idUser) {
       fetchUserFromDatabase(question.idUser);
-      console.log("LALALALA", typeof question.idUser);
     }
   }, [question]);
+
+  useEffect(() => {
+    console.log("LALALA:", idQuest);
+    if (question && question.idQuest) {
+      fetchAnswersFromDatabase(question.idQuest);
+    }
+  }, [idQuest]);
 
   return (
     <div>
       <Header />
+
       <div className="questionPage">
         <div className="upVote">
-          <AnimatedUpVote voteCount={1} />
+          <p>Votes: {question ? question.votes : "Loading..."}</p>
+          <AnimatedUpVote voteCount={question ? question.votes : 0} />
         </div>
 
         <div className="questionHeader">
@@ -76,25 +112,37 @@ const Question: React.FC = () => {
               alt="avatar"
               className="avatarQuestion"
             />
-            <p className="username">Username</p>
+            <p className="username">{user ? user.name : "Loading..."}</p>
           </div>
+
           <div className="date">
-            <p>Posted on: 2021-09-01</p>
+            <p>Posted on: {question ? question.updatedAt : "Loading..."}</p>
           </div>
         </div>
         <div className="questionContainer">
-          <h1>How to center a div in CSS?</h1>
+          <h1>{question ? question.title : "Loading..."}</h1>
           <div className="questionDescription">
             <h2>Description:</h2>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua...
+              {question ? (
+                <MarkdownRenderer markdownSource={question.description} />
+              ) : (
+                "Loading..."
+              )}
             </p>
           </div>
           <div className="questionContext">
-            <MarkdownRenderer markdownSource={markdownContent} />
+            <h2>Context:</h2>
+            <p>
+              {question ? (
+                <MarkdownRenderer markdownSource={question.context} />
+              ) : (
+                "Loading..."
+              )}
+            </p>
           </div>
         </div>
+
         <div className="answersSection">
           {answers.map((answer) => (
             <Answer key={answer.idAnsw} answer={answer} />
