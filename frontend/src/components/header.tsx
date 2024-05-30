@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {jwtDecode} from "jwt-decode"; // Corrected import for jwt-decode
 import axiosInstance from "../utils/axiosInstance";
 import "./Header.css";
@@ -122,9 +122,17 @@ const FilterMenu: React.FC = () => {
 const ProfileMenu: React.FC<{ idUser: string }> = ({ idUser }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
+  const navigate = useNavigate();
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsOpen(false);
+    navigate("/auth/login")
   };
 
   useEffect(() => {
@@ -152,8 +160,7 @@ const ProfileMenu: React.FC<{ idUser: string }> = ({ idUser }) => {
               Profile
             </Link>
           </li>
-          <li className="dropdownItem">Settings</li>
-          <li className="dropdownItem">Logout</li>
+          <li className="dropdownItem" onClick={handleLogout}>Logout</li>
         </ul>
       )}
     </div>
@@ -188,10 +195,12 @@ const Header: React.FC = () => {
             });
         } else {
           console.log("Token has expired");
+          localStorage.removeItem("token"); // Remove token from localStorage
           setIsLoggedIn(false);
         }
       } catch (error) {
         console.error("Error decoding token", error);
+        localStorage.removeItem("token"); // Remove token from localStorage
         setIsLoggedIn(false);
       }
     } else {
@@ -211,7 +220,6 @@ const Header: React.FC = () => {
       <SearchBar />
       {isLoggedIn ? (
         <>
-          {/* Render components for logged-in user */}
           <FilterMenu />
           <BtnQuestion />
           <NotificationMenu />
@@ -219,7 +227,6 @@ const Header: React.FC = () => {
         </>
       ) : (
         <div className="authButtons">
-          {/* Redirect to login/register if not logged in */}
           <Link to="/auth/login" className="authButton">
             Login
           </Link>
