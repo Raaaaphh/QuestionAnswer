@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { UsersService } from "../services/users.service";
 import { UserEditMdpDto, UserEditNameDto } from "../dto";
-import { AdminGuard } from "src/guards/admin.guard";
+import { AdminGuard } from "../../../guards/admin.guard";
 
 @Controller('users')
 export class UsersController {
@@ -30,7 +30,7 @@ export class UsersController {
     @Get(':id')
     async findOne(@Param('id') id: string) {
         try {
-            return await this.usersService.findOne(id);
+            return await this.usersService.findById(id);
         }
         catch (error) {
             console.log(error);

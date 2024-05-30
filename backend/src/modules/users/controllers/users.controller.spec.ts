@@ -11,7 +11,7 @@ describe('UsersController', () => {
     const mockUsersService = {
         findAll: jest.fn(),
         findByName: jest.fn(),
-        findOne: jest.fn(),
+        findById: jest.fn(),
         remove: jest.fn(),
         editMdp: jest.fn(),
         editName: jest.fn(),
@@ -49,11 +49,11 @@ describe('UsersController', () => {
         });
     });
 
-    describe('findOne', () => {
+    describe('findById', () => {
         it('should call usersService.findOne with correct id', async () => {
             const id = '1';
             await controller.findOne(id);
-            expect(service.findOne).toHaveBeenCalledWith(id);
+            expect(service.findById).toHaveBeenCalledWith(id);
         });
     });
 
