@@ -11,7 +11,6 @@ import { QuestionsService } from './questions.service';
 import { QuestionCreateDto, QuestionEditDto, QuestionVoteDto } from '../dto';
 import sequelize from 'sequelize';
 import { Op } from 'sequelize';
-import { title } from 'process';
 
 jest.mock('uuid', () => ({
     ...jest.requireActual('uuid'),

@@ -66,6 +66,10 @@ let AuthService = class AuthService {
             const color = colors[Math.floor(Math.random() * colors.length)];
             const crypto = require('crypto');
             const emailToken = crypto.randomBytes(64).toString("hex");
+            const sameUser = await this.userModel.findOne({ where: { email: authreg.email } });
+            if (sameUser) {
+                throw new common_1.BadRequestException('Email already in use');
+            }
             const newUser = await this.userModel.create({
                 idUser,
                 name: authreg.name,
