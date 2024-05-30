@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import "./Profile.css";
 import QuestionComp from "../components/QuestionComp";
-import axios from "axios";
-import {jwtDecode} from "jwt-decode"; // Import jwtDecode
 import { useParams } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
+import {jwtDecode} from "jwt-decode"; // Corrected import
 
 export interface Question {
   idQuest: string;
@@ -25,6 +24,7 @@ const Profile: React.FC = () => {
     name: string;
     email: string;
     idUser: string;
+    color: string;
   } | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [favorites, setFavorites] = useState<Question[]>([]);
@@ -37,12 +37,11 @@ const Profile: React.FC = () => {
         if (!token) {
           throw new Error("No token found");
         }
-        const decodedToken = jwtDecode(token) as { id: string };
+        const decodedToken = jwtDecode(token) as { id: string};
         const userId = decodedToken.id;
-
         const userResponse = await axiosInstance.get(`/users/${userId}`);
         setUser(userResponse.data);
-
+        console.log("User color", userResponse.data.color);
         const previousQuestions = await axiosInstance.get(`/questions/findByUser/${userId}`);
         setQuestions(previousQuestions.data);
 
@@ -58,9 +57,16 @@ const Profile: React.FC = () => {
     fetchUserData();
   }, [id]);
 
+  
+
   if (loading) {
     return <div>Loading...</div>;
   }
+
+  const getInitials = (name: string) => {
+    const initials = name.split(" ").map(part => part[0]).join("");
+    return initials.slice(0, 2).toUpperCase();
+  };
 
   return (
     <div>
@@ -70,7 +76,9 @@ const Profile: React.FC = () => {
           <div className="profileSection">
             <div className="userInfos">
               <div className="avatarUsername">
-                <img src="" alt="avatar" className="avatar" />
+                <div className="avatar" style={{ backgroundColor: "#"+user.color }}>
+                  <span className="initials">{getInitials(user.name)}</span>
+                </div>
                 <h2>PROFILE</h2>
               </div>
               <div className="userDetails">

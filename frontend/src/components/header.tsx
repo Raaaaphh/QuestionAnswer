@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {jwtDecode} from "jwt-decode"; // Corrected import for jwt-decode
-import axios from "axios";
+import axiosInstance from "../utils/axiosInstance";
 import "./Header.css";
 import UTPLogo from "../assets/logo.png";
 import Bell from "../assets/notif.svg";
@@ -11,11 +11,10 @@ import Filter from "../assets/filter.svg";
 import User from "../assets/user.svg";
 import Key from "../assets/key.svg";
 import Tag from "../assets/tag.svg";
-import axiosInstance from "../utils/axiosInstance";
 
 interface MyJwtPayload {
   id: string;
-  // Add other properties if your payload has more fields
+  exp: number;
 }
 
 const SearchBar: React.FC = () => {
@@ -168,22 +167,29 @@ const Header: React.FC = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log("Token from local storage :", token);
+    console.log("Token from local storage:", token);
     if (token) {
       try {
         const decodedToken = jwtDecode<MyJwtPayload>(token);
         console.log("Decoded token", decodedToken);
-        setIsLoggedIn(true);
-        const idUser = decodedToken.id;
-        console.log(typeof idUser);
-        axiosInstance.get(`/users/${idUser}`)
-          .then(response => {
-            setUserStatus(response.data.role);
-            setUserId(response.data.id);
-          })
-          .catch(error => {
-            console.error("Error fetching user status", error);
-          });
+
+        const currentTime = Date.now() / 1000;
+        if (decodedToken.exp > currentTime) {
+          setIsLoggedIn(true);
+          const idUser = decodedToken.id;
+          console.log(typeof idUser);
+          axiosInstance.get(`/users/${idUser}`)
+            .then(response => {
+              setUserStatus(response.data.role);
+              setUserId(response.data.id);
+            })
+            .catch(error => {
+              console.error("Error fetching user status", error);
+            });
+        } else {
+          console.log("Token has expired");
+          setIsLoggedIn(false);
+        }
       } catch (error) {
         console.error("Error decoding token", error);
         setIsLoggedIn(false);
