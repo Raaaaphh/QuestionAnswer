@@ -206,6 +206,7 @@ const Header: React.FC = () => {
       {isLoggedIn ? (
         <>
           {/* Render components for logged-in user */}
+          <FilterMenu />
           <BtnQuestion />
           <NotificationMenu />
           <ProfileMenu idUser={userId} />
