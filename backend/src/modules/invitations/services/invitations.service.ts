@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { InjectModel } from "@nestjs/sequelize";
 import { Invitation, Role } from "../invitation.model";
 import { JwtService } from "@nestjs/jwt";
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
@@ -7,7 +6,7 @@ import { sendMailInvitation } from "../../../mailers/mail.utils";
 
 @Injectable()
 export class InvitationsService {
-    constructor(@InjectModel(Invitation) private questModel: typeof Invitation, private jwtService: JwtService) { }
+    constructor(private jwtService: JwtService) { }
 
     async sendInvitation(email: string, role: string) {
         const invitation = new Invitation();

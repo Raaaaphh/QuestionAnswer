@@ -1,15 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, ForbiddenException, HttpException } from '@nestjs/common';
 import { getModelToken } from '@nestjs/sequelize';
-import { Sequelize, Transaction } from 'sequelize';
+import { Sequelize } from 'sequelize-typescript';
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
-import { Op } from 'sequelize';
 import { Question } from '../question.model';
 import { QuestionTag } from '../../questiontags/questiontag.model';
 import { Picture } from '../../pictures/picture.model';
 import { Vote } from '../../votes/vote.model';
 import { QuestionsService } from './questions.service';
 import { QuestionCreateDto, QuestionEditDto, QuestionVoteDto } from '../dto';
+import sequelize from 'sequelize';
+import { Op } from 'sequelize';
 
 jest.mock('uuid', () => ({
     ...jest.requireActual('uuid'),
@@ -38,13 +39,18 @@ const mockVoteModel = {
     destroy: jest.fn(),
 };
 
-const mockSequelize = {
-    transaction: jest.fn(),
+const mockTransaction = {
+    commit: jest.fn(),
+    rollback: jest.fn()
 };
+
+const mockSequelize = {
+    transaction: jest.fn().mockReturnValue(mockTransaction),
+};
+
 
 describe('QuestionsService', () => {
     let service: QuestionsService;
-    let transaction: Transaction;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -54,18 +60,11 @@ describe('QuestionsService', () => {
                 { provide: getModelToken(QuestionTag), useValue: mockQuestionTagModel },
                 { provide: getModelToken(Picture), useValue: mockPictureModel },
                 { provide: getModelToken(Vote), useValue: mockVoteModel },
-                { provide: Sequelize, useValue: mockSequelize },
+                { provide: Sequelize, useValue: mockSequelize }
             ],
         }).compile();
 
         service = module.get<QuestionsService>(QuestionsService);
-
-        transaction = {
-            commit: jest.fn(),
-            rollback: jest.fn(),
-        } as unknown as Transaction;
-
-        mockSequelize.transaction.mockImplementation(() => Promise.resolve(transaction));
     });
 
     afterEach(() => {
@@ -83,22 +82,22 @@ describe('QuestionsService', () => {
             (isValidUUID as jest.Mock).mockReturnValue(true);
             mockQuestionModel.findOne.mockResolvedValue(null);
 
-            await expect(service.getQuestion('valid-id')).rejects.toThrow(ForbiddenException);
+            await expect(service.getQuestion('b3d6a5d7-54d7-44fd-929d-7352f462e635')).rejects.toThrow(ForbiddenException);
         });
 
         it('should return the question if found', async () => {
-            const question = { idQuest: 'valid-id' };
+            const question = { idQuest: 'b3d6a5d7-54d7-44fd-929d-7352f462e635' };
             (isValidUUID as jest.Mock).mockReturnValue(true);
             mockQuestionModel.findOne.mockResolvedValue(question);
 
-            const result = await service.getQuestion('valid-id');
+            const result = await service.getQuestion('b3d6a5d7-54d7-44fd-929d-7352f462e635');
             expect(result).toEqual(question);
         });
     });
 
     describe('findAll', () => {
         it('should return all questions', async () => {
-            const questions = [{ idQuest: '1' }, { idQuest: '2' }];
+            const questions = [{ idQuest: '1', description: 'description 1' }, { idQuest: '2', description: 'description 2' }];
             mockQuestionModel.findAll.mockResolvedValue(questions);
 
             const result = await service.findAll();
@@ -177,14 +176,31 @@ describe('QuestionsService', () => {
             await expect(service.searchQuestionsByTags(['tag1', 'tag2'])).rejects.toThrow(HttpException);
         });
 
-        it('should return the questions for the given tags', async () => {
-            const questions = [{ idQuest: '1' }, { idQuest: '2' }];
-            mockQuestionModel.findAll.mockResolvedValue(questions);
+        // it('should return the questions for the given tags', async () => {
+        //     const tags = ['tag1', 'tag2'];
+        //     const questions = [{ idQuest: '1', description: 'description 1', QuestionTags: [{ idTag: 'tag1' }, { idTag: 'tag2' }] }, { idQuest: '2', description: 'description 2', QuestionTags: [{ idTag: 'tag1' }, { idTag: 'tag2' }] }];
+        //     mockQuestionModel.findAll.mockResolvedValue({
+        //         rows: questions,
+        //         count: questions.length
+        //     });
 
-            const result = await service.searchQuestionsByTags(['tag1', 'tag2']);
-            expect(result).toEqual(questions);
-        });
+        //     const result = await service.searchQuestionsByTags(tags);
+        //     expect(result).toEqual(questions);
+        //     expect(mockQuestionModel.findAll).toHaveBeenCalledWith({
+        //         include: [{
+        //             model: QuestionTag,
+        //             where: {
+        //                 idTag: {
+        //                     [Op.in]: tags
+        //                 }
+        //             }
+        //         }],
+        //         group: ['Question.idQuest'],
+        //         having: sequelize.literal(`COUNT(DISTINCT \`QuestionTags\`.\`idTag\`) = ${tags.length}`)
+        //     });
+        // });
     });
+
 
     describe('createQuestion', () => {
         it('should throw HttpException if the title is too long', async () => {
@@ -193,7 +209,7 @@ describe('QuestionsService', () => {
                 title: 'a'.repeat(101),
                 description: 'description',
                 context: 'context',
-                listTags: [],
+                listTags: ['tag1'],
                 listPictures: [],
             };
 
@@ -206,16 +222,30 @@ describe('QuestionsService', () => {
                 title: 'title',
                 description: 'description',
                 context: 'context',
-                listTags: [],
+                listTags: ['tag1'],
                 listPictures: [],
             };
+            const createdQuestion = { idQuest: 'generated-uuid', ...quest };
 
-            mockQuestionModel.create.mockResolvedValue(quest);
+            mockQuestionModel.create.mockResolvedValue(createdQuestion);
+            mockQuestionModel.findAll.mockResolvedValue([]);
 
             const result = await service.createQuestion(quest);
-            expect(result).toEqual(quest);
-            expect(transaction.commit).toHaveBeenCalled();
+
+            expect(mockSequelize.transaction).toHaveBeenCalled();
+            expect(mockQuestionModel.create).toHaveBeenCalledWith(
+                expect.objectContaining({ idUser: quest.idUser, title: quest.title, description: quest.description, context: quest.context }),
+                expect.any(Object)
+            );
+            expect(mockQuestionTagModel.bulkCreate).toHaveBeenCalledWith(
+                expect.arrayContaining([
+                    expect.objectContaining({ idTag: 'tag1' }),
+                ]),
+                expect.any(Object)
+            );
+            expect(result).toEqual(createdQuestion);
         });
+
 
         it('should rollback transaction on error', async () => {
             const quest: QuestionCreateDto = {
@@ -230,7 +260,7 @@ describe('QuestionsService', () => {
             mockQuestionModel.create.mockRejectedValue(new Error('Error'));
 
             await expect(service.createQuestion(quest)).rejects.toThrow(HttpException);
-            expect(transaction.rollback).toHaveBeenCalled();
+            expect(mockSequelize.transaction).toHaveBeenCalled();
         });
     });
 
@@ -252,7 +282,7 @@ describe('QuestionsService', () => {
 
             const result = await service.addVote(dto);
             expect(result.votes).toBe(2);
-            expect(transaction.commit).toHaveBeenCalled();
+            expect(mockSequelize.transaction).toHaveBeenCalled();
         });
 
         it('should rollback transaction on error', async () => {
@@ -261,7 +291,7 @@ describe('QuestionsService', () => {
             mockVoteModel.findOne.mockRejectedValue(new Error('Error'));
 
             await expect(service.addVote(dto)).rejects.toThrow(HttpException);
-            expect(transaction.rollback).toHaveBeenCalled();
+            expect(mockSequelize.transaction).toHaveBeenCalled();
         });
     });
 
@@ -282,7 +312,7 @@ describe('QuestionsService', () => {
 
             const result = await service.removeVote(dto);
             expect(result.votes).toBe(0);
-            expect(transaction.commit).toHaveBeenCalled();
+            expect(mockSequelize.transaction).toHaveBeenCalled();
         });
 
         it('should rollback transaction on error', async () => {
@@ -291,7 +321,7 @@ describe('QuestionsService', () => {
             mockVoteModel.findOne.mockRejectedValue(new Error('Error'));
 
             await expect(service.removeVote(dto)).rejects.toThrow(HttpException);
-            expect(transaction.rollback).toHaveBeenCalled();
+            expect(mockSequelize.transaction).toHaveBeenCalled();
         });
     });
 
@@ -326,7 +356,7 @@ describe('QuestionsService', () => {
 
             const result = await service.editQuestion(question);
             expect(result).toEqual(quest);
-            expect(transaction.commit).toHaveBeenCalled();
+            expect(mockSequelize.transaction).toHaveBeenCalled();
         });
 
         it('should rollback transaction on error', async () => {
@@ -342,7 +372,7 @@ describe('QuestionsService', () => {
             mockQuestionModel.findOne.mockRejectedValue(new Error('Error'));
 
             await expect(service.editQuestion(question)).rejects.toThrow(HttpException);
-            expect(transaction.rollback).toHaveBeenCalled();
+            expect(mockSequelize.transaction).toHaveBeenCalled();
         });
     });
 

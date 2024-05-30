@@ -1,37 +1,30 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { InvitationsService } from './invitations.service';
 import { Invitation } from '../invitation.model';
-import { JwtService } from '@nestjs/jwt';
-import { SequelizeModule } from '@nestjs/sequelize';
-import { getModelToken } from '@nestjs/sequelize';
 import { NotFoundException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { v4 as uuidv4 } from 'uuid';
+import * as jwt from 'jsonwebtoken';
 
 describe('InvitationsService', () => {
     let service: InvitationsService;
+    let invitationModel: typeof Invitation;
     let jwtService: JwtService;
-    const mockInvitation = new Invitation();
-    const mockJwtService = {
-        sign: jest.fn().mockReturnValue('fake_token'),
-        verify: jest.fn().mockReturnValue({ email: 'test@example.com', role: 'admin' }),
-    };
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 InvitationsService,
                 {
-                    provide: JwtService,
-                    useValue: mockJwtService,
+                    provide: 'InvitationRepository',
+                    useValue: Invitation,
                 },
-                {
-                    provide: getModelToken(Invitation),
-                    useValue: mockInvitation,
-                },
+                JwtService,
             ],
-            imports: [SequelizeModule.forRoot({ dialect: 'postgres' })],
         }).compile();
 
         service = module.get<InvitationsService>(InvitationsService);
+        invitationModel = module.get<typeof Invitation>('InvitationRepository');
         jwtService = module.get<JwtService>(JwtService);
     });
 
@@ -41,33 +34,53 @@ describe('InvitationsService', () => {
 
     describe('sendInvitation', () => {
         it('should create a new invitation and return it', async () => {
-            mockInvitation.save = jest.fn().mockResolvedValue(mockInvitation);
-            const result = await service.sendInvitation('test@example.com', 'admin');
+            const email = 'test@example.com';
+            const role = 'admin';
+            const mockInvitation = {
+                idInvitation: uuidv4(),
+                email,
+                role,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            };
+            jest.spyOn(invitationModel, 'create').mockResolvedValue(mockInvitation);
+            jest.spyOn(jwtService, 'sign').mockReturnValue('mock_token');
+            const sendMailInvitation = jest.fn();
+            service['sendMailInvitation'] = sendMailInvitation;
+
+            const result = await service.sendInvitation(email, role);
 
             expect(result).toEqual(mockInvitation);
-            expect(mockInvitation.save).toHaveBeenCalledTimes(1);
-            expect(jwtService.sign).toHaveBeenCalledWith(
-                { email: 'test@example.com', role: 'admin' },
-                { expiresIn: '7d' },
-            );
+            expect(invitationModel.create).toHaveBeenCalledWith({ email, role: 'admin' });
+            expect(jwtService.sign).toHaveBeenCalledWith({ email, role: 'admin' }, { expiresIn: '7d' });
+            expect(sendMailInvitation).toHaveBeenCalledWith(email, `http://localhost:5173/register/invitation?token=mock_token`);
+            delete service['sendMailInvitation'];
         });
     });
 
     describe('validateInvitation', () => {
-        it('should return the decoded token when the token is valid', async () => {
-            const result = await service.validateInvitation('fake_token');
+        it('should return the email and role from a valid token', async () => {
+            const email = 'test@example.com';
+            const role = 'admin';
+            const secret = 'my-secret-key';
+            const token = jwt.sign({ email, role }, secret, { expiresIn: '1h' });
 
-            expect(result).toEqual({ email: 'test@example.com', role: 'admin' });
-            expect(jwtService.verify).toHaveBeenCalledWith('fake_token');
+            jest.spyOn(jwtService, 'verify').mockReturnValue({ email, role });
+
+            const options = { secret };
+
+            const result = await service.validateInvitation(token);
+
+            expect(result).toEqual({ email, role });
+            expect(jwtService.verify).toHaveBeenCalledWith(token, options);
         });
 
-        it('should throw a NotFoundException when the token is invalid or expired', async () => {
-            mockJwtService.verify.mockRejectedValueOnce(new Error());
 
-            await expect(service.validateInvitation('invalid_token')).rejects.toThrow(
-                NotFoundException,
-            );
-            expect(jwtService.verify).toHaveBeenCalledWith('invalid_token');
+        it('should throw a NotFoundException for an invalid token', async () => {
+            const token = 'invalid_token';
+
+            await expect(service.validateInvitation(token)).rejects.toThrow(NotFoundException);
+            await expect(service.validateInvitation(token)).rejects.toHaveProperty('message', 'Invalid or expired token');
         });
     });
 });

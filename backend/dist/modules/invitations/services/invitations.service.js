@@ -8,20 +8,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.InvitationsService = void 0;
 const common_1 = require("@nestjs/common");
-const sequelize_1 = require("@nestjs/sequelize");
 const invitation_model_1 = require("../invitation.model");
 const jwt_1 = require("@nestjs/jwt");
 const uuid_1 = require("uuid");
 const mail_utils_1 = require("../../../mailers/mail.utils");
 let InvitationsService = class InvitationsService {
-    constructor(questModel, jwtService) {
-        this.questModel = questModel;
+    constructor(jwtService) {
         this.jwtService = jwtService;
     }
     async sendInvitation(email, role) {
@@ -49,7 +44,6 @@ let InvitationsService = class InvitationsService {
 exports.InvitationsService = InvitationsService;
 exports.InvitationsService = InvitationsService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, sequelize_1.InjectModel)(invitation_model_1.Invitation)),
-    __metadata("design:paramtypes", [Object, jwt_1.JwtService])
+    __metadata("design:paramtypes", [jwt_1.JwtService])
 ], InvitationsService);
 //# sourceMappingURL=invitations.service.js.map

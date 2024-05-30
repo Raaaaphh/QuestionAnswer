@@ -1,4 +1,4 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
 @Injectable()
@@ -11,6 +11,10 @@ export class AdminGuard implements CanActivate {
 
         if (!user) {
             throw new UnauthorizedException('User not found');
+        }
+
+        if (user.role !== 'Lecturer' && user.role !== 'SuperAdmin') {
+            throw new ForbiddenException('User is not authorized to access this resource');
         }
 
         return user.role === 'Lecturer' || user.role === 'SuperAdmin';

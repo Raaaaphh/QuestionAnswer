@@ -5,7 +5,7 @@ import { JwtPayload } from 'jsonwebtoken';
 import { UsersService } from 'src/modules/users/services/users.service';
 
 interface CustomRequest extends Request {
-    user?: any; // Déclarez une propriété `user` optionnelle
+    user?: any;
 }
 
 @Injectable()

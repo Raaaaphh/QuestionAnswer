@@ -65,6 +65,10 @@ export class AuthService {
             const crypto = require('crypto');
             const emailToken = crypto.randomBytes(64).toString("hex");
 
+            const sameUser = await this.userModel.findOne({ where: { email: authreg.email } });
+            if (sameUser) {
+                throw new BadRequestException('Email already in use');
+            }
             const newUser = await this.userModel.create({
                 idUser,
                 name: authreg.name,

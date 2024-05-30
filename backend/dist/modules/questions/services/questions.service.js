@@ -256,6 +256,9 @@ let QuestionsService = class QuestionsService {
         }
         catch (error) {
             console.error(error);
+            if (error instanceof common_1.ForbiddenException) {
+                throw error;
+            }
             throw new common_1.HttpException(error.message || 'Error during the edition of the question', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
