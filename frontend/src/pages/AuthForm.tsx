@@ -48,8 +48,8 @@ function AuthForm({ isRegister = false }: AuthFormProps) {
           setError("An error as occurred while sending the request.");
         }
       }
-    } catch (error) {
-      setError("An error as occurred while sending the request.");
+    } catch (error: any) {
+      setError(error.response.data.message);
     }
   };
 

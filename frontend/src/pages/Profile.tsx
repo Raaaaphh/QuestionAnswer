@@ -4,7 +4,9 @@ import "./Profile.css";
 import QuestionComp from "../components/QuestionComp";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
-import {jwtDecode} from "jwt-decode"; // Corrected import
+import {jwtDecode} from "jwt-decode";
+import ProfilePicture from '../components/ProfilePicture';
+
 
 export interface Question {
   idQuest: string;
@@ -63,10 +65,7 @@ const Profile: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  const getInitials = (name: string) => {
-    const initials = name.split(" ").map(part => part[0]).join("");
-    return initials.slice(0, 2).toUpperCase();
-  };
+
 
   return (
     <div>
@@ -76,8 +75,8 @@ const Profile: React.FC = () => {
           <div className="profileSection">
             <div className="userInfos">
               <div className="avatarUsername">
-                <div className="avatar" style={{ backgroundColor: "#"+user.color }}>
-                  <span className="initials">{getInitials(user.name)}</span>
+                <div className="profilePicture">
+                  <ProfilePicture userId={user.idUser}/>
                 </div>
                 <h2>PROFILE</h2>
               </div>
