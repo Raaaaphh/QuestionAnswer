@@ -31,6 +31,16 @@ let UsersService = class UsersService {
             console.log(error);
         }
     }
+    async findById(id) {
+        if (!(0, uuid_1.validate)(id)) {
+            throw new common_1.BadRequestException('Invalid user ID');
+        }
+        const user = await this.userModel.findByPk(id);
+        if (!user) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        return user;
+    }
     async findByName(name) {
         try {
             const users = await this.userModel.findAll({
@@ -51,6 +61,9 @@ let UsersService = class UsersService {
         }
     }
     async remove(id) {
+        if (!(0, uuid_1.validate)(id)) {
+            throw new common_1.BadRequestException('Invalid user ID');
+        }
         const user = await this.userModel.findOne({
             where: {
                 idUser: id
@@ -96,21 +109,6 @@ let UsersService = class UsersService {
         await user.save();
         return user;
     }
-    async findById(id) {
-        try {
-            if (!(0, uuid_1.validate)(id)) {
-                throw new common_1.BadRequestException('Invalid user ID');
-            }
-            const user = this.userModel.findByPk(id);
-            if (!user) {
-                throw new common_1.NotFoundException('User not found');
-            }
-            return user;
-        }
-        catch (error) {
-            console.log(error);
-        }
-    }
     async ban(id) {
         try {
             if (!(0, uuid_1.validate)(id)) {
@@ -130,6 +128,7 @@ let UsersService = class UsersService {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 };

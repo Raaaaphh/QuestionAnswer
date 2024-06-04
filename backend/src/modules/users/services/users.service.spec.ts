@@ -168,14 +168,6 @@ describe('UsersService', () => {
             await expect(service.editMdp(dto)).rejects.toThrow(ForbiddenException);
         });
 
-        it('should edit the password', async () => {
-            const dto: UserEditMdpDto = {
-                idUser: 'b3d6a5d7-54d7-44fd-929d-7352f462e635',
-                oldpassword: 'password',
-                newpassword: 'newpassword',
-                confirmpassword: 'confirmpassword'
-            };
-        });
 
         it('should update the user password', async () => {
             const dto: UserEditMdpDto = {
