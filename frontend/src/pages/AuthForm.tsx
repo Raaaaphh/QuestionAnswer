@@ -31,8 +31,12 @@ function AuthForm({ isRegister = false }: AuthFormProps) {
       const url = isRegister ? "/auth/register" : "/auth/login";
       const payload = isRegister
         ? { name, email, password }
-        : { email, password };
-      const response = await axiosInstance.post(url, payload);
+        : { name, password };
+      const response = await axiosInstance.post(url, payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.data) {
         if (isRegister) {
@@ -44,8 +48,8 @@ function AuthForm({ isRegister = false }: AuthFormProps) {
           setError("An error as occurred while sending the request.");
         }
       }
-    } catch (error) {
-      setError("An error as occurred while sending the request.");
+    } catch (error: any) {
+      setError(error.response.data.message);
     }
   };
 

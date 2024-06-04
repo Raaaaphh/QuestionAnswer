@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {jwtDecode} from "jwt-decode"; // Corrected import for jwt-decode
+import axiosInstance from "../utils/axiosInstance";
 import "./Header.css";
 import UTPLogo from "../assets/logo.png";
 import Bell from "../assets/notif.svg";
@@ -9,6 +11,11 @@ import Filter from "../assets/filter.svg";
 import User from "../assets/user.svg";
 import Key from "../assets/key.svg";
 import Tag from "../assets/tag.svg";
+
+interface MyJwtPayload {
+  id: string;
+  exp: number;
+}
 
 const SearchBar: React.FC = () => {
   return (
@@ -112,12 +119,20 @@ const FilterMenu: React.FC = () => {
   );
 };
 
-const ProfileMenu: React.FC = () => {
+const ProfileMenu: React.FC<{ idUser: string }> = ({ idUser }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
+  const navigate = useNavigate();
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsOpen(false);
+    navigate("/auth/login")
   };
 
   useEffect(() => {
@@ -141,13 +156,11 @@ const ProfileMenu: React.FC = () => {
       {isOpen && (
         <ul className="dropdown">
           <li>
-            <Link to={"/profile/${idUser}"} className="dropdownItem">
+            <Link to={`/profile/${idUser}`} className="dropdownItem">
               Profile
             </Link>
           </li>
-
-          <li className="dropdownItem">Settings</li>
-          <li className="dropdownItem">Logout</li>
+          <li className="dropdownItem" onClick={handleLogout}>Logout</li>
         </ul>
       )}
     </div>
@@ -155,12 +168,45 @@ const ProfileMenu: React.FC = () => {
 };
 
 const Header: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [userStatus, setUserStatus] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string>("");
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   setIsLoggedIn(!!token);
-  // }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    console.log("Token from local storage:", token);
+    if (token) {
+      try {
+        const decodedToken = jwtDecode<MyJwtPayload>(token);
+        console.log("Decoded token", decodedToken);
+
+        const currentTime = Date.now() / 1000;
+        if (decodedToken.exp > currentTime) {
+          setIsLoggedIn(true);
+          const idUser = decodedToken.id;
+          console.log(typeof idUser);
+          axiosInstance.get(`/users/${idUser}`)
+            .then(response => {
+              setUserStatus(response.data.role);
+              setUserId(response.data.id);
+            })
+            .catch(error => {
+              console.error("Error fetching user status", error);
+            });
+        } else {
+          console.log("Token has expired");
+          localStorage.removeItem("token"); // Remove token from localStorage
+          setIsLoggedIn(false);
+        }
+      } catch (error) {
+        console.error("Error decoding token", error);
+        localStorage.removeItem("token"); // Remove token from localStorage
+        setIsLoggedIn(false);
+      }
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
 
   return (
     <header className="header">
@@ -177,7 +223,7 @@ const Header: React.FC = () => {
           <FilterMenu />
           <BtnQuestion />
           <NotificationMenu />
-          <ProfileMenu />
+          <ProfileMenu idUser={userId} />
         </>
       ) : (
         <div className="authButtons">
@@ -189,6 +235,7 @@ const Header: React.FC = () => {
           </Link>
         </div>
       )}
+      {userStatus && <div>User Status: {userStatus}</div>}
     </header>
   );
 };
