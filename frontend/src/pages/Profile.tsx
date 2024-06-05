@@ -101,12 +101,8 @@ const Profile: React.FC = () => {
               <div className="questionsContainer">
                 {questions.map((question) => (
                   <QuestionComp
-                    key={question.idQuest}
                     idQuest={question.idQuest}
-                    title={question.title}
-                    description={question.description} // Pass the username prop
-                    status={question.status}
-                    votes={question.votes}
+                    reportDisplay={false}
                   />
                 ))}
               </div>
@@ -116,12 +112,8 @@ const Profile: React.FC = () => {
               <div className="questionsContainer">
                 {favorites.map((question) => (
                   <QuestionComp
-                    key={question.idQuest}
                     idQuest={question.idQuest}
-                    title={question.title}
-                    description={question.description} // Pass the username prop
-                    status={question.status}
-                    votes={question.votes}
+                    reportDisplay={false}
                   />
                 ))}
               </div>

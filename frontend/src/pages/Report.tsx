@@ -54,7 +54,7 @@ const Report = () => {
 
     const fetchQuestionsFromDatabase = async () => {
         try {
-            const response = await axiosInstance.get("questions");
+            const response = await axiosInstance.get("questions"); //TO CAHNGE !!!
             setReportedQuestions(response.data);
             console.log("Reported Questions fetched from database:", response.data);
         } catch (error) {
@@ -72,12 +72,8 @@ const Report = () => {
                     <div className="questionsContainer">
                         {reportedQuestions.map((question: any) => (
                             <QuestionComp
-                                key={question.idQuest}
                                 idQuest={question.idQuest}
-                                title={question.title}
-                                description={question.description}
-                                status={question.status}
-                                votes={question.votes}
+                                reportDisplay={true}
                             />
                         ))}
                     </div>
