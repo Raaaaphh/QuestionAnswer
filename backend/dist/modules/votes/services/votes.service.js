@@ -22,7 +22,12 @@ let VotesService = class VotesService {
     }
     async hasUserVoted(idUser, idQuest) {
         const vote = await this.voteModel.findOne({ where: { idUser, idQuest } });
-        return !!vote;
+        if (!vote) {
+            throw new common_1.BadRequestException('User has not voted');
+        }
+        else {
+            return true;
+        }
     }
 };
 exports.VotesService = VotesService;
