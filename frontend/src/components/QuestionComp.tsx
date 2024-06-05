@@ -22,13 +22,17 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
     context: string;
     votes: number;
     status: boolean;
+    flagsSpam: number;
+    flagsInappropriate: number;
   }>({
     idUser: '',
     title: '',
     description: '',
     context: '',
     votes: 0,
-    status: false
+    status: false,
+    flagsSpam: 0,
+    flagsInappropriate: 0,
   });
   const [user, setUser] = useState<{ name: string } | null>(null);
   const [loading, setLoading] = useState(true);
@@ -89,7 +93,7 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
       {reportDisplay ===true && 
       <div className="reportCount">
         <img src={flagLogo} alt="flag" className="flagLogo" />
-        <p>{question?.votes}</p>
+        <p>{question?.flagsSpam + question?.flagsInappropriate}</p>
       </div>
       
       }
