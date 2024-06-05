@@ -12,5 +12,6 @@ import { FavoritesModule } from '../favorites/favorites.module';
     imports: [SequelizeModule.forFeature([Question]), QuestiontagsModule, PicturesModule, VotesModule, FavoritesModule],
     providers: [QuestionsService],
     controllers: [QuestionsController],
+    exports: [SequelizeModule, QuestionsService]
 })
 export class QuestionsModule { }

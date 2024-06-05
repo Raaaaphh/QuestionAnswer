@@ -24,6 +24,7 @@ exports.QuestionsModule = QuestionsModule = __decorate([
         imports: [sequelize_1.SequelizeModule.forFeature([question_model_1.Question]), questiontags_module_1.QuestiontagsModule, pictures_module_1.PicturesModule, votes_module_1.VotesModule, favorites_module_1.FavoritesModule],
         providers: [questions_service_1.QuestionsService],
         controllers: [questions_controller_1.QuestionsController],
+        exports: [sequelize_1.SequelizeModule, questions_service_1.QuestionsService]
     })
 ], QuestionsModule);
 //# sourceMappingURL=questions.module.js.map

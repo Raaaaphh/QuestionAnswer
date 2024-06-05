@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/c
 import { AnswerCreateDto } from "../dto";
 import { AnswersService } from "../services/answers.service";
 import { AdminGuard } from "../../../guards/admin.guard"
+import { AnswerGuard } from "src/guards/answer.guard";
 
 @Controller('answers')
 export class AnswersController {
@@ -48,7 +49,7 @@ export class AnswersController {
     }
 
     @Post('create')
-    @UseGuards(AdminGuard)
+    @UseGuards(AnswerGuard)
     createAnswer(@Body() answer: AnswerCreateDto) {
         try {
             return this.answersService.createAnswer(answer);
