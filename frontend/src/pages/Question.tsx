@@ -32,6 +32,14 @@ interface User {
   updatedAt: string;
 }
 
+interface Answer {
+  idAnsw: string;
+  idUser: string;
+  idQuest: string;
+  description: string;
+  updatedAt: string;
+}
+
 const Question: React.FC = () => {
   const [markdownContent, setMarkdownContent] = useState<string>("");
   const [answers, setAnswers] = useState<any[]>([]);
@@ -39,60 +47,90 @@ const Question: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const { idQuest } = useParams<{ idQuest: string }>();
 
-  const fetchQuestionsFromDatabase = async () => {
-    try {
-      const response = await axiosInstance.get(`questions/${idQuest}`);
-      setQuestion(response.data);
-      console.log("Question fetched from database:", response.data);
-    } catch (error) {
-      console.error("Error fetching questions from database:", error);
-    }
-  };
+  // const fetchQuestionsFromDatabase = async () => {
+  //   try {
+  //     const response = await axiosInstance.get(`questions/${idQuest}`);
+  //     setQuestion(response.data);
+  //     console.log("Question fetched from database:", response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching questions from database:", error);
+  //   }
+  // };
 
-  const fetchUserFromDatabase = async (userId: string) => {
-    try {
-      const response = await axiosInstance.get(`users/${userId}`);
-      setUser(response.data);
-      console.log("User fetched from database:", user);
-    } catch (error) {
-      console.error("Error fetching user from database:", error);
-    }
-  };
+  // const fetchUserFromDatabase = async (userId: string) => {
+  //   try {
+  //     const response = await axiosInstance.get(`users/${userId}`);
+  //     setUser(response.data);
+  //     console.log("User fetched from database:", user);
+  //   } catch (error) {
+  //     console.error("Error fetching user from database:", error);
+  //   }
+  // };
 
-  const fetchAnswersFromDatabase = async (idQuestion: string) => {
-    try {
-      const response = await axiosInstance.get(
-        `answers/findByQuestion/${idQuestion}`
-      );
-      setAnswers(response.data);
-      console.log("Answers fetched from database:", response.data);
-    } catch (error) {
-      console.error("Error fetching answers from database:", error);
-    }
-  };
+  // const fetchAnswersFromDatabase = async (idQuestion: string) => {
+  //   try {
+  //     console.log("idQuestion:", idQuestion);
+  //     const response = await axiosInstance.get(
+  //       `answers/findByQuestion/${idQuestion}`
+  //     );
+  //     setAnswers(response.data);
+  //     console.log("Answers fetched from database:", response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching answers from database:", error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (question && question.idQuest) {
+  //     fetchAnswersFromDatabase(question.idQuest);
+  //   }
+  // }, [idQuest]);
+
+  // useEffect(() => {
+  //   const fetchQuestionsAndUser = async () => {
+  //     await fetchQuestionsFromDatabase();
+  //     if (question && question.idUser) {
+  //       fetchUserFromDatabase(question.idUser);
+  //     }
+  //   };
+
+  //   fetchQuestionsAndUser();
+  // }, [idQuest]);
+
+  // useEffect(() => {
+  //   if (question && question.idUser) {
+  //     fetchUserFromDatabase(question.idUser);
+  //   }
+  // }, [question]);
 
   useEffect(() => {
-    const fetchQuestionsAndUser = async () => {
-      await fetchQuestionsFromDatabase();
-      if (question && question.idUser) {
-        fetchUserFromDatabase(question.idUser);
+    const fetchData = async () => {
+      try {
+        const questionResponse = await axiosInstance.get(
+          `questions/${idQuest}`
+        );
+        const fetchedQuestion = questionResponse.data;
+        setQuestion(fetchedQuestion);
+
+        if (fetchedQuestion.idUser) {
+          const userResponse = await axiosInstance.get(
+            `users/${fetchedQuestion.idUser}`
+          );
+          setUser(userResponse.data);
+        }
+
+        if (fetchedQuestion.idQuest) {
+          const answersResponse = await axiosInstance.get(
+            `answers/findByQuestion/${fetchedQuestion.idQuest}`
+          );
+          setAnswers(answersResponse.data);
+        }
+      } catch (error) {
+        console.error("Error fetching data from database:", error);
       }
     };
 
-    fetchQuestionsAndUser();
-  }, [idQuest]);
-
-  useEffect(() => {
-    if (question && question.idUser) {
-      fetchUserFromDatabase(question.idUser);
-    }
-  }, [question]);
-
-  useEffect(() => {
-    console.log("LALALA:", idQuest);
-    if (question && question.idQuest) {
-      fetchAnswersFromDatabase(question.idQuest);
-    }
+    fetchData();
   }, [idQuest]);
 
   return (
@@ -101,7 +139,6 @@ const Question: React.FC = () => {
 
       <div className="questionPage">
         <div className="upVote">
-          <p>Votes: {question ? question.votes : "Loading..."}</p>
           <AnimatedUpVote voteCount={question ? question.votes : 0} />
         </div>
 
@@ -124,29 +161,36 @@ const Question: React.FC = () => {
           <div className="questionDescription">
             <h2>Description:</h2>
             <p>
-              {question ? (
-                <MarkdownRenderer markdownSource={question.description} />
-              ) : (
-                "Loading..."
-              )}
+              <div>
+                {question ? (
+                  <MarkdownRenderer markdownSource={question.description} />
+                ) : (
+                  "Loading..."
+                )}
+              </div>
             </p>
           </div>
           <div className="questionContext">
             <h2>Context:</h2>
             <p>
-              {question ? (
-                <MarkdownRenderer markdownSource={question.context} />
-              ) : (
-                "Loading..."
-              )}
+              <div>
+                {question ? (
+                  <MarkdownRenderer markdownSource={question.context} />
+                ) : (
+                  "Loading..."
+                )}
+              </div>
             </p>
           </div>
         </div>
-
         <div className="answersSection">
-          {answers.map((answer) => (
-            <Answer key={answer.idAnsw} answer={answer} />
-          ))}
+          {answers.length === 0 ? (
+            <p>No answers available.</p>
+          ) : (
+            answers.map((answer) => (
+              <Answer key={answer.idAnsw} answer={answer} />
+            ))
+          )}
         </div>
       </div>
     </div>
