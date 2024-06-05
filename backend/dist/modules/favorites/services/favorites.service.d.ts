@@ -6,6 +6,8 @@ export declare class FavoritesService {
     getFavorites(): Promise<Favorite[]>;
     getFavoritesQuestion(id: string): Promise<Favorite[]>;
     getFavoritesUser(id: string): Promise<Favorite[]>;
+    notifyFavorites(id: string): Promise<Favorite[]>;
+    deleteNotified(dto: FavoriteDto): Promise<Favorite>;
     addFavorite(favDto: FavoriteDto): Promise<Favorite>;
     removeFavorite(favDto: FavoriteDto): Promise<Favorite>;
 }

@@ -44,6 +44,14 @@ let FavoritesController = class FavoritesController {
             console.log(error);
         }
     }
+    async notifyFavorites(idUser) {
+        try {
+            return await this.favService.notifyFavorites(idUser);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
     async addFavorite(favDto) {
         try {
             return await this.favService.addFavorite(favDto);
@@ -55,6 +63,14 @@ let FavoritesController = class FavoritesController {
     async removeFavorite(favDto) {
         try {
             return await this.favService.removeFavorite(favDto);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+    async deleteNotified(favDto) {
+        try {
+            return await this.favService.deleteNotified(favDto);
         }
         catch (error) {
             console.log(error);
@@ -83,6 +99,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], FavoritesController.prototype, "getFavoritesUser", null);
 __decorate([
+    (0, common_1.Get)('notify/:idUser'),
+    __param(0, (0, common_1.Param)('idUser')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], FavoritesController.prototype, "notifyFavorites", null);
+__decorate([
     (0, common_1.Post)('add'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -96,6 +119,13 @@ __decorate([
     __metadata("design:paramtypes", [favorite_dto_1.FavoriteDto]),
     __metadata("design:returntype", Promise)
 ], FavoritesController.prototype, "removeFavorite", null);
+__decorate([
+    (0, common_1.Post)('deleteNotified'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [favorite_dto_1.FavoriteDto]),
+    __metadata("design:returntype", Promise)
+], FavoritesController.prototype, "deleteNotified", null);
 exports.FavoritesController = FavoritesController = __decorate([
     (0, common_1.Controller)('favorites'),
     __metadata("design:paramtypes", [favorites_service_1.FavoritesService])

@@ -110,6 +110,14 @@ let QuestionsController = class QuestionsController {
             console.log(error);
         }
     }
+    setSolved(dto) {
+        try {
+            return this.questionsService.setSolved(dto);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
     addVote(dto) {
         try {
             return this.questionsService.addVote(dto);
@@ -203,6 +211,13 @@ __decorate([
     __metadata("design:paramtypes", [dto_1.QuestionCreateDto]),
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "createQuestion", null);
+__decorate([
+    (0, common_1.Post)('setSolved'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [dto_1.QuestionVoteDto]),
+    __metadata("design:returntype", void 0)
+], QuestionsController.prototype, "setSolved", null);
 __decorate([
     (0, common_1.Post)('addVote'),
     __param(0, (0, common_1.Body)()),

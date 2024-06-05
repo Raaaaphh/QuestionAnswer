@@ -44,7 +44,7 @@ Create table `Questions` (
     `context` text not null,
     `votes` int default 0,
     `flagsSpam` int default 0,
-    `flagsInappropiate` int default 0,
+    `flagsInappropriate` int default 0,
     `status` enum('Solved', 'Unsolved') default 'Unsolved',
     `createdAt` datetime not null,
     `updatedAt` datetime not null,
@@ -90,6 +90,7 @@ Create table `QuestionTags` (
 Create table `Favorites` (
     `idUser` varchar(100) not null,
     `idQuest` varchar(100) not null,
+    `notified` boolean default false,
     `createdAt` datetime not null,
     `updatedAt` datetime not null,
     primary key (`idUser`, `idQuest`),

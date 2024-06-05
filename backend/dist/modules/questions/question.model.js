@@ -57,7 +57,7 @@ __decorate([
 __decorate([
     sequelize_typescript_1.Column,
     __metadata("design:type", Number)
-], Question.prototype, "flagsInappropiate", void 0);
+], Question.prototype, "flagsInappropriate", void 0);
 __decorate([
     sequelize_typescript_1.Column,
     __metadata("design:type", Boolean)

@@ -36,7 +36,7 @@ export class Question extends Model {
     flagsSpam: number;
 
     @Column
-    flagsInappropiate: number;
+    flagsInappropriate: number;
 
     @Column
     status: boolean;

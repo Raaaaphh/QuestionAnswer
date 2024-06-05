@@ -36,6 +36,16 @@ export class FavoritesController {
         }
     }
 
+    @Get('notify/:idUser')
+    async notifyFavorites(@Param('idUser') idUser: string) {
+        try {
+            return await this.favService.notifyFavorites(idUser);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     @Post('add')
     async addFavorite(@Body() favDto: FavoriteDto) {
         try {
@@ -50,6 +60,16 @@ export class FavoritesController {
     async removeFavorite(@Body() favDto: FavoriteDto) {
         try {
             return await this.favService.removeFavorite(favDto);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    @Post('deleteNotified')
+    async deleteNotified(@Body() favDto: FavoriteDto) {
+        try {
+            return await this.favService.deleteNotified(favDto);
         }
         catch (error) {
             console.log(error);
