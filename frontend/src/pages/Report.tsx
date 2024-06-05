@@ -63,8 +63,9 @@ const Report = () => {
     };
 
     return (
-        <div>
+        <div >
             <Header />
+            <div className='mainContainer'>
             {isLoggedIn && userStatus === "Lecturer" ? (
                 <div className="reportContainer">
                     <h2 className="sectionTitle">Reported Questions</h2>
@@ -84,6 +85,7 @@ const Report = () => {
             ) : (
                 <p>You are not authorized to view this page</p>
             )}
+            </div>
         </div>
     );
 };

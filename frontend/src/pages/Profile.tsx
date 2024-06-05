@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import "./Profile.css";
 import QuestionComp from "../components/QuestionComp";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 import {jwtDecode} from "jwt-decode";
 import ProfilePicture from '../components/ProfilePicture';
@@ -27,6 +27,7 @@ const Profile: React.FC = () => {
     email: string;
     idUser: string;
     color: string;
+    role: string;
   } | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [favorites, setFavorites] = useState<Question[]>([]);
@@ -89,6 +90,10 @@ const Profile: React.FC = () => {
                   <h3>Email</h3>
                   <p>{user.email}</p>
                 </div>
+                {user.role==="Lecturer" && (
+                   <div className="goToReportButton">
+                    <Link to="/reported">Go to Report</Link>
+                   </div>)}
               </div>
             </div>
             <div className="previousQuestions">
