@@ -31,8 +31,12 @@ function AuthForm({ isRegister = false }: AuthFormProps) {
       const url = isRegister ? "/auth/register" : "/auth/login";
       const payload = isRegister
         ? { name, email, password }
-        : { email, password };
-      const response = await axiosInstance.post(url, payload);
+        : { name, password };
+      const response = await axiosInstance.post(url, payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.data) {
         if (isRegister) {

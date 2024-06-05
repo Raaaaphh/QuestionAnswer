@@ -3,7 +3,7 @@ import Header from "../components/Header";
 import "./Profile.css";
 import QuestionComp from "../components/QuestionComp";
 import { mockUsers, mockFavorites, mockQuestions } from "../mocks/mockData";
-import Question from "./Question";
+
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
