@@ -125,8 +125,14 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
       </div>
       {reportDisplay === true && 
       <div className="actionButtons">
-          <img src={deleteLogo} alt="Delete" onClick={handleDelete} />
-          <img src={keepLogo} alt="Keep" onClick={handleKeep} />
+          <div className="tooltip">
+            <img src={deleteLogo} alt="Delete" onClick={handleDelete} />
+            <span className="tooltiptext">Delete question</span>
+          </div>
+          <div className="tooltip">
+            <img src={keepLogo} alt="Keep" onClick={handleKeep} />
+            <span className="tooltiptext">Keep question</span>
+          </div>
         </div>
       } 
     </div>

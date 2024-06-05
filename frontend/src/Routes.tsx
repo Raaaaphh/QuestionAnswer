@@ -64,6 +64,7 @@ export const Routes = () => {
             </ProtectedRoute>
             }
           />
+
           
         </RoutesComponents>
       </AuthProvider>

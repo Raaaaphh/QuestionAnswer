@@ -1,0 +1,164 @@
+.popupOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .popupContent {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 500px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease-in-out;
+   
+  }
+
+  form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .popupContent h2 {
+    margin-top: 0;
+    font-size: 24px;
+    text-align: center;
+    color: #004A85;
+  }
+  
+  .popupContent form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .popupContent label {
+    margin-bottom: 15px;
+    font-weight: bold;
+  }
+  
+  .tagInput {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .tagSection {
+    margin-top: 20px;
+  }
+  
+  .tagsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .tag {
+    background-color: #004A85;
+    color: white;
+    border-radius: 5px;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .tag.selected button {
+    background: transparent;
+    border: none;
+    color: white;
+    margin-left: 10px;
+    cursor: pointer;
+  }
+  
+  .tagSearch {
+    margin-top: 10px;
+    position: relative;
+  }
+  
+  .tagSearch input {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .tagDropdownList {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    margin-top: 5px;
+    z-index: 1001;
+    max-height: 150px;
+    overflow-y: auto;
+  }
+  
+  .tagDropdownItem {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .tagDropdownItem:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    width: 100%;
+  }
+  
+  .submitButton, .cancelButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    width: 45%;
+    height: 70%;
+  }
+  
+  .submitButton {
+    background-color: #004A85;
+    color: white;
+  }
+  
+  .submitButton:hover {
+    background-color: #003366;
+  }
+  
+  .cancelButton {
+    background-color: #ccc;
+  }
+  
+  .cancelButton:hover {
+    background-color: #999;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
