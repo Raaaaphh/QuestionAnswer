@@ -115,6 +115,16 @@ export class QuestionsController {
         }
     }
 
+    @Post('setSolved')
+    setSolved(@Body() dto: QuestionVoteDto) {
+        try {
+            return this.questionsService.setSolved(dto);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     @Post('addVote')
     addVote(@Body() dto: QuestionVoteDto) {
         try {
@@ -135,7 +145,6 @@ export class QuestionsController {
         }
     }
 
-    //Modifier le edit car oublie des tags
     @Post('edit')
     editQuestion(@Body() question: QuestionEditDto) {
         try {

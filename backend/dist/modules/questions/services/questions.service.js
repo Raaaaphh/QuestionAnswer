@@ -22,12 +22,14 @@ const question_model_1 = require("../question.model");
 const questiontag_model_1 = require("../../questiontags/questiontag.model");
 const picture_model_1 = require("../../pictures/picture.model");
 const vote_model_1 = require("../../votes/vote.model");
+const favorite_model_1 = require("../../favorites/favorite.model");
 let QuestionsService = class QuestionsService {
-    constructor(questModel, questTagModel, pictureModel, voteModel, sequelize) {
+    constructor(questModel, questTagModel, pictureModel, voteModel, favoriteModel, sequelize) {
         this.questModel = questModel;
         this.questTagModel = questTagModel;
         this.pictureModel = pictureModel;
         this.voteModel = voteModel;
+        this.favoriteModel = favoriteModel;
         this.sequelize = sequelize;
     }
     async getQuestion(id) {
@@ -156,6 +158,39 @@ let QuestionsService = class QuestionsService {
             await transaction.rollback();
             console.error(error);
             throw new common_1.HttpException(error.message || 'Error during the creation of the question', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async setSolved(dto) {
+        const { idUser, idQuest } = dto;
+        const transaction = await this.sequelize.transaction();
+        try {
+            const quest = await this.questModel.findOne({
+                where: { idQuest },
+                transaction,
+            });
+            if (!quest) {
+                throw new common_1.HttpException('Question not found', common_1.HttpStatus.NOT_FOUND);
+            }
+            if (quest.idUser !== idUser) {
+                throw new common_1.HttpException('User is not the author of the question', common_1.HttpStatus.FORBIDDEN);
+            }
+            quest.status = true;
+            await quest.save({ transaction });
+            const favorites = await this.favoriteModel.findAll({
+                where: { idQuest },
+                transaction,
+            });
+            for (const favorite of favorites) {
+                favorite.notified = true;
+                await favorite.save({ transaction });
+            }
+            await transaction.commit();
+            return quest;
+        }
+        catch (error) {
+            await transaction.rollback();
+            console.error(error);
+            throw new common_1.HttpException(error.message || 'Error during the setting of the question as solved', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     async addVote(dto) {
@@ -294,6 +329,7 @@ exports.QuestionsService = QuestionsService = __decorate([
     __param(1, (0, sequelize_1.InjectModel)(questiontag_model_1.QuestionTag)),
     __param(2, (0, sequelize_1.InjectModel)(picture_model_1.Picture)),
     __param(3, (0, sequelize_1.InjectModel)(vote_model_1.Vote)),
-    __metadata("design:paramtypes", [Object, Object, Object, Object, sequelize_typescript_1.Sequelize])
+    __param(4, (0, sequelize_1.InjectModel)(favorite_model_1.Favorite)),
+    __metadata("design:paramtypes", [Object, Object, Object, Object, Object, sequelize_typescript_1.Sequelize])
 ], QuestionsService);
 //# sourceMappingURL=questions.service.js.map

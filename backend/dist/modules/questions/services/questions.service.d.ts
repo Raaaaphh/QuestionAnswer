@@ -4,13 +4,15 @@ import { QuestionCreateDto, QuestionEditDto, QuestionVoteDto } from "../dto";
 import { QuestionTag } from "../../questiontags/questiontag.model";
 import { Picture } from "../../pictures/picture.model";
 import { Vote } from "../../votes/vote.model";
+import { Favorite } from "src/modules/favorites/favorite.model";
 export declare class QuestionsService {
     private questModel;
     private questTagModel;
     private pictureModel;
     private voteModel;
+    private favoriteModel;
     private readonly sequelize;
-    constructor(questModel: typeof Question, questTagModel: typeof QuestionTag, pictureModel: typeof Picture, voteModel: typeof Vote, sequelize: Sequelize);
+    constructor(questModel: typeof Question, questTagModel: typeof QuestionTag, pictureModel: typeof Picture, voteModel: typeof Vote, favoriteModel: typeof Favorite, sequelize: Sequelize);
     getQuestion(id: string): Promise<Question>;
     findAll(): Promise<Question[]>;
     findAllWithLimit(limit: string): Promise<Question[]>;
@@ -19,6 +21,7 @@ export declare class QuestionsService {
     searchQuestionsByUser(id: string): Promise<Question[]>;
     searchQuestionsByTags(tags: string[]): Promise<Question[]>;
     createQuestion(quest: QuestionCreateDto): Promise<Question>;
+    setSolved(dto: QuestionVoteDto): Promise<Question>;
     addVote(dto: QuestionVoteDto): Promise<Question>;
     removeVote(dto: QuestionVoteDto): Promise<Question>;
     editQuestion(question: QuestionEditDto): Promise<Question>;
