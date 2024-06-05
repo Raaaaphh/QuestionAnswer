@@ -3,79 +3,143 @@ import "./Question.css";
 import Header from "../components/Header";
 import MarkdownRenderer from "../components/MarkdownRenderer";
 import Answer from "../components/Answer";
-import upVote from "../assets/upVoteButton.svg";
 import AnimatedUpVote from "../components/AnimatedUpVote";
+import axiosInstance from "../utils/axiosInstance";
+import { useParams } from "react-router-dom";
+import { use } from "marked";
 
-const fetchMarkdownFromDatabase = async () => {
-  // Simulate a database fetch
-  return `
-
-Here is a code snippet:
-
-\`\`\`javascript
-function sayHello() {
-  console.log("Hello, world!");
+interface Question {
+  idQuest: string;
+  idUser: string;
+  title: string;
+  description: string;
+  context: string;
+  updatedAt: string;
+  votes: number;
 }
-\`\`\`
 
-And some other content.
-  `;
-};
-
-const fetchAnswersFromDatabase = async () => {
-  return [
-    {
-      idAnsw: "1",
-      idUser: "user1",
-      content: `
-      Here is a code snippet:
-      
-      \`\`\`javascript
-      function sayHello() {
-        console.log("Answer n°1!");
-      }
-      \`\`\`
-      
-      And some other content.
-        `,
-      final: false,
-    },
-    {
-      idAnsw: "2",
-      idUser: "user2",
-      content: `
-\`\`\`javascript
-function answerTwo() {
-  console.log("This is answer two!");
+interface User {
+  idUser: string;
+  name: string;
+  email: string;
+  password: string;
+  confirmed: boolean;
+  banned: boolean;
+  color: string;
+  createdAt: string;
+  emailToken: string;
+  role: string;
+  updatedAt: string;
 }
-\`\`\`
-      `,
-      final: true,
-    },
-  ];
-};
+
+interface Answer {
+  idAnsw: string;
+  idUser: string;
+  idQuest: string;
+  description: string;
+  updatedAt: string;
+}
 
 const Question: React.FC = () => {
   const [markdownContent, setMarkdownContent] = useState<string>("");
   const [answers, setAnswers] = useState<any[]>([]);
+  const [question, setQuestion] = useState<Question | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const { idQuest } = useParams<{ idQuest: string }>();
+
+  // const fetchQuestionsFromDatabase = async () => {
+  //   try {
+  //     const response = await axiosInstance.get(`questions/${idQuest}`);
+  //     setQuestion(response.data);
+  //     console.log("Question fetched from database:", response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching questions from database:", error);
+  //   }
+  // };
+
+  // const fetchUserFromDatabase = async (userId: string) => {
+  //   try {
+  //     const response = await axiosInstance.get(`users/${userId}`);
+  //     setUser(response.data);
+  //     console.log("User fetched from database:", user);
+  //   } catch (error) {
+  //     console.error("Error fetching user from database:", error);
+  //   }
+  // };
+
+  // const fetchAnswersFromDatabase = async (idQuestion: string) => {
+  //   try {
+  //     console.log("idQuestion:", idQuestion);
+  //     const response = await axiosInstance.get(
+  //       `answers/findByQuestion/${idQuestion}`
+  //     );
+  //     setAnswers(response.data);
+  //     console.log("Answers fetched from database:", response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching answers from database:", error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (question && question.idQuest) {
+  //     fetchAnswersFromDatabase(question.idQuest);
+  //   }
+  // }, [idQuest]);
+
+  // useEffect(() => {
+  //   const fetchQuestionsAndUser = async () => {
+  //     await fetchQuestionsFromDatabase();
+  //     if (question && question.idUser) {
+  //       fetchUserFromDatabase(question.idUser);
+  //     }
+  //   };
+
+  //   fetchQuestionsAndUser();
+  // }, [idQuest]);
+
+  // useEffect(() => {
+  //   if (question && question.idUser) {
+  //     fetchUserFromDatabase(question.idUser);
+  //   }
+  // }, [question]);
 
   useEffect(() => {
-    const getData = async () => {
-      const data = await fetchMarkdownFromDatabase();
-      setMarkdownContent(data);
-      const answerData = await fetchAnswersFromDatabase();
-      setAnswers(answerData);
+    const fetchData = async () => {
+      try {
+        const questionResponse = await axiosInstance.get(
+          `questions/${idQuest}`
+        );
+        const fetchedQuestion = questionResponse.data;
+        setQuestion(fetchedQuestion);
+
+        if (fetchedQuestion.idUser) {
+          const userResponse = await axiosInstance.get(
+            `users/${fetchedQuestion.idUser}`
+          );
+          setUser(userResponse.data);
+        }
+
+        if (fetchedQuestion.idQuest) {
+          const answersResponse = await axiosInstance.get(
+            `answers/findByQuestion/${fetchedQuestion.idQuest}`
+          );
+          setAnswers(answersResponse.data);
+        }
+      } catch (error) {
+        console.error("Error fetching data from database:", error);
+      }
     };
 
-    getData();
-  }, []);
+    fetchData();
+  }, [idQuest]);
 
   return (
     <div>
       <Header />
+
       <div className="questionPage">
         <div className="upVote">
-          <AnimatedUpVote voteCount={1} />
+          <AnimatedUpVote voteCount={question ? question.votes : 0} />
         </div>
 
         <div className="questionHeader">
@@ -85,29 +149,48 @@ const Question: React.FC = () => {
               alt="avatar"
               className="avatarQuestion"
             />
-            <p className="username">Username</p>
+            <p className="username">{user ? user.name : "Loading..."}</p>
           </div>
+
           <div className="date">
-            <p>Posted on: 2021-09-01</p>
+            <p>Posted on: {question ? question.updatedAt : "Loading..."}</p>
           </div>
         </div>
         <div className="questionContainer">
-          <h1>How to center a div in CSS?</h1>
+          <h1>{question ? question.title : "Loading..."}</h1>
           <div className="questionDescription">
             <h2>Description:</h2>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua...
+              <div>
+                {question ? (
+                  <MarkdownRenderer markdownSource={question.description} />
+                ) : (
+                  "Loading..."
+                )}
+              </div>
             </p>
           </div>
           <div className="questionContext">
-            <MarkdownRenderer markdownSource={markdownContent} />
+            <h2>Context:</h2>
+            <p>
+              <div>
+                {question ? (
+                  <MarkdownRenderer markdownSource={question.context} />
+                ) : (
+                  "Loading..."
+                )}
+              </div>
+            </p>
           </div>
         </div>
         <div className="answersSection">
-          {answers.map((answer) => (
-            <Answer key={answer.idAnsw} answer={answer} />
-          ))}
+          {answers.length === 0 ? (
+            <p>No answers available.</p>
+          ) : (
+            answers.map((answer) => (
+              <Answer key={answer.idAnsw} answer={answer} />
+            ))
+          )}
         </div>
       </div>
     </div>

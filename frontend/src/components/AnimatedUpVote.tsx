@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./AnimatedUpVote.css";
 
 interface AnimatedUpVoteProps {
@@ -9,6 +9,10 @@ const AnimatedUpVote: React.FC<AnimatedUpVoteProps> = ({ voteCount }) => {
   const [clicked, setClicked] = useState(false);
   const [hasVoted, setHasVoted] = useState(false);
   const [count, setCount] = useState(voteCount);
+
+  useEffect(() => {
+    setCount(voteCount);
+  }, [voteCount]);
 
   const handleClick = async () => {
     if (!clicked) {
@@ -23,7 +27,7 @@ const AnimatedUpVote: React.FC<AnimatedUpVoteProps> = ({ voteCount }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ questionId: "yourQuestionId" }), // Replace 'yourQuestionId' with the actual question ID
+          body: JSON.stringify({ questionId: "yourQuestionId" }),
         });
       } else {
         setHasVoted(false);
@@ -33,7 +37,7 @@ const AnimatedUpVote: React.FC<AnimatedUpVoteProps> = ({ voteCount }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ questionId: "yourQuestionId" }), // Replace 'yourQuestionId' with the actual question ID
+          body: JSON.stringify({ questionId: "yourQuestionId" }),
         });
       }
     }

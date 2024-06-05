@@ -21,6 +21,10 @@ export const Routes = () => {
           <Route path="*" element={<NotFound />} />
           <Route path="/auth/login" element={<AuthForm />} />
           <Route path="/auth/register" element={<AuthForm isRegister />} />
+<<<<<<< HEAD
+          <Route path="/profile/:id" element={<Profile />} /> // to remove
+          <Route path="/profile" element={<Profile />} /> //to remove
+=======
 
           <Route
             path="/"
@@ -30,6 +34,7 @@ export const Routes = () => {
               </ProtectedRoute>
             }/>
 
+>>>>>>> 1834a92a10c2f669f221a68368918a7a1a1ae4a4
           <Route
             path="/ask"
             element={
@@ -47,7 +52,7 @@ export const Routes = () => {
             }
           />
           <Route
-            path="/question/:id"
+            path="/question/:idQuest"
             element={
               <ProtectedRoute>
                 <Question />

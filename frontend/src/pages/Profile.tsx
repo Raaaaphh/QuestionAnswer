@@ -2,6 +2,12 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import "./Profile.css";
 import QuestionComp from "../components/QuestionComp";
+<<<<<<< HEAD
+import { mockUsers, mockFavorites, mockQuestions } from "../mocks/mockData";
+
+import axios from "axios";
+=======
+>>>>>>> 1834a92a10c2f669f221a68368918a7a1a1ae4a4
 import { useParams } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 import {jwtDecode} from "jwt-decode";

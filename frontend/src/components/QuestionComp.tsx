@@ -30,15 +30,14 @@ const QuestionComp: React.FC<QuestionProps> = ({
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // Fetch question data
         const questionResponse = await axiosInstance.get(
           `/questions/${idQuest}`
         );
         setQuestion(questionResponse.data);
 
-        const userId = questionResponse.data.idUser; // Use the response data directly
+        const userId = questionResponse.data.idUser;
         setVoteCount(questionResponse.data.votes);
-        // Fetch user data
+
         const userResponse = await axiosInstance.get(`/users/${userId}`);
         setUser(userResponse.data);
 
@@ -49,15 +48,15 @@ const QuestionComp: React.FC<QuestionProps> = ({
       } catch (error) {
         console.error("Error fetching data", error);
       } finally {
-        setLoading(false); // Ensure loading state is set correctly
+        setLoading(false);
       }
     };
 
     fetchUserData();
-  }, [idQuest]); // Include idQuest in the dependency array
+  }, [idQuest]);
 
   if (loading) {
-    return <div>Loading...</div>; // Add loading state handling
+    return <div>Loading...</div>;
   }
 
   return (
