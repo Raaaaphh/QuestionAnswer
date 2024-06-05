@@ -33,6 +33,10 @@ export class AuthService {
                 throw new ForbiddenException('Invalid password');
             }
 
+            if (!user.confirmed) {
+                throw new ForbiddenException('User not confirmed');
+            }
+
             if (user.banned) {
                 throw new ForbiddenException('User is banned');
             }
@@ -45,6 +49,7 @@ export class AuthService {
             if (error instanceof ForbiddenException) {
                 throw error;
             }
+            console.log(error);
             throw new InternalServerErrorException('An unexpected error occurred during login');
         }
     }
@@ -60,6 +65,10 @@ export class AuthService {
             const crypto = require('crypto');
             const emailToken = crypto.randomBytes(64).toString("hex");
 
+            const sameUser = await this.userModel.findOne({ where: { email: authreg.email } });
+            if (sameUser) {
+                throw new BadRequestException('Email already in use');
+            }
             const newUser = await this.userModel.create({
                 idUser,
                 name: authreg.name,

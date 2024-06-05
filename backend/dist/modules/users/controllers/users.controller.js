@@ -39,7 +39,7 @@ let UsersController = class UsersController {
     }
     async findOne(id) {
         try {
-            return await this.usersService.findOne(id);
+            return await this.usersService.findById(id);
         }
         catch (error) {
             console.log(error);

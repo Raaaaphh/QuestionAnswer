@@ -15,6 +15,9 @@ let AdminGuard = class AdminGuard {
         if (!user) {
             throw new common_1.UnauthorizedException('User not found');
         }
+        if (user.role !== 'Lecturer' && user.role !== 'SuperAdmin') {
+            throw new common_1.ForbiddenException('User is not authorized to access this resource');
+        }
         return user.role === 'Lecturer' || user.role === 'SuperAdmin';
     }
 };

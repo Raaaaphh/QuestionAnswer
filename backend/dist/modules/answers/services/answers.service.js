@@ -84,6 +84,7 @@ let AnswersService = class AnswersService {
         }
         catch (error) {
             console.log(error);
+            await transaction.rollback();
             throw new common_1.HttpException('Error during the creation of the answer', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -15,6 +15,6 @@ import { JwtModule } from '@nestjs/jwt';
     ],
     providers: [InvitationsService],
     controllers: [InvitationsController],
-    exports: [InvitationsService],
+    exports: [InvitationsService, SequelizeModule],
 })
 export class InvitationsModule { }

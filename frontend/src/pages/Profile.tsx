@@ -2,10 +2,17 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import "./Profile.css";
 import QuestionComp from "../components/QuestionComp";
+<<<<<<< HEAD
 import { mockUsers, mockFavorites, mockQuestions } from "../mocks/mockData";
 
 import axios from "axios";
+=======
+>>>>>>> 1834a92a10c2f669f221a68368918a7a1a1ae4a4
 import { useParams } from "react-router-dom";
+import axiosInstance from "../utils/axiosInstance";
+import {jwtDecode} from "jwt-decode";
+import ProfilePicture from '../components/ProfilePicture';
+
 
 export interface Question {
   idQuest: string;
@@ -25,6 +32,7 @@ const Profile: React.FC = () => {
     name: string;
     email: string;
     idUser: string;
+    color: string;
   } | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [favorites, setFavorites] = useState<Question[]>([]);
@@ -33,15 +41,19 @@ const Profile: React.FC = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userResponse = await axios.get("/users/${id}");
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No token found");
+        }
+        const decodedToken = jwtDecode(token) as { id: string};
+        const userId = decodedToken.id;
+        const userResponse = await axiosInstance.get(`/users/${userId}`);
         setUser(userResponse.data);
-
-        const previousQuestions = await axios.get(
-          "/questions/findByUser/${id}"
-        );
+        console.log("User color", userResponse.data.color);
+        const previousQuestions = await axiosInstance.get(`/questions/findByUser/${userId}`);
         setQuestions(previousQuestions.data);
 
-        const favoritesQuestions = await axios.get("/favorites/${id}");
+        const favoritesQuestions = await axiosInstance.get(`/favorites/${userId}`);
         setFavorites(favoritesQuestions.data);
       } catch (error) {
         console.error("Error fetching data", error);
@@ -53,9 +65,13 @@ const Profile: React.FC = () => {
     fetchUserData();
   }, [id]);
 
+  
+
   if (loading) {
     return <div>Loading...</div>;
   }
+
+
 
   return (
     <div>
@@ -65,7 +81,9 @@ const Profile: React.FC = () => {
           <div className="profileSection">
             <div className="userInfos">
               <div className="avatarUsername">
-                <img src="" alt="avatar" className="avatar" />
+                <div className="profilePicture">
+                  <ProfilePicture userId={user.idUser}/>
+                </div>
                 <h2>PROFILE</h2>
               </div>
               <div className="userDetails">

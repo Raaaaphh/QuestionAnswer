@@ -27,10 +27,17 @@ const tag_model_1 = require("./modules/tags/tag.model");
 const questiontag_model_1 = require("./modules/questiontags/questiontag.model");
 const picture_model_1 = require("./modules/pictures/picture.model");
 const pictures_module_1 = require("./modules/pictures/pictures.module");
+const jwt_middleware_1 = require("./middlewares/jwt.middleware");
 const invitation_model_1 = require("./modules/invitations/invitation.model");
 const votes_module_1 = require("./modules/votes/votes.module");
 const vote_model_1 = require("./modules/votes/vote.model");
 let AppModule = class AppModule {
+    configure(consumer) {
+        consumer
+            .apply(jwt_middleware_1.JwtMiddleware)
+            .exclude({ path: 'auth/register', method: common_1.RequestMethod.POST }, { path: 'auth/login', method: common_1.RequestMethod.POST })
+            .forRoutes('*');
+    }
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([

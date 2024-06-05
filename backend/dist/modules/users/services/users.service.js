@@ -24,19 +24,20 @@ let UsersService = class UsersService {
         this.userModel = userModel;
     }
     async findAll() {
-        return this.userModel.findAll();
+        try {
+            return await this.userModel.findAll();
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
-    async findOne(id) {
+    async findById(id) {
         if (!(0, uuid_1.validate)(id)) {
             throw new common_1.BadRequestException('Invalid user ID');
         }
-        const user = await this.userModel.findOne({
-            where: {
-                idUser: id
-            }
-        });
+        const user = await this.userModel.findByPk(id);
         if (!user) {
-            throw new common_1.ForbiddenException('User not found');
+            throw new common_1.NotFoundException('User not found');
         }
         return user;
     }
@@ -60,6 +61,9 @@ let UsersService = class UsersService {
         }
     }
     async remove(id) {
+        if (!(0, uuid_1.validate)(id)) {
+            throw new common_1.BadRequestException('Invalid user ID');
+        }
         const user = await this.userModel.findOne({
             where: {
                 idUser: id
@@ -105,21 +109,27 @@ let UsersService = class UsersService {
         await user.save();
         return user;
     }
-    async findById(id) {
-        return await this.userModel.findByPk(id);
-    }
     async ban(id) {
-        const user = await this.userModel.findOne({
-            where: {
-                idUser: id
+        try {
+            if (!(0, uuid_1.validate)(id)) {
+                throw new common_1.BadRequestException('Invalid user ID');
             }
-        });
-        if (!user) {
-            throw new common_1.ForbiddenException('User not found');
+            const user = await this.userModel.findOne({
+                where: {
+                    idUser: id
+                }
+            });
+            if (!user) {
+                throw new common_1.ForbiddenException('User not found');
+            }
+            user.banned = !user.banned;
+            await user.save();
+            return user;
         }
-        user.banned = !user.banned;
-        await user.save();
-        return user;
+        catch (error) {
+            console.log(error);
+            throw error;
+        }
     }
 };
 exports.UsersService = UsersService;

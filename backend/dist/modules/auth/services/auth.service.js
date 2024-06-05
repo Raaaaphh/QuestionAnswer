@@ -40,6 +40,9 @@ let AuthService = class AuthService {
             if (!valid) {
                 throw new common_1.ForbiddenException('Invalid password');
             }
+            if (!user.confirmed) {
+                throw new common_1.ForbiddenException('User not confirmed');
+            }
             if (user.banned) {
                 throw new common_1.ForbiddenException('User is banned');
             }
@@ -51,6 +54,7 @@ let AuthService = class AuthService {
             if (error instanceof common_1.ForbiddenException) {
                 throw error;
             }
+            console.log(error);
             throw new common_1.InternalServerErrorException('An unexpected error occurred during login');
         }
     }
@@ -62,6 +66,10 @@ let AuthService = class AuthService {
             const color = colors[Math.floor(Math.random() * colors.length)];
             const crypto = require('crypto');
             const emailToken = crypto.randomBytes(64).toString("hex");
+            const sameUser = await this.userModel.findOne({ where: { email: authreg.email } });
+            if (sameUser) {
+                throw new common_1.BadRequestException('Email already in use');
+            }
             const newUser = await this.userModel.create({
                 idUser,
                 name: authreg.name,

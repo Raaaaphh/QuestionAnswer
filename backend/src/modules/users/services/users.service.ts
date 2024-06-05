@@ -15,28 +15,25 @@ export class UsersService {
     ) { }
 
     async findAll(): Promise<User[]> {
-        return this.userModel.findAll();
+        try {
+            return await this.userModel.findAll();
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
-    async findOne(id: string): Promise<User> {
-
+    async findById(id: string) {
         if (!isValidUUID(id)) {
             throw new BadRequestException('Invalid user ID');
         }
-
-        const user = await this.userModel.findOne({
-            where: {
-                idUser: id
-            }
-        });
-
+        const user = await this.userModel.findByPk(id);
         if (!user) {
-            throw new ForbiddenException('User not found');
+            throw new NotFoundException('User not found');
         }
-
         return user;
-
     }
+
 
     async findByName(name: string) {
         try {
@@ -63,6 +60,9 @@ export class UsersService {
     async remove(id: string) {
         //const user = await this.findOne(id);
         //await user.destroy();
+        if (!isValidUUID(id)) {
+            throw new BadRequestException('Invalid user ID');
+        }
         const user = await this.userModel.findOne({
             where: {
                 idUser: id
@@ -119,25 +119,30 @@ export class UsersService {
         return user;
     }
 
-    async findById(id: string): Promise<User | null> {
-        return await this.userModel.findByPk(id);
-    }
 
     async ban(id: string) {
-        const user = await this.userModel.findOne({
-            where: {
-                idUser: id
+        try {
+            if (!isValidUUID(id)) {
+                throw new BadRequestException('Invalid user ID');
             }
-        });
+            const user = await this.userModel.findOne({
+                where: {
+                    idUser: id
+                }
+            });
 
-        if (!user) {
-            throw new ForbiddenException('User not found');
+            if (!user) {
+                throw new ForbiddenException('User not found');
+            }
+
+            user.banned = !user.banned;
+
+            await user.save();
+            return user;
         }
-
-        user.banned = !user.banned;
-
-        await user.save();
-        return user;
+        catch (error) {
+            console.log(error);
+            throw error;
+        }
     }
-
 }

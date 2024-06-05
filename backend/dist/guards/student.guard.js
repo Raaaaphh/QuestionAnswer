@@ -15,6 +15,9 @@ let StudentGuard = class StudentGuard {
         if (!user) {
             throw new common_1.UnauthorizedException('User not found');
         }
+        if (user.role !== 'Student') {
+            throw new common_1.ForbiddenException('User is not authorized to access this resource');
+        }
         return user.role === 'Student';
     }
 };

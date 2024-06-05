@@ -79,6 +79,7 @@ export class AnswersService {
             return answer;
         } catch (error) {
             console.log(error);
+            await transaction.rollback();
             throw new HttpException('Error during the creation of the answer', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
