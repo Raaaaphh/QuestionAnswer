@@ -8,5 +8,6 @@ import { FavoritesService } from './services/favorites.service';
     imports: [SequelizeModule.forFeature([Favorite])],
     providers: [FavoritesService],
     controllers: [FavoritesController],
+    exports: [SequelizeModule]
 })
 export class FavoritesModule { }

@@ -10,7 +10,9 @@ import AuthForm from "./pages/AuthForm";
 import Profile from "./pages/Profile";
 import Question from "./pages/Question";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { AuthProvider } from "./context/AuthContext"; // Make sure you have AuthProvider in your imports
+import VerifyUserEmail from "./components/EmailVerif";
+import { AuthProvider } from "./context/AuthContext";
+import Report from "./pages/Report";
 
 export const Routes = () => {
   return (
@@ -52,15 +54,6 @@ export const Routes = () => {
             element={
               <ProtectedRoute>
                 <Question />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/reported"
-            element={
-              <ProtectedRoute>
-                <Report />
               </ProtectedRoute>
             }
           />

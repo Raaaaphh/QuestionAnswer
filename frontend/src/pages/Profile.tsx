@@ -27,6 +27,7 @@ const Profile: React.FC = () => {
     email: string;
     idUser: string;
     color: string;
+    role: string;
   } | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [favorites, setFavorites] = useState<Question[]>([]);
@@ -68,6 +69,8 @@ const Profile: React.FC = () => {
           `/favorites/${userId}`
         );
         setFavorites(favoritesQuestions.data);
+
+        // UTILISE LA ROUTE AU LIEU DE LA MOCK
       } catch (error) {
         console.error("Error fetching data", error);
       } finally {
@@ -131,10 +134,7 @@ const Profile: React.FC = () => {
                   <QuestionComp
                     key={question.idQuest}
                     idQuest={question.idQuest}
-                    title={question.title}
-                    description={question.description} // Pass the username prop
-                    status={question.status}
-                    votes={question.votes}
+                    reportDisplay={false}
                   />
                 ))}
               </div>
@@ -146,10 +146,7 @@ const Profile: React.FC = () => {
                   <QuestionComp
                     key={question.idQuest}
                     idQuest={question.idQuest}
-                    title={question.title}
-                    description={question.description} // Pass the username prop
-                    status={question.status}
-                    votes={question.votes}
+                    reportDisplay={false}
                   />
                 ))}
               </div>
@@ -159,6 +156,13 @@ const Profile: React.FC = () => {
           <p>No user data available.</p>
         )}
       </div>
+      {isTagPopupOpen && (
+        <TagCreationPopup
+          onClose={() => setIsTagPopupOpen(false)}
+          onSubmit={handleCreateTag}
+          existingTags={existingTags}
+        />
+      )}
     </div>
   );
 };

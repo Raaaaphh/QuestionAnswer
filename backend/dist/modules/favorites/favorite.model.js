@@ -36,6 +36,10 @@ __decorate([
     (0, sequelize_typescript_1.BelongsTo)(() => question_model_1.Question),
     __metadata("design:type", question_model_1.Question)
 ], Favorite.prototype, "question", void 0);
+__decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", Boolean)
+], Favorite.prototype, "notified", void 0);
 exports.Favorite = Favorite = __decorate([
     sequelize_typescript_1.Table
 ], Favorite);

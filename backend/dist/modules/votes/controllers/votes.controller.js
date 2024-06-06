@@ -19,10 +19,9 @@ let VotesController = class VotesController {
     constructor(votesService) {
         this.votesService = votesService;
     }
-    async checkVote(idUser, idQuestion) {
+    async checkVote(idUser, idQuest) {
         try {
-            const hasVoted = await this.votesService.hasUserVoted(idUser, idQuestion);
-            return { hasVoted };
+            return this.votesService.hasUserVoted(idUser, idQuest);
         }
         catch (error) {
             console.log(error);
@@ -33,7 +32,7 @@ exports.VotesController = VotesController;
 __decorate([
     (0, common_1.Get)('check'),
     __param(0, (0, common_1.Query)('idUser')),
-    __param(1, (0, common_1.Query)('idQuestion')),
+    __param(1, (0, common_1.Query)('idQuest')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)

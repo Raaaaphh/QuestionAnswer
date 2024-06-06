@@ -52,6 +52,32 @@ let FavoritesService = class FavoritesService {
         }
         return favorites;
     }
+    async notifyFavorites(id) {
+        if (!(0, uuid_1.validate)(id)) {
+            throw new common_1.BadRequestException('Invalid User ID');
+        }
+        const favorites = await this.favModel.findAll({
+            where: {
+                idUser: id,
+                notified: true
+            }
+        });
+        return favorites;
+    }
+    async deleteNotified(dto) {
+        const favorite = await this.favModel.findOne({
+            where: {
+                idUser: dto.idUser,
+                idQuest: dto.idQuest
+            }
+        });
+        if (!favorite) {
+            throw new common_1.ForbiddenException('Favorite not found');
+        }
+        favorite.notified = false;
+        await favorite.save();
+        return favorite;
+    }
     async addFavorite(favDto) {
         const favorite = await this.favModel.create({
             idUser: favDto.idUser,

@@ -6,4 +6,5 @@ export declare class Favorite extends Model {
     user: User;
     idQuest: string;
     question: Question;
+    notified: boolean;
 }

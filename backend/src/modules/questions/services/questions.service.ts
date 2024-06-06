@@ -8,11 +8,12 @@ import { QuestionCreateDto, QuestionEditDto, QuestionVoteDto } from "../dto";
 import { QuestionTag } from "../../questiontags/questiontag.model";
 import { Picture } from "../../pictures/picture.model";
 import { Vote } from "../../votes/vote.model";
+import { Favorite } from "src/modules/favorites/favorite.model";
 
 @Injectable()
 export class QuestionsService {
 
-    constructor(@InjectModel(Question) private questModel: typeof Question, @InjectModel(QuestionTag) private questTagModel: typeof QuestionTag, @InjectModel(Picture) private pictureModel: typeof Picture, @InjectModel(Vote) private voteModel: typeof Vote, private readonly sequelize: Sequelize) { }
+    constructor(@InjectModel(Question) private questModel: typeof Question, @InjectModel(QuestionTag) private questTagModel: typeof QuestionTag, @InjectModel(Picture) private pictureModel: typeof Picture, @InjectModel(Vote) private voteModel: typeof Vote, @InjectModel(Favorite) private favoriteModel: typeof Favorite, private readonly sequelize: Sequelize) { }
 
     async getQuestion(id: string) {
         if (!isValidUUID(id)) {
@@ -35,11 +36,15 @@ export class QuestionsService {
         return this.questModel.findAll();
     }
 
-    async findAllWithLimit(limit: string) {
+    async findAllWithLimit(limit: string, page: string) {
         const intLimit = parseInt(limit, 10);
+        const intPage = parseInt(page, 10);
+        const offset = (intPage - 1) * intLimit;
 
         const questions = await this.questModel.findAll({
-            limit: intLimit
+            limit: intLimit,
+            offset: offset,
+            order: [['createdAt', 'ASC']]
         });
 
         if (!questions || questions.length === 0) {
@@ -47,6 +52,7 @@ export class QuestionsService {
         }
         return questions;
     }
+
 
     async searchQuestions(search: string, limit: string) {
         const intLimit = parseInt(limit, 10);
@@ -94,33 +100,42 @@ export class QuestionsService {
         return questions;
     }
 
-    async searchQuestionsByTags(tags: string[]) {
+
+    async searchQuestionsByTags(tags: string[], limit: string) {
+        const transaction = await this.sequelize.transaction();
         try {
-            const questions = await this.questModel.findAll({
-                include: [
-                    {
-                        model: QuestionTag,
-                        where: {
-                            idTag: {
-                                [Op.in]: tags,
-                            },
-                        },
-                    },
-                ],
-                group: ['Question.idQuest'],
-                having: this.sequelize.literal(`COUNT(DISTINCT \`QuestionTags\`.\`idTag\`) = ${tags.length}`)
+            const tempQuestions = await this.questTagModel.findAll({
+                where: {
+                    idTag: {
+                        [Op.or]: tags
+                    }
+                },
+                transaction
             });
 
-            if (questions.length === 0) {
-                throw new HttpException('No questions found for the given tags', HttpStatus.NOT_FOUND);
+            const idQuests = tempQuestions.map(question => question.idQuest);
+            const questions = await this.questModel.findAll({
+                where: {
+                    idQuest: idQuests
+                },
+                limit: parseInt(limit, 10),
+                transaction
+            });
+
+            if (!questions || questions.length === 0) {
+                throw new ForbiddenException('Questions not found');
             }
+
+            await transaction.commit();
 
             return questions;
         } catch (error) {
+            await transaction.rollback();
             console.error(error);
             throw new HttpException('Error while searching questions by tags', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 
     async createQuestion(quest: QuestionCreateDto) {
@@ -168,6 +183,47 @@ export class QuestionsService {
             console.error(error);
             throw new HttpException(error.message || 'Error during the creation of the question', HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    async setSolved(dto: QuestionVoteDto) {
+        const { idUser, idQuest } = dto;
+
+        const transaction = await this.sequelize.transaction();
+        try {
+            const quest = await this.questModel.findOne({
+                where: { idQuest },
+                transaction,
+            });
+
+            if (!quest) {
+                throw new HttpException('Question not found', HttpStatus.NOT_FOUND);
+            }
+
+            if (quest.idUser !== idUser) {
+                throw new HttpException('User is not the author of the question', HttpStatus.FORBIDDEN);
+            }
+
+            quest.status = true;
+            await quest.save({ transaction });
+
+            const favorites = await this.favoriteModel.findAll({
+                where: { idQuest },
+                transaction,
+            });
+
+            for (const favorite of favorites) {
+                favorite.notified = true;
+                await favorite.save({ transaction });
+            }
+
+            await transaction.commit();
+            return quest;
+        } catch (error) {
+            await transaction.rollback();
+            console.error(error);
+            throw new HttpException(error.message || 'Error during the setting of the question as solved', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     async addVote(dto: QuestionVoteDto) {

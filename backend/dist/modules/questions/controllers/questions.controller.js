@@ -37,12 +37,15 @@ let QuestionsController = class QuestionsController {
             console.log(error);
         }
     }
-    findAllWithLimit(limit) {
+    findAllWithLimit(limit, page) {
         try {
             if (limit === undefined) {
                 limit = '20';
             }
-            return this.questionsService.findAllWithLimit(limit);
+            if (page === undefined) {
+                page = '1';
+            }
+            return this.questionsService.findAllWithLimit(limit, page);
         }
         catch (error) {
             console.log(error);
@@ -87,7 +90,7 @@ let QuestionsController = class QuestionsController {
             console.log(error);
         }
     }
-    async searchQuestionsByTags(tags) {
+    async searchQuestionsByTags(tags, limit) {
         try {
             if (!tags) {
                 throw new common_1.BadRequestException('Tags query parameter is required');
@@ -96,15 +99,27 @@ let QuestionsController = class QuestionsController {
             if (tagsArray.length === 0) {
                 throw new common_1.BadRequestException('At least one tag is required');
             }
-            return await this.questionsService.searchQuestionsByTags(tagsArray);
+            if (limit === undefined) {
+                limit = '20';
+            }
+            return await this.questionsService.searchQuestionsByTags(tagsArray, limit);
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
     createQuestion(quest) {
         try {
             return this.questionsService.createQuestion(quest);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+    setSolved(dto) {
+        try {
+            return this.questionsService.setSolved(dto);
         }
         catch (error) {
             console.log(error);
@@ -158,14 +173,15 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)('all/limit?'),
+    (0, common_1.Get)('all/params'),
     __param(0, (0, common_1.Query)('limit')),
+    __param(1, (0, common_1.Query)('page')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "findAllWithLimit", null);
 __decorate([
-    (0, common_1.Get)('findByName/name?'),
+    (0, common_1.Get)('findByName/params'),
     __param(0, (0, common_1.Query)('search')),
     __param(1, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
@@ -173,7 +189,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "searchQuestions", null);
 __decorate([
-    (0, common_1.Get)('findByFilter/filter?'),
+    (0, common_1.Get)('findByFilter/params'),
     __param(0, (0, common_1.Query)('filter')),
     __param(1, (0, common_1.Query)('limit')),
     __param(2, (0, common_1.Query)('order')),
@@ -189,10 +205,11 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "searchQuestionsByUser", null);
 __decorate([
-    (0, common_1.Get)('findByTags/tags?'),
+    (0, common_1.Get)('findByTags/params'),
     __param(0, (0, common_1.Query)('tags')),
+    __param(1, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], QuestionsController.prototype, "searchQuestionsByTags", null);
 __decorate([
@@ -203,6 +220,13 @@ __decorate([
     __metadata("design:paramtypes", [dto_1.QuestionCreateDto]),
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "createQuestion", null);
+__decorate([
+    (0, common_1.Post)('setSolved'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [dto_1.QuestionVoteDto]),
+    __metadata("design:returntype", void 0)
+], QuestionsController.prototype, "setSolved", null);
 __decorate([
     (0, common_1.Post)('addVote'),
     __param(0, (0, common_1.Body)()),
