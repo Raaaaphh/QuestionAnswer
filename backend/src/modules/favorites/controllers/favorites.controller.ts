@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpException, HttpStatus, Param, Post } from "@nestjs/common";
 import { FavoriteDto } from "../dto/favorite.dto";
 import { FavoritesService } from "../services/favorites.service";
 
@@ -12,37 +12,58 @@ export class FavoritesController {
             return await this.favService.getFavorites();
         }
         catch (error) {
-            console.log(error);
+            throw new HttpException({
+                message: 'An error occurred while getting favorites',
+                error,
+            }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @Get('findByQuest/:id')
+    @Get('findByQuest/')
     async getFavoritesQuestion(@Param('id') id: string) {
         try {
             return await this.favService.getFavoritesQuestion(id);
         }
         catch (error) {
-            console.log(error);
+            if (error instanceof BadRequestException) {
+                throw error;
+            }
+            throw new HttpException({
+                message: 'An error occurred while getting favorites by question',
+                error,
+            }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @Get('findByUser/:id')
+    @Get('findByUser/')
     async getFavoritesUser(@Param('id') id: string) {
         try {
             return await this.favService.getFavoritesUser(id);
         }
         catch (error) {
-            console.log(error);
+            if (error instanceof BadRequestException) {
+                throw error;
+            }
+            throw new HttpException({
+                message: 'An error occurred while getting favorites by user',
+                error,
+            }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @Get('notify/:idUser')
+    @Get('notify/')
     async notifyFavorites(@Param('idUser') idUser: string) {
         try {
             return await this.favService.notifyFavorites(idUser);
         }
         catch (error) {
-            console.log(error);
+            if (error instanceof BadRequestException) {
+                throw error;
+            }
+            throw new HttpException({
+                message: 'An error occurred while notifying favorites',
+                error,
+            }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -52,7 +73,10 @@ export class FavoritesController {
             return await this.favService.addFavorite(favDto);
         }
         catch (error) {
-            console.log(error);
+            throw new HttpException({
+                message: 'An error occurred while adding favorite',
+                error,
+            }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -62,7 +86,13 @@ export class FavoritesController {
             return await this.favService.removeFavorite(favDto);
         }
         catch (error) {
-            console.log(error);
+            if (error instanceof ForbiddenException) {
+                throw error;
+            }
+            throw new HttpException({
+                message: 'An error occurred while removing favorite',
+                error,
+            }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -72,7 +102,13 @@ export class FavoritesController {
             return await this.favService.deleteNotified(favDto);
         }
         catch (error) {
-            console.log(error);
+            if (error instanceof ForbiddenException) {
+                throw error;
+            }
+            throw new HttpException({
+                message: 'An error occurred while deleting notified favorite',
+                error,
+            }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
