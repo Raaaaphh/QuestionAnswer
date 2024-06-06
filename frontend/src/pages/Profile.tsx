@@ -2,18 +2,11 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import "./Profile.css";
 import QuestionComp from "../components/QuestionComp";
-<<<<<<< HEAD
-import { useParams } from "react-router-dom";
-import axiosInstance from "../utils/axiosInstance";
-import { jwtDecode } from "jwt-decode";
-import ProfilePicture from "../components/ProfilePicture";
-=======
 import { Link, useParams } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 import { jwtDecode } from "jwt-decode";
 import ProfilePicture from '../components/ProfilePicture';
 import TagCreationPopup from '../components/TagCreationPopup'; // Import the popup
->>>>>>> 770225dd9888d0be2ca3ac09806e97bc27b3c291
 
 export interface Question {
   idQuest: string;
@@ -88,14 +81,11 @@ const Profile: React.FC = () => {
     fetchUserData();
   }, [id]);
 
-<<<<<<< HEAD
-=======
   const handleCreateTag = (tagName: string) => {
     console.log("New tag created:", tagName);
     setExistingTags(prevTags => [...prevTags, tagName]); 
   };
 
->>>>>>> 770225dd9888d0be2ca3ac09806e97bc27b3c291
   if (loading) {
     return <div>Loading...</div>;
   }
