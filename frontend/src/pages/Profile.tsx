@@ -2,11 +2,18 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import "./Profile.css";
 import QuestionComp from "../components/QuestionComp";
+<<<<<<< HEAD
+import { useParams } from "react-router-dom";
+import axiosInstance from "../utils/axiosInstance";
+import { jwtDecode } from "jwt-decode";
+import ProfilePicture from "../components/ProfilePicture";
+=======
 import { Link, useParams } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 import { jwtDecode } from "jwt-decode";
 import ProfilePicture from '../components/ProfilePicture';
 import TagCreationPopup from '../components/TagCreationPopup'; // Import the popup
+>>>>>>> 770225dd9888d0be2ca3ac09806e97bc27b3c291
 
 export interface Question {
   idQuest: string;
@@ -60,10 +67,14 @@ const Profile: React.FC = () => {
         const userResponse = await axiosInstance.get(`/users/${userId}`);
         setUser(userResponse.data);
         console.log("User color", userResponse.data.color);
-        const previousQuestions = await axiosInstance.get(`/questions/findByUser/${userId}`);
+        const previousQuestions = await axiosInstance.get(
+          `/questions/findByUser/${userId}`
+        );
         setQuestions(previousQuestions.data);
 
-        const favoritesQuestions = await axiosInstance.get(`/favorites/${userId}`);
+        const favoritesQuestions = await axiosInstance.get(
+          `/favorites/${userId}`
+        );
         setFavorites(favoritesQuestions.data);
 
         // UTILISE LA ROUTE AU LIEU DE LA MOCK
@@ -77,11 +88,14 @@ const Profile: React.FC = () => {
     fetchUserData();
   }, [id]);
 
+<<<<<<< HEAD
+=======
   const handleCreateTag = (tagName: string) => {
     console.log("New tag created:", tagName);
     setExistingTags(prevTags => [...prevTags, tagName]); 
   };
 
+>>>>>>> 770225dd9888d0be2ca3ac09806e97bc27b3c291
   if (loading) {
     return <div>Loading...</div>;
   }
