@@ -24,6 +24,7 @@ export const Routes = () => {
           <Route path="*" element={<NotFound />} />
           <Route path="/auth/login" element={<AuthForm />} />
           <Route path="/auth/register" element={<AuthForm isRegister />} />
+          <Route path="/auth/register/:invitation" element={<AuthForm isRegister />} />
           <Route path="/verify-email" element={<VerifyUserEmail />} />
           <Route
             path="/"
