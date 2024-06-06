@@ -18,9 +18,11 @@ const sequelize_1 = require("@nestjs/sequelize");
 const uuid_1 = require("uuid");
 const common_2 = require("@nestjs/common");
 const tag_model_1 = require("../tag.model");
+const sequelize_typescript_1 = require("sequelize-typescript");
 let TagsService = class TagsService {
-    constructor(tagModel) {
+    constructor(tagModel, sequelize) {
         this.tagModel = tagModel;
+        this.sequelize = sequelize;
     }
     findAll() {
         return this.tagModel.findAll();
@@ -37,8 +39,15 @@ let TagsService = class TagsService {
     }
     async createTag(tagDto) {
         const idTag = (0, uuid_1.v4)();
-        console.log(idTag);
         try {
+            if (tagDto.name.length > 20) {
+                throw new common_2.HttpException('Name too long', common_2.HttpStatus.BAD_REQUEST);
+            }
+            const tagName = tagDto.name.toLowerCase();
+            const similarTag = await this.tagModel.findOne({ where: { name: tagName } });
+            if (similarTag) {
+                throw new common_2.HttpException('Tag already exists', common_2.HttpStatus.BAD_REQUEST);
+            }
             const tag = await this.tagModel.create({
                 idTag: idTag,
                 name: tagDto.name,
@@ -69,6 +78,6 @@ exports.TagsService = TagsService;
 exports.TagsService = TagsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, sequelize_1.InjectModel)(tag_model_1.Tag)),
-    __metadata("design:paramtypes", [Object])
+    __metadata("design:paramtypes", [Object, sequelize_typescript_1.Sequelize])
 ], TagsService);
 //# sourceMappingURL=tags.service.js.map

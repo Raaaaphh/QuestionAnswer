@@ -5,11 +5,11 @@ export declare class QuestionsController {
     constructor(questionsService: QuestionsService);
     getQuestion(id: string): Promise<import("../question.model").Question>;
     findAll(): Promise<import("../question.model").Question[]>;
-    findAllWithLimit(limit: string): Promise<import("../question.model").Question[]>;
+    findAllWithLimit(limit: string, page: string): Promise<import("../question.model").Question[]>;
     searchQuestions(search: string, limit: string): Promise<import("../question.model").Question[]>;
     searchQuestionsByFilter(filter: string, limit: string, order: string): Promise<import("../question.model").Question[]>;
     searchQuestionsByUser(id: string): Promise<import("../question.model").Question[]>;
-    searchQuestionsByTags(tags: string): Promise<import("../question.model").Question[]>;
+    searchQuestionsByTags(tags: string, limit: string): Promise<import("../question.model").Question[]>;
     createQuestion(quest: QuestionCreateDto): Promise<import("../question.model").Question>;
     setSolved(dto: QuestionVoteDto): Promise<import("../question.model").Question>;
     addVote(dto: QuestionVoteDto): Promise<import("../question.model").Question>;

@@ -16,7 +16,7 @@ exports.AnswersController = void 0;
 const common_1 = require("@nestjs/common");
 const dto_1 = require("../dto");
 const answers_service_1 = require("../services/answers.service");
-const admin_guard_1 = require("../../../guards/admin.guard");
+const answer_guard_1 = require("../../../guards/answer.guard");
 let AnswersController = class AnswersController {
     constructor(answersService) {
         this.answersService = answersService;
@@ -100,7 +100,7 @@ __decorate([
 ], AnswersController.prototype, "searchAnswersByUser", null);
 __decorate([
     (0, common_1.Post)('create'),
-    (0, common_1.UseGuards)(admin_guard_1.AdminGuard),
+    (0, common_1.UseGuards)(answer_guard_1.AnswerGuard),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [dto_1.AnswerCreateDto]),

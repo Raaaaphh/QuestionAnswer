@@ -27,20 +27,23 @@ export class QuestionsController {
         }
     }
 
-    @Get('all/limit?')
-    findAllWithLimit(@Query('limit') limit: string) {
+    @Get('all/params')
+    findAllWithLimit(@Query('limit') limit: string, @Query('page') page: string) {
         try {
             if (limit === undefined) {
                 limit = '20';
             }
-            return this.questionsService.findAllWithLimit(limit);
+            if (page === undefined) {
+                page = '1';
+            }
+            return this.questionsService.findAllWithLimit(limit, page);
         }
         catch (error) {
             console.log(error);
         }
     }
 
-    @Get('findByName/name?')
+    @Get('findByName/params')
     searchQuestions(@Query('search') search: string, @Query('limit') limit: string) {
         try {
             if (search === undefined) {
@@ -56,7 +59,7 @@ export class QuestionsController {
         }
     }
 
-    @Get('findByFilter/filter?')
+    @Get('findByFilter/params')
     searchQuestionsByFilter(@Query('filter') filter: string, @Query('limit') limit: string, @Query('order') order: string) {
         try {
             if (filter === undefined) {
@@ -85,8 +88,8 @@ export class QuestionsController {
         }
     }
 
-    @Get('findByTags/tags?')
-    async searchQuestionsByTags(@Query('tags') tags: string) {
+    @Get('findByTags/params')
+    async searchQuestionsByTags(@Query('tags') tags: string, @Query('limit') limit: string) {
         try {
             if (!tags) {
                 throw new BadRequestException('Tags query parameter is required');
@@ -97,11 +100,14 @@ export class QuestionsController {
             if (tagsArray.length === 0) {
                 throw new BadRequestException('At least one tag is required');
             }
-
-            return await this.questionsService.searchQuestionsByTags(tagsArray);
+            if (limit === undefined) {
+                limit = '20';
+            }
+            return await this.questionsService.searchQuestionsByTags(tagsArray, limit);
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
