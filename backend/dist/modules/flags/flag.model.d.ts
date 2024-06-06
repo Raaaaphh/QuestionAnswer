@@ -1,7 +1,7 @@
 import { Model } from "sequelize-typescript";
 import { User } from "../users/user.model";
 import { Question } from "../questions/question.model";
-declare enum Type {
+export declare enum FlagType {
     Spam = "Spam",
     Inappropriate = "Inappropriate"
 }
@@ -11,6 +11,5 @@ export declare class Flag extends Model {
     user: User;
     idQuest: string;
     question: Question;
-    flagType: Type;
+    flagType: FlagType;
 }
-export {};

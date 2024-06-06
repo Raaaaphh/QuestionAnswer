@@ -2,7 +2,7 @@ import { Table, Model, PrimaryKey, ForeignKey, BelongsTo, Column } from "sequeli
 import { User } from "../users/user.model";
 import { Question } from "../questions/question.model";
 
-enum Type {
+export enum FlagType {
     Spam = 'Spam',
     Inappropriate = 'Inappropriate',
 }
@@ -29,6 +29,6 @@ export class Flag extends Model {
     question: Question;
 
     @Column
-    flagType: Type;
+    flagType: FlagType;
 
 }

@@ -9,15 +9,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Flag = void 0;
+exports.Flag = exports.FlagType = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const user_model_1 = require("../users/user.model");
 const question_model_1 = require("../questions/question.model");
-var Type;
-(function (Type) {
-    Type["Spam"] = "Spam";
-    Type["Inappropriate"] = "Inappropriate";
-})(Type || (Type = {}));
+var FlagType;
+(function (FlagType) {
+    FlagType["Spam"] = "Spam";
+    FlagType["Inappropriate"] = "Inappropriate";
+})(FlagType || (exports.FlagType = FlagType = {}));
 let Flag = class Flag extends sequelize_typescript_1.Model {
 };
 exports.Flag = Flag;

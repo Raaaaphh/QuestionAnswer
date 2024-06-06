@@ -23,6 +23,7 @@ import { Invitation } from './modules/invitations/invitation.model';
 import { VotesModule } from './modules/votes/votes.module';
 import { Vote } from './modules/votes/vote.model';
 import { FlagsModule } from './modules/flags/flags.module';
+import { Flag } from './modules/flags/flag.model';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -39,7 +40,7 @@ import { FlagsModule } from './modules/flags/flags.module';
       username: configService.get('DB_USER'),
       password: configService.get('DB_PASSWORD'),
       database: configService.get('DB_NAME'),
-      models: [User, Question, Answer, Favorite, Tag, QuestionTag, Picture, Invitation, Vote],
+      models: [User, Question, Answer, Favorite, Tag, QuestionTag, Picture, Invitation, Vote, Flag],
       //autoLoadModels: true,
       //synchronize: true,
     }),

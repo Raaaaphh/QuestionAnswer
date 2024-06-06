@@ -32,6 +32,7 @@ const invitation_model_1 = require("./modules/invitations/invitation.model");
 const votes_module_1 = require("./modules/votes/votes.module");
 const vote_model_1 = require("./modules/votes/vote.model");
 const flags_module_1 = require("./modules/flags/flags.module");
+const flag_model_1 = require("./modules/flags/flag.model");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer
@@ -57,7 +58,7 @@ exports.AppModule = AppModule = __decorate([
                     username: configService.get('DB_USER'),
                     password: configService.get('DB_PASSWORD'),
                     database: configService.get('DB_NAME'),
-                    models: [user_model_1.User, question_model_1.Question, answer_model_1.Answer, favorite_model_1.Favorite, tag_model_1.Tag, questiontag_model_1.QuestionTag, picture_model_1.Picture, invitation_model_1.Invitation, vote_model_1.Vote],
+                    models: [user_model_1.User, question_model_1.Question, answer_model_1.Answer, favorite_model_1.Favorite, tag_model_1.Tag, questiontag_model_1.QuestionTag, picture_model_1.Picture, invitation_model_1.Invitation, vote_model_1.Vote, flag_model_1.Flag],
                 }),
                 inject: [config_1.ConfigService],
             }),
