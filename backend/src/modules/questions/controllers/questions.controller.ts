@@ -1,5 +1,5 @@
 import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
-import { QuestionCreateDto, QuestionEditDto, QuestionVoteDto } from "../dto";
+import { QuestionCreateDto, QuestionEditDto, QuestionFlagDto, QuestionVoteDto } from "../dto";
 import { QuestionsService } from "../services/questions.service";
 import { StudentGuard } from "../../../guards/student.guard";
 
@@ -43,6 +43,22 @@ export class QuestionsController {
         }
     }
 
+    @Get('findReported/params')
+    findReportedQuestions(@Query('limit') limit: string, @Query('page') page: string) {
+        try {
+            if (limit === undefined) {
+                limit = '20';
+            }
+            if (page === undefined) {
+                page = '1';
+            }
+            return this.questionsService.findReportedQuestions(limit, page);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     @Get('findByName/params')
     searchQuestions(@Query('search') search: string, @Query('limit') limit: string) {
         try {
@@ -60,7 +76,7 @@ export class QuestionsController {
     }
 
     @Get('findByFilter/params')
-    searchQuestionsByFilter(@Query('filter') filter: string, @Query('limit') limit: string, @Query('order') order: string) {
+    searchQuestionsByFilter(@Query('filter') filter: string, @Query('limit') limit: string) {
         try {
             if (filter === undefined) {
                 throw new Error('Filter is required');
@@ -68,10 +84,7 @@ export class QuestionsController {
             if (limit === undefined) {
                 limit = '20';
             }
-            if (order === undefined) {
-                order = 'asc';
-            }
-            return this.questionsService.searchQuestionsByFilter(filter, limit, order);
+            return this.questionsService.searchQuestionsByFilter(filter, limit);
         }
         catch (error) {
             console.log(error);
@@ -145,6 +158,26 @@ export class QuestionsController {
     removeVote(@Body() dto: QuestionVoteDto) {
         try {
             return this.questionsService.removeVote(dto);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    @Post('addFlag')
+    addFlag(@Body() dto: QuestionFlagDto) {
+        try {
+            return this.questionsService.addFlag(dto);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    @Post('removeFlag')
+    removeFlag(@Body() dto: QuestionFlagDto) {
+        try {
+            return this.questionsService.removeFlag(dto);
         }
         catch (error) {
             console.log(error);

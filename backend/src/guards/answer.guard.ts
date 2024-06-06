@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { AnswerCreateDto } from 'src/modules/answers/dto';
-import { QuestionsService } from 'src/modules/questions/services/questions.service';
+import { QuestionsService } from '../modules/questions/services/questions.service';
 
 @Injectable()
 export class AnswerGuard implements CanActivate {

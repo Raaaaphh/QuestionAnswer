@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { FavoritesController } from './favorites.controller';
 import { FavoritesService } from '../services/favorites.service';
 import { FavoriteDto } from '../dto/favorite.dto';
+import { HttpException } from '@nestjs/common';
 
 describe('FavoritesController', () => {
     let controller: FavoritesController;

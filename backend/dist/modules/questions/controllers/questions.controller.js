@@ -51,6 +51,20 @@ let QuestionsController = class QuestionsController {
             console.log(error);
         }
     }
+    findReportedQuestions(limit, page) {
+        try {
+            if (limit === undefined) {
+                limit = '20';
+            }
+            if (page === undefined) {
+                page = '1';
+            }
+            return this.questionsService.findReportedQuestions(limit, page);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
     searchQuestions(search, limit) {
         try {
             if (search === undefined) {
@@ -65,7 +79,7 @@ let QuestionsController = class QuestionsController {
             console.log(error);
         }
     }
-    searchQuestionsByFilter(filter, limit, order) {
+    searchQuestionsByFilter(filter, limit) {
         try {
             if (filter === undefined) {
                 throw new Error('Filter is required');
@@ -73,10 +87,7 @@ let QuestionsController = class QuestionsController {
             if (limit === undefined) {
                 limit = '20';
             }
-            if (order === undefined) {
-                order = 'asc';
-            }
-            return this.questionsService.searchQuestionsByFilter(filter, limit, order);
+            return this.questionsService.searchQuestionsByFilter(filter, limit);
         }
         catch (error) {
             console.log(error);
@@ -141,6 +152,22 @@ let QuestionsController = class QuestionsController {
             console.log(error);
         }
     }
+    addFlag(dto) {
+        try {
+            return this.questionsService.addFlag(dto);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+    removeFlag(dto) {
+        try {
+            return this.questionsService.removeFlag(dto);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
     editQuestion(question) {
         try {
             return this.questionsService.editQuestion(question);
@@ -181,6 +208,14 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "findAllWithLimit", null);
 __decorate([
+    (0, common_1.Get)('findReported/params'),
+    __param(0, (0, common_1.Query)('limit')),
+    __param(1, (0, common_1.Query)('page')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], QuestionsController.prototype, "findReportedQuestions", null);
+__decorate([
     (0, common_1.Get)('findByName/params'),
     __param(0, (0, common_1.Query)('search')),
     __param(1, (0, common_1.Query)('limit')),
@@ -192,9 +227,8 @@ __decorate([
     (0, common_1.Get)('findByFilter/params'),
     __param(0, (0, common_1.Query)('filter')),
     __param(1, (0, common_1.Query)('limit')),
-    __param(2, (0, common_1.Query)('order')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "searchQuestionsByFilter", null);
 __decorate([
@@ -241,6 +275,20 @@ __decorate([
     __metadata("design:paramtypes", [dto_1.QuestionVoteDto]),
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "removeVote", null);
+__decorate([
+    (0, common_1.Post)('addFlag'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [dto_1.QuestionFlagDto]),
+    __metadata("design:returntype", void 0)
+], QuestionsController.prototype, "addFlag", null);
+__decorate([
+    (0, common_1.Post)('removeFlag'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [dto_1.QuestionFlagDto]),
+    __metadata("design:returntype", void 0)
+], QuestionsController.prototype, "removeFlag", null);
 __decorate([
     (0, common_1.Post)('edit'),
     __param(0, (0, common_1.Body)()),

@@ -4,16 +4,17 @@ import { InjectModel } from "@nestjs/sequelize";
 import { Op } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
 import { Question } from "../question.model";
-import { QuestionCreateDto, QuestionEditDto, QuestionVoteDto } from "../dto";
+import { QuestionCreateDto, QuestionEditDto, QuestionFlagDto, QuestionVoteDto } from "../dto";
 import { QuestionTag } from "../../questiontags/questiontag.model";
 import { Picture } from "../../pictures/picture.model";
 import { Vote } from "../../votes/vote.model";
-import { Favorite } from "src/modules/favorites/favorite.model";
+import { Favorite } from "../../favorites/favorite.model";
+import { Flag, FlagType } from "../../flags/flag.model";
 
 @Injectable()
 export class QuestionsService {
 
-    constructor(@InjectModel(Question) private questModel: typeof Question, @InjectModel(QuestionTag) private questTagModel: typeof QuestionTag, @InjectModel(Picture) private pictureModel: typeof Picture, @InjectModel(Vote) private voteModel: typeof Vote, @InjectModel(Favorite) private favoriteModel: typeof Favorite, private readonly sequelize: Sequelize) { }
+    constructor(@InjectModel(Question) private questModel: typeof Question, @InjectModel(QuestionTag) private questTagModel: typeof QuestionTag, @InjectModel(Picture) private pictureModel: typeof Picture, @InjectModel(Vote) private voteModel: typeof Vote, @InjectModel(Favorite) private favoriteModel: typeof Favorite, @InjectModel(Flag) private flagModel: typeof Flag, private readonly sequelize: Sequelize) { }
 
     async getQuestion(id: string) {
         if (!isValidUUID(id)) {
@@ -45,6 +46,31 @@ export class QuestionsService {
             limit: intLimit,
             offset: offset,
             order: [['createdAt', 'DESC']]
+<<<<<<< HEAD
+=======
+        });
+
+        if (!questions || questions.length === 0) {
+            throw new ForbiddenException('Questions not found');
+        }
+        return questions;
+    }
+
+    async findReportedQuestions(limit: string, page: string) {
+        const intLimit = parseInt(limit, 10);
+        const intPage = parseInt(page, 10);
+        const offset = (intPage - 1) * intLimit;
+
+        const flagSum = Sequelize.literal('`flagsSpam` + `flagsInappropriate`');
+
+        const questions = await this.questModel.findAll({
+            where: Sequelize.where(flagSum, Op.gte, 5),
+            limit: intLimit,
+            offset: offset,
+            order: [
+                [flagSum, 'DESC']
+            ]
+>>>>>>> f204de7df3d87a91a093863536582cec412bab8e
         });
 
         if (!questions || questions.length === 0) {
@@ -73,12 +99,15 @@ export class QuestionsService {
     }
 
 
-    async searchQuestionsByFilter(filter: string, limit: string, order: string) {
+    async searchQuestionsByFilter(filter: string, limit: string) {
         const intLimit = parseInt(limit, 10);
 
         const questions = await this.questModel.findAll({
+            where: {
+                status: filter,
+            },
             limit: intLimit,
-            order: [[filter, order]]
+            order: [['votes', 'DESC']]
         });
 
         if (!questions || questions.length === 0) {
@@ -304,6 +333,98 @@ export class QuestionsService {
             await transaction.rollback();
             console.error(error);
             throw new HttpException(error.message || 'Error during the removal of vote', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async addFlag(dto: QuestionFlagDto) {
+        const idFlag = uuidv4();
+        const { idUser, idQuest, flagType } = dto;
+
+        const transaction = await this.sequelize.transaction();
+        try {
+            const existingFlag = await this.flagModel.findOne({
+                where: { idUser, idQuest, flagType },
+                transaction,
+            });
+
+            if (existingFlag) {
+                throw new HttpException('User has already flagged this question', HttpStatus.BAD_REQUEST);
+            }
+
+            const quest = await this.questModel.findOne({
+                where: { idQuest },
+                transaction,
+            });
+
+            if (!quest) {
+                throw new HttpException('Question not found', HttpStatus.NOT_FOUND);
+            }
+
+            if (flagType === 'Spam') {
+                quest.flagsSpam += 1;
+            }
+            else {
+                quest.flagsInappropriate += 1;
+            }
+            await quest.save({ transaction });
+
+            await this.flagModel.create({
+                idFlag: idFlag,
+                idUser,
+                idQuest,
+                flagType: flagType as FlagType,
+            }, { transaction });
+
+            await transaction.commit();
+            return { status: 'Success', message: 'Flag added successfully' };
+        } catch (error) {
+            await transaction.rollback();
+            console.error(error);
+            throw new HttpException(error.message || 'Error during the flagging of the question', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async removeFlag(dto: QuestionFlagDto) {
+        const { idUser, idQuest, flagType } = dto;
+        const transaction = await this.sequelize.transaction();
+        try {
+            const flag = await this.flagModel.findOne({
+                where: { idUser, idQuest, flagType },
+                transaction,
+            });
+
+            if (!flag) {
+                throw new HttpException('Report not found', HttpStatus.NOT_FOUND);
+            }
+
+            const quest = await this.questModel.findOne({
+                where: { idQuest },
+                transaction,
+            });
+
+            if (!quest) {
+                throw new HttpException('Question not found', HttpStatus.NOT_FOUND);
+            }
+
+            if (flag.flagType === 'Spam') {
+                quest.flagsSpam -= 1;
+            }
+            else {
+                quest.flagsInappropriate -= 1;
+            }
+            await quest.save({ transaction });
+
+            await this.flagModel.destroy({
+                where: { idFlag: flag.idFlag },
+                transaction,
+            });
+
+            await transaction.commit();
+            return { status: 'Success', message: 'Flag removed successfully' };
+        } catch (error) {
+            await transaction.rollback();
+            console.error(error);
+            throw new HttpException(error.message || 'Error during the removal of report', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

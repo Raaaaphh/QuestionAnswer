@@ -20,7 +20,7 @@ export class QuestionCreateDto {
     @IsArray()
     @ArrayNotEmpty()
     @ArrayMinSize(1)
-    @IsString({ each: true })
+    @IsUUID(undefined, { each: true })
     listTags: string[];
 
     @IsOptional()

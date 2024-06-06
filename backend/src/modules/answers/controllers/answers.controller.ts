@@ -1,71 +1,93 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
+import { BadRequestException, Controller, Delete, ForbiddenException, Get, HttpException, HttpStatus, Param, Post, UseGuards } from "@nestjs/common";
+import { Body } from "@nestjs/common/decorators/http/route-params.decorator";
 import { AnswerCreateDto } from "../dto";
 import { AnswersService } from "../services/answers.service";
-import { AdminGuard } from "../../../guards/admin.guard"
-import { AnswerGuard } from "src/guards/answer.guard";
+import { AnswerGuard } from "../../../guards/answer.guard";
 
 @Controller('answers')
 export class AnswersController {
     constructor(private answersService: AnswersService) { }
 
     @Get(':id')
-    getAnswer(@Param('id') id: string) {
+    async getAnswer(@Param('id') id: string) {
         try {
-            return this.answersService.getAnswer(id);
-        }
-        catch (error) {
-            console.log(error);
+            const answer = await this.answersService.getAnswer(id);
+            return answer;
+        } catch (error) {
+            if (error instanceof BadRequestException) {
+                throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+            } else if (error instanceof ForbiddenException) {
+                throw new HttpException(error.message, HttpStatus.FORBIDDEN);
+            } else {
+                throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
     }
 
     @Get()
-    findAll() {
+    async findAll() {
         try {
-            return this.answersService.findAll();
-        }
-        catch (error) {
-            console.log(error);
+            const answers = await this.answersService.findAll();
+            return answers;
+        } catch (error) {
+            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Get('findByQuestion/:id')
-    searchAnswersByQuestion(@Param('id') id: string) {
+    async searchAnswersByQuestion(@Param('id') id: string) {
         try {
-            return this.answersService.searchAnswersByQuestion(id);
-        }
-        catch (error) {
-            console.log(error);
+            const answers = await this.answersService.searchAnswersByQuestion(id);
+            return answers;
+        } catch (error) {
+            if (error instanceof ForbiddenException) {
+                throw new HttpException(error.message, HttpStatus.FORBIDDEN);
+            } else {
+                throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
     }
 
     @Get('findByUser/:id')
-    searchAnswersByUser(@Param('id') id: string) {
+    async searchAnswersByUser(@Param('id') id: string) {
         try {
-            return this.answersService.searchAnswersByUser(id);
-        }
-        catch (error) {
-            console.log(error);
+            const answers = await this.answersService.searchAnswersByUser(id);
+            return answers;
+        } catch (error) {
+            if (error instanceof ForbiddenException) {
+                throw new HttpException(error.message, HttpStatus.FORBIDDEN);
+            } else {
+                throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
     }
 
     @Post('create')
     @UseGuards(AnswerGuard)
-    createAnswer(@Body() answer: AnswerCreateDto) {
+    async createAnswer(@Body() answer: AnswerCreateDto) {
         try {
-            return this.answersService.createAnswer(answer);
-        }
-        catch (error) {
-            console.log(error);
+            const createdAnswer = await this.answersService.createAnswer(answer);
+            return createdAnswer;
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
     }
 
     @Delete(':id')
-    deleteAnswer(@Param('id') id: string) {
+    async deleteAnswer(@Param('id') id: string) {
         try {
-            return this.answersService.deleteAnswer(id);
-        }
-        catch (error) {
-            console.log(error);
+            const deletedAnswer = await this.answersService.deleteAnswer(id);
+            return deletedAnswer;
+        } catch (error) {
+            if (error instanceof ForbiddenException) {
+                throw new HttpException(error.message, HttpStatus.FORBIDDEN);
+            } else {
+                throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
     }
 }
