@@ -15,11 +15,11 @@ export declare class QuestionsService {
     constructor(questModel: typeof Question, questTagModel: typeof QuestionTag, pictureModel: typeof Picture, voteModel: typeof Vote, favoriteModel: typeof Favorite, sequelize: Sequelize);
     getQuestion(id: string): Promise<Question>;
     findAll(): Promise<Question[]>;
-    findAllWithLimit(limit: string): Promise<Question[]>;
+    findAllWithLimit(limit: string, page: string): Promise<Question[]>;
     searchQuestions(search: string, limit: string): Promise<Question[]>;
     searchQuestionsByFilter(filter: string, limit: string, order: string): Promise<Question[]>;
     searchQuestionsByUser(id: string): Promise<Question[]>;
-    searchQuestionsByTags(tags: string[]): Promise<Question[]>;
+    searchQuestionsByTags(tags: string[], limit: string): Promise<Question[]>;
     createQuestion(quest: QuestionCreateDto): Promise<Question>;
     setSolved(dto: QuestionVoteDto): Promise<Question>;
     addVote(dto: QuestionVoteDto): Promise<Question>;

@@ -49,10 +49,13 @@ let QuestionsService = class QuestionsService {
     findAll() {
         return this.questModel.findAll();
     }
-    async findAllWithLimit(limit) {
+    async findAllWithLimit(limit, page) {
         const intLimit = parseInt(limit, 10);
+        const intPage = parseInt(page, 10);
+        const offset = (intPage - 1) * intLimit;
         const questions = await this.questModel.findAll({
-            limit: intLimit
+            limit: intLimit,
+            offset: offset
         });
         if (!questions || questions.length === 0) {
             throw new common_1.ForbiddenException('Questions not found');
@@ -96,28 +99,33 @@ let QuestionsService = class QuestionsService {
         }
         return questions;
     }
-    async searchQuestionsByTags(tags) {
+    async searchQuestionsByTags(tags, limit) {
+        const transaction = await this.sequelize.transaction();
         try {
-            const questions = await this.questModel.findAll({
-                include: [
-                    {
-                        model: questiontag_model_1.QuestionTag,
-                        where: {
-                            idTag: {
-                                [sequelize_2.Op.in]: tags,
-                            },
-                        },
-                    },
-                ],
-                group: ['Question.idQuest'],
-                having: this.sequelize.literal(`COUNT(DISTINCT \`QuestionTags\`.\`idTag\`) = ${tags.length}`)
+            const tempQuestions = await this.questTagModel.findAll({
+                where: {
+                    idTag: {
+                        [sequelize_2.Op.or]: tags
+                    }
+                },
+                transaction
             });
-            if (questions.length === 0) {
-                throw new common_1.HttpException('No questions found for the given tags', common_1.HttpStatus.NOT_FOUND);
+            const idQuests = tempQuestions.map(question => question.idQuest);
+            const questions = await this.questModel.findAll({
+                where: {
+                    idQuest: idQuests
+                },
+                limit: parseInt(limit, 10),
+                transaction
+            });
+            if (!questions || questions.length === 0) {
+                throw new common_1.ForbiddenException('Questions not found');
             }
+            await transaction.commit();
             return questions;
         }
         catch (error) {
+            await transaction.rollback();
             console.error(error);
             throw new common_1.HttpException('Error while searching questions by tags', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
