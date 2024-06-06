@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post, Query, Request } from "@nestjs/common";
+import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpException, HttpStatus, Patch, Post, Query, Request } from "@nestjs/common";
 import { AuthService } from "../services/auth.service";
 import { AuthLoginDto, AuthRegisterDto } from "../dto";
 
@@ -21,6 +21,10 @@ export class AuthController {
         }
         catch (error) {
             console.log(error);
+            if (error instanceof ForbiddenException || error instanceof BadRequestException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -32,6 +36,11 @@ export class AuthController {
         }
         catch (error) {
             console.log(error);
+            if (error instanceof BadRequestException || error instanceof ForbiddenException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+
         }
     }
 
@@ -43,6 +52,10 @@ export class AuthController {
         }
         catch (error) {
             console.log(error);
+            if (error instanceof BadRequestException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -52,7 +65,10 @@ export class AuthController {
             return await this.authService.verifyEmail(emailToken);
         } catch (error) {
             console.log(error);
-            throw error;
+            if (error instanceof BadRequestException || error instanceof ForbiddenException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -62,7 +78,10 @@ export class AuthController {
             return await this.authService.registerWithToken(token, authreg);
         } catch (error) {
             console.log(error);
-            throw error;
+            if (error instanceof BadRequestException || error instanceof ForbiddenException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

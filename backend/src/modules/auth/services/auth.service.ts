@@ -26,12 +26,12 @@ export class AuthService {
             const user = await this.userModel.findOne({ where: { name: authlog.name } });
 
             if (!user) {
-                throw new ForbiddenException('User not found');
+                throw new ForbiddenException('Username incorrect');
             }
 
             const valid = await argon.verify(user.password, authlog.password);
             if (!valid) {
-                throw new ForbiddenException('Invalid password');
+                throw new ForbiddenException('Password incorrect');
             }
 
             if (!user.confirmed) {
