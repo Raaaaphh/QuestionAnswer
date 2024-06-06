@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, Patch, Post, Query, Request } from "@nestjs/common";
 import { AuthService } from "../services/auth.service";
 import { AuthLoginDto, AuthRegisterDto } from "../dto";
 
@@ -18,6 +18,17 @@ export class AuthController {
         try {
             console.log(authlog);
             return this.authService.login(authlog);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    @Post('logout')
+    logout(@Request() req) {
+        try {
+            const token = req.headers.authorization.split(' ')[1];
+            return this.authService.logout(token);
         }
         catch (error) {
             console.log(error);
@@ -54,4 +65,5 @@ export class AuthController {
             throw error;
         }
     }
+
 }

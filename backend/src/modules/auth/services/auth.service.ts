@@ -7,6 +7,7 @@ import { AuthLoginDto, AuthRegisterDto } from "../dto";
 import { sendMail } from "../../../mailers/mail.utils";
 import { User } from "../../users/user.model";
 import { InvitationsService } from "../../invitations/services/invitations.service";
+import * as jwt from 'jsonwebtoken';
 
 @Injectable({})
 export class AuthService {
@@ -51,6 +52,22 @@ export class AuthService {
             }
             console.log(error);
             throw new InternalServerErrorException('An unexpected error occurred during login');
+        }
+    }
+
+    async logout(token: string) {
+        try {
+            const payload = this.jwtService.verify(token);
+            if (!payload) {
+                throw new ForbiddenException('Invalid token');
+            }
+
+            return { status: 'Success', message: 'User logged out successfully' };
+        } catch (error) {
+            if (error instanceof ForbiddenException) {
+                throw error;
+            }
+            throw new InternalServerErrorException('An unexpected error occurred during logout');
         }
     }
 
