@@ -44,7 +44,7 @@ export class QuestionsService {
         const questions = await this.questModel.findAll({
             limit: intLimit,
             offset: offset,
-            order: [['createdAt', 'ASC']]
+            order: [['createdAt', 'DESC']]
         });
 
         if (!questions || questions.length === 0) {

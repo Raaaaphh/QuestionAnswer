@@ -56,7 +56,7 @@ let QuestionsService = class QuestionsService {
         const questions = await this.questModel.findAll({
             limit: intLimit,
             offset: offset,
-            order: [['createdAt', 'ASC']]
+            order: [['createdAt', 'DESC']]
         });
         if (!questions || questions.length === 0) {
             throw new common_1.ForbiddenException('Questions not found');
