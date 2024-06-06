@@ -221,7 +221,7 @@ const Header: React.FC = () => {
       {isLoggedIn ? (
         <>
           <FilterMenu />
-          <BtnQuestion />
+          {userStatus === "Student" && <BtnQuestion/>}
           <NotificationMenu />
           <ProfileMenu idUser={userId} />
         </>

@@ -10,7 +10,8 @@ import AuthForm from "./pages/AuthForm";
 import Profile from "./pages/Profile";
 import Question from "./pages/Question";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { AuthProvider } from "./context/AuthContext"; // Make sure you have AuthProvider in your imports
+import { AuthProvider } from "./context/AuthContext";
+import Report from "./pages/Report";
 
 export const Routes = () => {
   return (
@@ -21,10 +22,6 @@ export const Routes = () => {
           <Route path="*" element={<NotFound />} />
           <Route path="/auth/login" element={<AuthForm />} />
           <Route path="/auth/register" element={<AuthForm isRegister />} />
-<<<<<<< HEAD
-          <Route path="/profile/:id" element={<Profile />} /> // to remove
-          <Route path="/profile" element={<Profile />} /> //to remove
-=======
 
           <Route
             path="/"
@@ -34,7 +31,6 @@ export const Routes = () => {
               </ProtectedRoute>
             }/>
 
->>>>>>> 1834a92a10c2f669f221a68368918a7a1a1ae4a4
           <Route
             path="/ask"
             element={
@@ -59,6 +55,16 @@ export const Routes = () => {
               </ProtectedRoute>
             }
           />
+
+          <Route 
+            path="/reported" 
+            element={
+            <ProtectedRoute>
+              <Report />
+            </ProtectedRoute>
+            }
+          />
+          
         </RoutesComponents>
       </AuthProvider>
     </Router>
