@@ -20,6 +20,7 @@ exports.FavoritesModule = FavoritesModule = __decorate([
         imports: [sequelize_1.SequelizeModule.forFeature([favorite_model_1.Favorite])],
         providers: [favorites_service_1.FavoritesService],
         controllers: [favorites_controller_1.FavoritesController],
+        exports: [sequelize_1.SequelizeModule]
     })
 ], FavoritesModule);
 //# sourceMappingURL=favorites.module.js.map

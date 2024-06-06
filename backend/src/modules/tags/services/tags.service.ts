@@ -4,11 +4,12 @@ import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { HttpException, HttpStatus } from "@nestjs/common";
 import { Tag } from "../tag.model";
 import { TagCreateDto } from "../dto/tag-create.dto";
+import { Sequelize } from "sequelize-typescript";
 
 @Injectable()
 export class TagsService {
 
-    constructor(@InjectModel(Tag) private tagModel: typeof Tag) { }
+    constructor(@InjectModel(Tag) private tagModel: typeof Tag, private readonly sequelize: Sequelize) { }
 
     findAll() {
         return this.tagModel.findAll();
@@ -27,9 +28,17 @@ export class TagsService {
 
     async createTag(tagDto: TagCreateDto) {
         const idTag = uuidv4();
-        console.log(idTag);
-
         try {
+            if (tagDto.name.length > 20) {
+                throw new HttpException('Name too long', HttpStatus.BAD_REQUEST);
+            }
+
+            const tagName = tagDto.name.toLowerCase();
+            const similarTag = await this.tagModel.findOne({ where: { name: tagName } });
+            if (similarTag) {
+                throw new HttpException('Tag already exists', HttpStatus.BAD_REQUEST);
+            }
+
             const tag = await this.tagModel.create({
                 idTag: idTag,
                 name: tagDto.name,

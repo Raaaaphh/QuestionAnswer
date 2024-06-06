@@ -21,4 +21,7 @@ export class Favorite extends Model {
 
     @BelongsTo(() => Question)
     question: Question;
+
+    @Column
+    notified: boolean;
 }

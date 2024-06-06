@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 
 .profileContainer {
@@ -78,3 +79,35 @@
   flex-direction: column;
   gap: 10px;
 }
+
+.buttonContainer {
+  display: flex;
+  gap: 10px;
+  justify-content: center; /* Center align the buttons horizontally */
+  margin-top: 20px; /* Add some space above the buttons */
+}
+
+.simpleButton {
+  background-color: #004A85;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+}
+
+
+
+.simpleButton:active {
+  transform: scale(0.95);
+}
+
+.simpleButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
+}
+

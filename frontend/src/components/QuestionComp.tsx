@@ -2,30 +2,41 @@ import React, { useEffect, useState } from "react";
 import "./QuestionComp.css";
 import { Link } from "react-router-dom";
 import upVoteLogo from "../assets/upVoteButton.svg";
+import deleteLogo from "../assets/deleteButton.svg";
+import keepLogo from "../assets/keepButton.svg";
+import flagLogo from "../assets/flagLogo.svg";
 import axiosInstance from "../utils/axiosInstance";
 import AnimatedUpVote from "./AnimatedUpVote";
-import { stripVTControlCharacters } from "util";
+import jwtDecode from "jwt-decode";
 
 interface QuestionProps {
   idQuest: string;
-  title: string;
-  description: string;
-  status: boolean;
-  votes: number;
+  reportDisplay: boolean;
 }
 
-const QuestionComp: React.FC<QuestionProps> = ({
-  idQuest,
-  title,
-  description,
-  status,
-  votes,
-}) => {
-  const [question, setQuestion] = useState<{ idUser: string } | null>(null);
+const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
+  const [question, setQuestion] = useState<{
+    idUser: string;
+    title: string;
+    description: string;
+    context: string;
+    votes: number;
+    status: boolean;
+    flagsSpam: number;
+    flagsInappropriate: number;
+  }>({
+    idUser: '',
+    title: '',
+    description: '',
+    context: '',
+    votes: 0,
+    status: false,
+    flagsSpam: 0,
+    flagsInappropriate: 0,
+  });
   const [user, setUser] = useState<{ name: string } | null>(null);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
   const [tags, setTags] = useState<string[]>([]);
-  const [voteCount, setVoteCount] = useState<number>(votes);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -36,7 +47,6 @@ const QuestionComp: React.FC<QuestionProps> = ({
         setQuestion(questionResponse.data);
 
         const userId = questionResponse.data.idUser;
-        setVoteCount(questionResponse.data.votes);
 
         const userResponse = await axiosInstance.get(`/users/${userId}`);
         setUser(userResponse.data);
@@ -55,24 +65,52 @@ const QuestionComp: React.FC<QuestionProps> = ({
     fetchUserData();
   }, [idQuest]);
 
+  const handleDelete = async () => {
+    try {
+      await axiosInstance.delete(`/questions/${idQuest}`);
+      console.log("Question deleted successfully");
+    } catch (error) {
+      console.error("Error deleting question", error);
+    }
+  };
+
+  const handleKeep = async () => {
+    try {
+      await axiosInstance.post(`------------------------------------------------------`); // route to remove flag and innapropiate
+      console.log("Question kept successfully");
+    } catch (error) {
+      console.error("Error keeping question", error);
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
     <div key={idQuest} className="questionItem">
-      <AnimatedUpVote voteCount={voteCount} />
+      {reportDisplay === false && <AnimatedUpVote voteCount={question?.votes ?? 0} />}
+      {reportDisplay ===true && 
+      <div className="reportCount">
+        <img src={flagLogo} alt="flag" className="flagLogo" />
+        <p>{question?.flagsSpam + question?.flagsInappropriate}</p>
+      </div>
+      
+      }
+      
+        
+    
       <div className="textRightPart">
         <div className="questionTop">
-          <Link to={`/question/${idQuest}`} className="tilte">
-            {title}
+          <Link to={`/question/${idQuest}`} className="title">
+            {question?.title}
           </Link>
           <Link to={`/question/${idQuest}`} className="seeMoreLink">
             See more ...
           </Link>
         </div>
 
-        <p className="description">{description}</p>
+        <p className="description">{question.description}</p>
         <div className="questionBottom">
           <div className="tags">
             {tags &&
@@ -85,6 +123,18 @@ const QuestionComp: React.FC<QuestionProps> = ({
           <p className="postedBy">Posted by: {user?.name}</p>
         </div>
       </div>
+      {reportDisplay === true && 
+      <div className="actionButtons">
+          <div className="tooltip">
+            <img src={deleteLogo} alt="Delete" onClick={handleDelete} />
+            <span className="tooltiptext">Delete question</span>
+          </div>
+          <div className="tooltip">
+            <img src={keepLogo} alt="Keep" onClick={handleKeep} />
+            <span className="tooltiptext">Keep question</span>
+          </div>
+        </div>
+      } 
     </div>
   );
 };

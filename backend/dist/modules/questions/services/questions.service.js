@@ -22,12 +22,14 @@ const question_model_1 = require("../question.model");
 const questiontag_model_1 = require("../../questiontags/questiontag.model");
 const picture_model_1 = require("../../pictures/picture.model");
 const vote_model_1 = require("../../votes/vote.model");
+const favorite_model_1 = require("../../favorites/favorite.model");
 let QuestionsService = class QuestionsService {
-    constructor(questModel, questTagModel, pictureModel, voteModel, sequelize) {
+    constructor(questModel, questTagModel, pictureModel, voteModel, favoriteModel, sequelize) {
         this.questModel = questModel;
         this.questTagModel = questTagModel;
         this.pictureModel = pictureModel;
         this.voteModel = voteModel;
+        this.favoriteModel = favoriteModel;
         this.sequelize = sequelize;
     }
     async getQuestion(id) {
@@ -47,10 +49,13 @@ let QuestionsService = class QuestionsService {
     findAll() {
         return this.questModel.findAll();
     }
-    async findAllWithLimit(limit) {
+    async findAllWithLimit(limit, page) {
         const intLimit = parseInt(limit, 10);
+        const intPage = parseInt(page, 10);
+        const offset = (intPage - 1) * intLimit;
         const questions = await this.questModel.findAll({
-            limit: intLimit
+            limit: intLimit,
+            offset: offset
         });
         if (!questions || questions.length === 0) {
             throw new common_1.ForbiddenException('Questions not found');
@@ -94,28 +99,33 @@ let QuestionsService = class QuestionsService {
         }
         return questions;
     }
-    async searchQuestionsByTags(tags) {
+    async searchQuestionsByTags(tags, limit) {
+        const transaction = await this.sequelize.transaction();
         try {
-            const questions = await this.questModel.findAll({
-                include: [
-                    {
-                        model: questiontag_model_1.QuestionTag,
-                        where: {
-                            idTag: {
-                                [sequelize_2.Op.in]: tags,
-                            },
-                        },
-                    },
-                ],
-                group: ['Question.idQuest'],
-                having: this.sequelize.literal(`COUNT(DISTINCT \`QuestionTags\`.\`idTag\`) = ${tags.length}`)
+            const tempQuestions = await this.questTagModel.findAll({
+                where: {
+                    idTag: {
+                        [sequelize_2.Op.or]: tags
+                    }
+                },
+                transaction
             });
-            if (questions.length === 0) {
-                throw new common_1.HttpException('No questions found for the given tags', common_1.HttpStatus.NOT_FOUND);
+            const idQuests = tempQuestions.map(question => question.idQuest);
+            const questions = await this.questModel.findAll({
+                where: {
+                    idQuest: idQuests
+                },
+                limit: parseInt(limit, 10),
+                transaction
+            });
+            if (!questions || questions.length === 0) {
+                throw new common_1.ForbiddenException('Questions not found');
             }
+            await transaction.commit();
             return questions;
         }
         catch (error) {
+            await transaction.rollback();
             console.error(error);
             throw new common_1.HttpException('Error while searching questions by tags', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -156,6 +166,39 @@ let QuestionsService = class QuestionsService {
             await transaction.rollback();
             console.error(error);
             throw new common_1.HttpException(error.message || 'Error during the creation of the question', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async setSolved(dto) {
+        const { idUser, idQuest } = dto;
+        const transaction = await this.sequelize.transaction();
+        try {
+            const quest = await this.questModel.findOne({
+                where: { idQuest },
+                transaction,
+            });
+            if (!quest) {
+                throw new common_1.HttpException('Question not found', common_1.HttpStatus.NOT_FOUND);
+            }
+            if (quest.idUser !== idUser) {
+                throw new common_1.HttpException('User is not the author of the question', common_1.HttpStatus.FORBIDDEN);
+            }
+            quest.status = true;
+            await quest.save({ transaction });
+            const favorites = await this.favoriteModel.findAll({
+                where: { idQuest },
+                transaction,
+            });
+            for (const favorite of favorites) {
+                favorite.notified = true;
+                await favorite.save({ transaction });
+            }
+            await transaction.commit();
+            return quest;
+        }
+        catch (error) {
+            await transaction.rollback();
+            console.error(error);
+            throw new common_1.HttpException(error.message || 'Error during the setting of the question as solved', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     async addVote(dto) {
@@ -294,6 +337,7 @@ exports.QuestionsService = QuestionsService = __decorate([
     __param(1, (0, sequelize_1.InjectModel)(questiontag_model_1.QuestionTag)),
     __param(2, (0, sequelize_1.InjectModel)(picture_model_1.Picture)),
     __param(3, (0, sequelize_1.InjectModel)(vote_model_1.Vote)),
-    __metadata("design:paramtypes", [Object, Object, Object, Object, sequelize_typescript_1.Sequelize])
+    __param(4, (0, sequelize_1.InjectModel)(favorite_model_1.Favorite)),
+    __metadata("design:paramtypes", [Object, Object, Object, Object, Object, sequelize_typescript_1.Sequelize])
 ], QuestionsService);
 //# sourceMappingURL=questions.service.js.map

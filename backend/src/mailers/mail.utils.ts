@@ -20,7 +20,7 @@ export const sendMail = (email: string, emailToken: string) => {
         subject: 'Please verify your email...',
         html: `<p>Hello, verify your email address by clicking on this</p>
                <br>
-               <a href="http://localhost:5173/verify-email?emailToken=${emailToken}">Click here to verify</a>`
+               <a href="http://localhost:3001/verify-email?emailToken=${emailToken}">Click here to verify</a>`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {

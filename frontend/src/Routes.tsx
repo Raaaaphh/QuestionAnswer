@@ -10,18 +10,25 @@ import AuthForm from "./pages/AuthForm";
 import Profile from "./pages/Profile";
 import Question from "./pages/Question";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { AuthProvider } from "./context/AuthContext"; // Make sure you have AuthProvider in your imports
+import VerifyUserEmail from "./components/EmailVerif";
+import { AuthProvider } from "./context/AuthContext";
+import Report from "./pages/Report";
 
 export const Routes = () => {
   return (
     <Router>
+
       <AuthProvider>
         <RoutesComponents>
           {/* <Route path="/" element={<Home />} /> */}
           <Route path="*" element={<NotFound />} />
           <Route path="/auth/login" element={<AuthForm />} />
           <Route path="/auth/register" element={<AuthForm isRegister />} />
+<<<<<<< HEAD
 
+=======
+          <Route path="/verify-email" element={<VerifyUserEmail />} />
+>>>>>>> 770225dd9888d0be2ca3ac09806e97bc27b3c291
           <Route
             path="/"
             element={
@@ -55,6 +62,17 @@ export const Routes = () => {
               </ProtectedRoute>
             }
           />
+
+          <Route 
+            path="/reported" 
+            element={
+            <ProtectedRoute>
+              <Report />
+            </ProtectedRoute>
+            }
+          />
+
+          
         </RoutesComponents>
       </AuthProvider>
     </Router>

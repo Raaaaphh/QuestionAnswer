@@ -4,9 +4,10 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Answer } from './answer.model';
 import { PicturesModule } from '../pictures/pictures.module';
 import { AnswersService } from './services/answers.service';
+import { QuestionsModule } from '../questions/questions.module';
 
 @Module({
-    imports: [SequelizeModule.forFeature([Answer]), PicturesModule],
+    imports: [SequelizeModule.forFeature([Answer]), PicturesModule, QuestionsModule],
     providers: [AnswersService],
     controllers: [AnswersController],
 })

@@ -79,12 +79,8 @@ const Home = () => {
           <div className="questionsContainer">
             {questions.map((question: any) => (
               <QuestionComp
-                key={question.idQuest}
                 idQuest={question.idQuest}
-                title={question.title}
-                description={question.description}
-                status={question.status}
-                votes={question.votes}
+                reportDisplay={false}
               />
             ))}
           </div>

@@ -7,10 +7,9 @@ export class VotesController {
     }
 
     @Get('check')
-    async checkVote(@Query('idUser') idUser: string, @Query('idQuestion') idQuestion: string) {
+    async checkVote(@Query('idUser') idUser: string, @Query('idQuest') idQuest: string) {
         try {
-            const hasVoted = await this.votesService.hasUserVoted(idUser, idQuestion);
-            return { hasVoted };
+            return this.votesService.hasUserVoted(idUser, idQuest);
         }
         catch (error) {
             console.log(error);
