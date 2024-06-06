@@ -10,26 +10,29 @@ import AuthForm from "./pages/AuthForm";
 import Profile from "./pages/Profile";
 import Question from "./pages/Question";
 import ProtectedRoute from "./components/ProtectedRoute";
+import VerifyUserEmail from "./components/EmailVerif";
 import { AuthProvider } from "./context/AuthContext";
 import Report from "./pages/Report";
 
 export const Routes = () => {
   return (
     <Router>
+
       <AuthProvider>
         <RoutesComponents>
           {/* <Route path="/" element={<Home />} /> */}
           <Route path="*" element={<NotFound />} />
           <Route path="/auth/login" element={<AuthForm />} />
           <Route path="/auth/register" element={<AuthForm isRegister />} />
-
+          <Route path="/verify-email" element={<VerifyUserEmail />} />
           <Route
             path="/"
             element={
               <ProtectedRoute>
                 <Home />
               </ProtectedRoute>
-            }/>
+            }
+          />
 
           <Route
             path="/ask"
@@ -64,6 +67,7 @@ export const Routes = () => {
             </ProtectedRoute>
             }
           />
+
           
         </RoutesComponents>
       </AuthProvider>

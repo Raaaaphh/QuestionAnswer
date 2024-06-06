@@ -1,113 +1,170 @@
 .questionItem {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    background-color: #ffffff;
-    width: 100%;
-    min-height: 180px;
-    padding: 15px 20px;
-    position: relative; 
-    border-radius: 10px;
-  }
-
-  .questionItem::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0%;
-    width: 100%; 
-    height: 1px;
-    background-color: #8f8f8f;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #ffffff;
+  width: 100%;
+  min-height: 180px;
+  padding: 10px 15px;
+  position: relative; 
+  border-radius: 10px;
 }
 
-.textRightPart{
+.questionItem::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0%;
+  width: 100%; 
+  height: 1px;
+  background-color: #8f8f8f;
+}
+
+.textRightPart {
   display: flex;
   flex-direction: column;
   width: 92%;
 }
 
 .questionItem:last-child::after {
-    display: none;
+  display: none;
 }
-  
-  .tilte {
-    margin: 0 0 10px 0;
-    min-width: 89%;
-    text-decoration: underline;
-    font-size: x-large;
-    color: #000;
-    font-weight: bold;
 
-  }
+.title {
+  margin: 0 0 10px 0;
+  min-width: 87%;
+  text-decoration: underline;
+  font-size: x-large;
+  color: #000;
+  font-weight: bold;
+}
 
-  .title:visited{
-    text-decoration: none;
-  }
-  
-  .questionItem p {
-    margin: 5px 0;
-  }
+.title:visited {
+  text-decoration: none;
+}
 
-  .questionTop{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-  }
+.questionItem p {
+  margin: 5px 0;
+}
 
-  .seeMoreLink{
-    text-decoration: none;
-    color: #004A85;
-    text-align: right;
-    justify-content: end;
-    align-items: end;
-  }
+.questionTop {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
 
-  .seeMoreLink:visited{
-    text-decoration: none;
-    color: #004A85;
-  }
+.seeMoreLink {
+  text-decoration: none;
+  color: #004A85;
+  text-align: right;
+  justify-content: end;
+  align-items: end;
+}
 
-  .voteSection{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-right: 10px;
-    width: 25px;
-    min-width: 50px;
-    align-items: center;
-    justify-content: center;
-    height: 100px;
-  }
+.seeMoreLink:visited {
+  text-decoration: none;
+  color: #004A85;
+}
 
-  .questionItem img{
-    width: 60%;
-  }
+.voteSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 10px;
+  width: 25px;
+  min-width: 50px;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+}
 
-  .tags{
-    display: flex;
-    flex-direction: row;
-    gap: 5px;
-    margin-top: 10px;
-    width: 80%;
-  }
 
-  .postedBy{
-    text-align: right;
-    font-size: small;
-  }
 
-  .tagQComp{
-    background-color: #004A85;
-    color: white;
-    border-radius: 5px;
-    width: auto;
-    padding: 0px 10px;
-  }
-  
-  .description {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+.tags {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  margin-top: 10px;
+  width: 80%;
+}
+
+.postedBy {
+  text-align: right;
+  font-size: small;
+}
+
+.tagQComp {
+  background-color: #004A85;
+  color: white;
+  border-radius: 5px;
+  width: auto;
+  padding: 0px 10px;
+}
+
+.description {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.actionButtons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 10px 10px 20px;
+  gap: 10px;
+}
+
+.actionButtons img {
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+}
+
+.flagLogo{
+  width: 40px;
+  height: 40px;
+}
+
+.reportCount{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 20px 10px 10px;
+}
+
+.reportCount p{
+  font-size: larger;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  margin-bottom: 5px;
+  visibility: hidden;
+  width: 120px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}

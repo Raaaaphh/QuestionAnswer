@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {jwtDecode} from "jwt-decode"; // Corrected import for jwt-decode
+import { jwtDecode } from "jwt-decode"; // Corrected import for jwt-decode
 import axiosInstance from "../utils/axiosInstance";
 import "./Header.css";
 import UTPLogo from "../assets/logo.png";
@@ -127,12 +127,10 @@ const ProfileMenu: React.FC<{ idUser: string }> = ({ idUser }) => {
     setIsOpen(!isOpen);
   };
 
-  
-
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsOpen(false);
-    navigate("/auth/login")
+    navigate("/auth/login");
   };
 
   useEffect(() => {
@@ -160,7 +158,9 @@ const ProfileMenu: React.FC<{ idUser: string }> = ({ idUser }) => {
               Profile
             </Link>
           </li>
-          <li className="dropdownItem" onClick={handleLogout}>Logout</li>
+          <li className="dropdownItem" onClick={handleLogout}>
+            Logout
+          </li>
         </ul>
       )}
     </div>
@@ -185,12 +185,13 @@ const Header: React.FC = () => {
           setIsLoggedIn(true);
           const idUser = decodedToken.id;
           console.log(typeof idUser);
-          axiosInstance.get(`/users/${idUser}`)
-            .then(response => {
+          axiosInstance
+            .get(`/users/${idUser}`)
+            .then((response) => {
               setUserStatus(response.data.role);
               setUserId(response.data.id);
             })
-            .catch(error => {
+            .catch((error) => {
               console.error("Error fetching user status", error);
             });
         } else {
