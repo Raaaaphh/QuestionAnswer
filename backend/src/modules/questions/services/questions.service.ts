@@ -8,8 +8,8 @@ import { QuestionCreateDto, QuestionEditDto, QuestionFlagDto, QuestionVoteDto } 
 import { QuestionTag } from "../../questiontags/questiontag.model";
 import { Picture } from "../../pictures/picture.model";
 import { Vote } from "../../votes/vote.model";
-import { Favorite } from "src/modules/favorites/favorite.model";
-import { Flag, FlagType } from "src/modules/flags/flag.model";
+import { Favorite } from "../../favorites/favorite.model";
+import { Flag, FlagType } from "../../flags/flag.model";
 
 @Injectable()
 export class QuestionsService {

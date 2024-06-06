@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { InjectModel } from "@nestjs/sequelize";
 import { Sequelize } from "sequelize-typescript";
@@ -21,7 +21,7 @@ export class AnswersService {
             }
         });
         if (!answer) {
-            throw new ForbiddenException('Answer not found');
+            throw new NotFoundException('Answer not found');
         }
         return answer;
     }
@@ -38,7 +38,7 @@ export class AnswersService {
         });
 
         if (!answers || answers.length === 0) {
-            throw new ForbiddenException('Answers not found');
+            throw new NotFoundException('Answers not found');
         }
         return answers;
     }
@@ -51,7 +51,7 @@ export class AnswersService {
         });
 
         if (!answers || answers.length === 0) {
-            throw new ForbiddenException('Answers not found');
+            throw new NotFoundException('Answers not found');
         }
         return answers;
     }
@@ -91,7 +91,7 @@ export class AnswersService {
             }
         });
         if (!answer) {
-            throw new ForbiddenException('Answer not found');
+            throw new NotFoundException('Answer not found');
         }
         await answer.destroy();
         return answer;
