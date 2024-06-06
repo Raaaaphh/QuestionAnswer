@@ -14,7 +14,7 @@ export declare class Question extends Model {
     context: string;
     votes: number;
     flagsSpam: number;
-    flagsInappropiate: number;
+    flagsInappropriate: number;
     status: boolean;
     answers: Answer[];
     favorites: Favorite[];

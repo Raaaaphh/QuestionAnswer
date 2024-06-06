@@ -2,17 +2,10 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import "./Profile.css";
 import QuestionComp from "../components/QuestionComp";
-<<<<<<< HEAD
-import { mockUsers, mockFavorites, mockQuestions } from "../mocks/mockData";
-
-import axios from "axios";
-=======
->>>>>>> 1834a92a10c2f669f221a68368918a7a1a1ae4a4
 import { useParams } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
-import {jwtDecode} from "jwt-decode";
-import ProfilePicture from '../components/ProfilePicture';
-
+import { jwtDecode } from "jwt-decode";
+import ProfilePicture from "../components/ProfilePicture";
 
 export interface Question {
   idQuest: string;
@@ -45,15 +38,19 @@ const Profile: React.FC = () => {
         if (!token) {
           throw new Error("No token found");
         }
-        const decodedToken = jwtDecode(token) as { id: string};
+        const decodedToken = jwtDecode(token) as { id: string };
         const userId = decodedToken.id;
         const userResponse = await axiosInstance.get(`/users/${userId}`);
         setUser(userResponse.data);
         console.log("User color", userResponse.data.color);
-        const previousQuestions = await axiosInstance.get(`/questions/findByUser/${userId}`);
+        const previousQuestions = await axiosInstance.get(
+          `/questions/findByUser/${userId}`
+        );
         setQuestions(previousQuestions.data);
 
-        const favoritesQuestions = await axiosInstance.get(`/favorites/${userId}`);
+        const favoritesQuestions = await axiosInstance.get(
+          `/favorites/${userId}`
+        );
         setFavorites(favoritesQuestions.data);
       } catch (error) {
         console.error("Error fetching data", error);
@@ -65,13 +62,9 @@ const Profile: React.FC = () => {
     fetchUserData();
   }, [id]);
 
-  
-
   if (loading) {
     return <div>Loading...</div>;
   }
-
-
 
   return (
     <div>
@@ -82,7 +75,7 @@ const Profile: React.FC = () => {
             <div className="userInfos">
               <div className="avatarUsername">
                 <div className="profilePicture">
-                  <ProfilePicture userId={user.idUser}/>
+                  <ProfilePicture userId={user.idUser} />
                 </div>
                 <h2>PROFILE</h2>
               </div>
