@@ -50,7 +50,13 @@ let QuestionsService = class QuestionsService {
     async findAllWithLimit(limit) {
         const intLimit = parseInt(limit, 10);
         const questions = await this.questModel.findAll({
+<<<<<<< Updated upstream
             limit: intLimit
+=======
+            limit: intLimit,
+            offset: offset,
+            order: [['createdAt', 'ASC']]
+>>>>>>> Stashed changes
         });
         if (!questions || questions.length === 0) {
             throw new common_1.ForbiddenException('Questions not found');

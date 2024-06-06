@@ -21,7 +21,7 @@ export const Routes = () => {
           <Route path="*" element={<NotFound />} />
           <Route path="/auth/login" element={<AuthForm />} />
           <Route path="/auth/register" element={<AuthForm isRegister />} />
-
+          <Route path="/verify-email" element={<VerifyUserEmail />} />
           <Route
             path="/"
             element={
@@ -52,6 +52,15 @@ export const Routes = () => {
             element={
               <ProtectedRoute>
                 <Question />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/reported"
+            element={
+              <ProtectedRoute>
+                <Report />
               </ProtectedRoute>
             }
           />

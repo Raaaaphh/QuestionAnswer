@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import "./Profile.css";
 import QuestionComp from "../components/QuestionComp";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 import { jwtDecode } from "jwt-decode";
 import ProfilePicture from "../components/ProfilePicture";
+import TagCreationPopup from "../components/TagCreationPopup"; // Import the popup
 
 export interface Question {
   idQuest: string;
@@ -30,6 +31,21 @@ const Profile: React.FC = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [favorites, setFavorites] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isTagPopupOpen, setIsTagPopupOpen] = useState(false);
+
+  // Mock data for existing tags
+  const [existingTags, setExistingTags] = useState<string[]>([
+    "JavaScript",
+    "React",
+    "TypeScript",
+    "Node.js",
+    "CSS",
+    "HTML",
+    "GraphQL",
+    "Redux",
+    "Jest",
+    "MongoDB",
+  ]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -62,6 +78,11 @@ const Profile: React.FC = () => {
     fetchUserData();
   }, [id]);
 
+  const handleCreateTag = (tagName: string) => {
+    console.log("New tag created:", tagName);
+    setExistingTags((prevTags) => [...prevTags, tagName]);
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -88,6 +109,19 @@ const Profile: React.FC = () => {
                   <h3>Email</h3>
                   <p>{user.email}</p>
                 </div>
+                {user.role === "Lecturer" && (
+                  <div className="buttonContainer">
+                    <Link to="/reported" className="simpleButton">
+                      Go to Report
+                    </Link>
+                    <button
+                      onClick={() => setIsTagPopupOpen(true)}
+                      className="simpleButton"
+                    >
+                      Create a tag
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
             <div className="previousQuestions">
