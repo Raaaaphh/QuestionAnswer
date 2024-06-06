@@ -51,6 +51,20 @@ let QuestionsController = class QuestionsController {
             console.log(error);
         }
     }
+    findReportedQuestions(limit, page) {
+        try {
+            if (limit === undefined) {
+                limit = '20';
+            }
+            if (page === undefined) {
+                page = '1';
+            }
+            return this.questionsService.findReportedQuestions(limit, page);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
     searchQuestions(search, limit) {
         try {
             if (search === undefined) {
@@ -193,6 +207,14 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "findAllWithLimit", null);
+__decorate([
+    (0, common_1.Get)('findReported/params'),
+    __param(0, (0, common_1.Query)('limit')),
+    __param(1, (0, common_1.Query)('page')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], QuestionsController.prototype, "findReportedQuestions", null);
 __decorate([
     (0, common_1.Get)('findByName/params'),
     __param(0, (0, common_1.Query)('search')),

@@ -43,6 +43,22 @@ export class QuestionsController {
         }
     }
 
+    @Get('findReported/params')
+    findReportedQuestions(@Query('limit') limit: string, @Query('page') page: string) {
+        try {
+            if (limit === undefined) {
+                limit = '20';
+            }
+            if (page === undefined) {
+                page = '1';
+            }
+            return this.questionsService.findReportedQuestions(limit, page);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     @Get('findByName/params')
     searchQuestions(@Query('search') search: string, @Query('limit') limit: string) {
         try {
