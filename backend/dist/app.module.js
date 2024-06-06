@@ -31,6 +31,7 @@ const jwt_middleware_1 = require("./middlewares/jwt.middleware");
 const invitation_model_1 = require("./modules/invitations/invitation.model");
 const votes_module_1 = require("./modules/votes/votes.module");
 const vote_model_1 = require("./modules/votes/vote.model");
+const flags_module_1 = require("./modules/flags/flags.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer
@@ -69,7 +70,8 @@ exports.AppModule = AppModule = __decorate([
             tags_module_1.TagsModule,
             questions_module_1.QuestionsModule,
             pictures_module_1.PicturesModule,
-            votes_module_1.VotesModule,],
+            votes_module_1.VotesModule,
+            flags_module_1.FlagsModule,],
         providers: [app_service_1.AppService],
     })
 ], AppModule);

@@ -55,7 +55,8 @@ let QuestionsService = class QuestionsService {
         const offset = (intPage - 1) * intLimit;
         const questions = await this.questModel.findAll({
             limit: intLimit,
-            offset: offset
+            offset: offset,
+            order: [['createdAt', 'ASC']]
         });
         if (!questions || questions.length === 0) {
             throw new common_1.ForbiddenException('Questions not found');

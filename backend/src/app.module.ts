@@ -22,6 +22,7 @@ import { JwtMiddleware } from './middlewares/jwt.middleware';
 import { Invitation } from './modules/invitations/invitation.model';
 import { VotesModule } from './modules/votes/votes.module';
 import { Vote } from './modules/votes/vote.model';
+import { FlagsModule } from './modules/flags/flags.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -54,6 +55,7 @@ import { Vote } from './modules/votes/vote.model';
     QuestionsModule,
     PicturesModule,
     VotesModule,
+    FlagsModule,
   ],
   providers: [AppService],
 })

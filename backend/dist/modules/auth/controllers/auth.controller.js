@@ -32,6 +32,15 @@ let AuthController = class AuthController {
             console.log(error);
         }
     }
+    logout(req) {
+        try {
+            const token = req.headers.authorization.split(' ')[1];
+            return this.authService.logout(token);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
     register(authreg) {
         try {
             console.log(authreg);
@@ -74,6 +83,13 @@ __decorate([
     __metadata("design:paramtypes", [dto_1.AuthLoginDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "login", null);
+__decorate([
+    (0, common_1.Post)('logout'),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "logout", null);
 __decorate([
     (0, common_1.Post)('register'),
     __param(0, (0, common_1.Body)()),
