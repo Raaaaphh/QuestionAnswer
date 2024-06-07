@@ -59,27 +59,6 @@ let QuestionsService = class QuestionsService {
             limit: intLimit,
             offset: offset,
             order: [['createdAt', 'DESC']]
-<<<<<<< HEAD
-=======
-        });
-        if (!questions || questions.length === 0) {
-            throw new common_1.ForbiddenException('Questions not found');
-        }
-        return questions;
-    }
-    async findReportedQuestions(limit, page) {
-        const intLimit = parseInt(limit, 10);
-        const intPage = parseInt(page, 10);
-        const offset = (intPage - 1) * intLimit;
-        const flagSum = sequelize_typescript_1.Sequelize.literal('`flagsSpam` + `flagsInappropriate`');
-        const questions = await this.questModel.findAll({
-            where: sequelize_typescript_1.Sequelize.where(flagSum, sequelize_2.Op.gte, 5),
-            limit: intLimit,
-            offset: offset,
-            order: [
-                [flagSum, 'DESC']
-            ]
->>>>>>> f204de7df3d87a91a093863536582cec412bab8e
         });
         if (!questions || questions.length === 0) {
             throw new common_1.ForbiddenException('Questions not found');

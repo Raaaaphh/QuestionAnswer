@@ -30,6 +30,10 @@ let AuthController = class AuthController {
         }
         catch (error) {
             console.log(error);
+            if (error instanceof common_1.ForbiddenException || error instanceof common_1.BadRequestException) {
+                throw error;
+            }
+            throw new common_1.HttpException('Something went wrong', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     logout(req) {
@@ -39,6 +43,10 @@ let AuthController = class AuthController {
         }
         catch (error) {
             console.log(error);
+            if (error instanceof common_1.BadRequestException || error instanceof common_1.ForbiddenException) {
+                throw error;
+            }
+            throw new common_1.HttpException('Something went wrong', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     register(authreg) {
@@ -48,6 +56,10 @@ let AuthController = class AuthController {
         }
         catch (error) {
             console.log(error);
+            if (error instanceof common_1.BadRequestException) {
+                throw error;
+            }
+            throw new common_1.HttpException('Something went wrong', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     async verifyEmail(emailToken) {
@@ -56,7 +68,10 @@ let AuthController = class AuthController {
         }
         catch (error) {
             console.log(error);
-            throw error;
+            if (error instanceof common_1.BadRequestException || error instanceof common_1.ForbiddenException) {
+                throw error;
+            }
+            throw new common_1.HttpException('Something went wrong', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     async registerWithToken(token, authreg) {
@@ -65,7 +80,10 @@ let AuthController = class AuthController {
         }
         catch (error) {
             console.log(error);
-            throw error;
+            if (error instanceof common_1.BadRequestException || error instanceof common_1.ForbiddenException) {
+                throw error;
+            }
+            throw new common_1.HttpException('Something went wrong', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 };

@@ -25,7 +25,10 @@ let FavoritesController = class FavoritesController {
             return await this.favService.getFavorites();
         }
         catch (error) {
-            console.log(error);
+            throw new common_1.HttpException({
+                message: 'An error occurred while getting favorites',
+                error,
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     async getFavoritesQuestion(id) {
@@ -33,7 +36,13 @@ let FavoritesController = class FavoritesController {
             return await this.favService.getFavoritesQuestion(id);
         }
         catch (error) {
-            console.log(error);
+            if (error instanceof common_1.BadRequestException) {
+                throw error;
+            }
+            throw new common_1.HttpException({
+                message: 'An error occurred while getting favorites by question',
+                error,
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     async getFavoritesUser(id) {
@@ -41,7 +50,13 @@ let FavoritesController = class FavoritesController {
             return await this.favService.getFavoritesUser(id);
         }
         catch (error) {
-            console.log(error);
+            if (error instanceof common_1.BadRequestException) {
+                throw error;
+            }
+            throw new common_1.HttpException({
+                message: 'An error occurred while getting favorites by user',
+                error,
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     async notifyFavorites(idUser) {
@@ -49,7 +64,13 @@ let FavoritesController = class FavoritesController {
             return await this.favService.notifyFavorites(idUser);
         }
         catch (error) {
-            console.log(error);
+            if (error instanceof common_1.BadRequestException) {
+                throw error;
+            }
+            throw new common_1.HttpException({
+                message: 'An error occurred while notifying favorites',
+                error,
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     async addFavorite(favDto) {
@@ -57,7 +78,10 @@ let FavoritesController = class FavoritesController {
             return await this.favService.addFavorite(favDto);
         }
         catch (error) {
-            console.log(error);
+            throw new common_1.HttpException({
+                message: 'An error occurred while adding favorite',
+                error,
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     async removeFavorite(favDto) {
@@ -65,7 +89,13 @@ let FavoritesController = class FavoritesController {
             return await this.favService.removeFavorite(favDto);
         }
         catch (error) {
-            console.log(error);
+            if (error instanceof common_1.ForbiddenException) {
+                throw error;
+            }
+            throw new common_1.HttpException({
+                message: 'An error occurred while removing favorite',
+                error,
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     async deleteNotified(favDto) {
@@ -73,7 +103,13 @@ let FavoritesController = class FavoritesController {
             return await this.favService.deleteNotified(favDto);
         }
         catch (error) {
-            console.log(error);
+            if (error instanceof common_1.ForbiddenException) {
+                throw error;
+            }
+            throw new common_1.HttpException({
+                message: 'An error occurred while deleting notified favorite',
+                error,
+            }, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 };
@@ -85,21 +121,21 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], FavoritesController.prototype, "getFavorites", null);
 __decorate([
-    (0, common_1.Get)('findByQuest/:id'),
+    (0, common_1.Get)('findByQuest/'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], FavoritesController.prototype, "getFavoritesQuestion", null);
 __decorate([
-    (0, common_1.Get)('findByUser/:id'),
+    (0, common_1.Get)('findByUser/'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], FavoritesController.prototype, "getFavoritesUser", null);
 __decorate([
-    (0, common_1.Get)('notify/:idUser'),
+    (0, common_1.Get)('notify/'),
     __param(0, (0, common_1.Param)('idUser')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
