@@ -4,8 +4,9 @@ import { QuestionCreateDto, QuestionEditDto, QuestionFlagDto, QuestionVoteDto } 
 import { QuestionTag } from "../../questiontags/questiontag.model";
 import { Picture } from "../../pictures/picture.model";
 import { Vote } from "../../votes/vote.model";
-import { Favorite } from "src/modules/favorites/favorite.model";
-import { Flag } from "src/modules/flags/flag.model";
+import { Favorite } from "../../favorites/favorite.model";
+import { Flag } from "../../flags/flag.model";
+import { Tag } from "src/modules/tags/tag.model";
 export declare class QuestionsService {
     private questModel;
     private questTagModel;
@@ -13,16 +14,18 @@ export declare class QuestionsService {
     private voteModel;
     private favoriteModel;
     private flagModel;
+    private tagModel;
     private readonly sequelize;
-    constructor(questModel: typeof Question, questTagModel: typeof QuestionTag, pictureModel: typeof Picture, voteModel: typeof Vote, favoriteModel: typeof Favorite, flagModel: typeof Flag, sequelize: Sequelize);
+    constructor(questModel: typeof Question, questTagModel: typeof QuestionTag, pictureModel: typeof Picture, voteModel: typeof Vote, favoriteModel: typeof Favorite, flagModel: typeof Flag, tagModel: typeof Tag, sequelize: Sequelize);
     getQuestion(id: string): Promise<Question>;
     findAll(): Promise<Question[]>;
     findAllWithLimit(limit: string, page: string): Promise<Question[]>;
     findReportedQuestions(limit: string, page: string): Promise<Question[]>;
-    searchQuestions(search: string, limit: string): Promise<Question[]>;
-    searchQuestionsByFilter(filter: string, limit: string): Promise<Question[]>;
-    searchQuestionsByUser(id: string): Promise<Question[]>;
-    searchQuestionsByTags(tags: string[], limit: string): Promise<Question[]>;
+    searchQuestions(search: string, limit: string, page: string): Promise<Question[]>;
+    searchQuestionsByFilter(filter: string, limit: string, page: string): Promise<Question[]>;
+    searchQuestionsByUser(id: string, limit: string, page: string): Promise<Question[]>;
+    searchQuestionsByTags(tags: string[], limit: string, page: string): Promise<Question[]>;
+    getTagsForQuestion(id: string): Promise<Tag[]>;
     createQuestion(quest: QuestionCreateDto): Promise<Question>;
     setSolved(dto: QuestionVoteDto): Promise<Question>;
     addVote(dto: QuestionVoteDto): Promise<Question>;

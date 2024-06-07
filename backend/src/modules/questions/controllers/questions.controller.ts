@@ -142,6 +142,16 @@ export class QuestionsController {
         }
     }
 
+    @Get('tagsForQuestion/:id')
+    getTagsForQuestion(@Param('id') id: string) {
+        try {
+            return this.questionsService.getTagsForQuestion(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     @Post('create')
     @UseGuards(StudentGuard)
     createQuestion(@Body() quest: QuestionCreateDto) {

@@ -7,6 +7,7 @@ import { TagsService } from './services/tags.service';
 @Module({
     imports: [SequelizeModule.forFeature([Tag])],
     controllers: [TagsController],
-    providers: [TagsService]
+    providers: [TagsService],
+    exports: [SequelizeModule]
 })
 export class TagsModule { }

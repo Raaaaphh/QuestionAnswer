@@ -21,12 +21,22 @@ let FlagsService = class FlagsService {
         this.flagModel = flagModel;
     }
     async hasUserFlagged(idUser, idQuest) {
-        const vote = await this.flagModel.findOne({ where: { idUser, idQuest } });
-        if (!vote) {
-            throw new common_1.BadRequestException('User has not reported this question');
+        try {
+            const vote = await this.flagModel.findOne({ where: { idUser, idQuest } });
+            if (!vote) {
+                throw new common_1.NotFoundException('User has not reported this question');
+            }
+            else {
+                return true;
+            }
         }
-        else {
-            return true;
+        catch (error) {
+            if (error instanceof common_1.NotFoundException) {
+                throw error;
+            }
+            else {
+                throw new common_1.InternalServerErrorException('An error occurred while searching for the report');
+            }
         }
     }
 };
