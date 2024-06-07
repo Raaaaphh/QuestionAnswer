@@ -5,8 +5,8 @@ import QuestionComp from "../components/QuestionComp";
 import { Link, useParams } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 import { jwtDecode } from "jwt-decode";
-import ProfilePicture from '../components/ProfilePicture';
-import TagCreationPopup from '../components/TagCreationPopup'; // Import the popup
+import ProfilePicture from "../components/ProfilePicture";
+import TagCreationPopup from "../components/TagCreationPopup"; // Import the popup
 
 export interface Question {
   idQuest: string;
@@ -36,16 +36,16 @@ const Profile: React.FC = () => {
 
   // Mock data for existing tags
   const [existingTags, setExistingTags] = useState<string[]>([
-    'JavaScript',
-    'React',
-    'TypeScript',
-    'Node.js',
-    'CSS',
-    'HTML',
-    'GraphQL',
-    'Redux',
-    'Jest',
-    'MongoDB'
+    "JavaScript",
+    "React",
+    "TypeScript",
+    "Node.js",
+    "CSS",
+    "HTML",
+    "GraphQL",
+    "Redux",
+    "Jest",
+    "MongoDB",
   ]);
 
   useEffect(() => {
@@ -83,7 +83,7 @@ const Profile: React.FC = () => {
 
   const handleCreateTag = (tagName: string) => {
     console.log("New tag created:", tagName);
-    setExistingTags(prevTags => [...prevTags, tagName]); 
+    setExistingTags((prevTags) => [...prevTags, tagName]);
   };
 
   if (loading) {
@@ -114,8 +114,15 @@ const Profile: React.FC = () => {
                 </div>
                 {user.role === "Lecturer" && (
                   <div className="buttonContainer">
-                    <Link to="/reported" className="simpleButton">Go to Report</Link>
-                    <button onClick={() => setIsTagPopupOpen(true)} className="simpleButton">Create a tag</button>
+                    <Link to="/reported" className="simpleButton">
+                      Go to Report
+                    </Link>
+                    <button
+                      onClick={() => setIsTagPopupOpen(true)}
+                      className="simpleButton"
+                    >
+                      Create a tag
+                    </button>
                   </div>
                 )}
               </div>

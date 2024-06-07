@@ -3,53 +3,33 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 20vw; /* Use viewport width for responsiveness */
-    height: 20vw; /* Use viewport width for responsiveness to maintain the aspect ratio */
-    max-width: 150px; /* Set a maximum size */
-    max-height: 150px; /* Set a maximum size */
+    width: 20vw; 
+    height: 20vw; 
+    max-width: 100px;
+    max-height: 100px;
     margin: 0 auto; 
     border-radius: 50%; 
-    overflow: hidden; /* Hides any overflow from the container */
-    background-color: #f0f0f0; /* Fallback background color */
+    overflow: hidden; 
+    background-color: #f0f0f0;
+    margin-right: 15px;
   }
   
   .initials {
-    font-size: 5vw; /* Use viewport width for responsiveness */
+    font-size: 50px;
     color: rgb(0, 0, 0);
     font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
-    line-height: 1; /* Reset line height */
+    line-height: 1; 
   }
   
   .lecturer-icon {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensures the image covers the container without distortion */
-    border-radius: 50%; /* Ensures the lecturer icon is also round */
+    object-fit: cover; 
+    border-radius: 50%; 
+    margin-right: 15px;
   }
   
-  /* Media queries for different screen sizes */
-  @media (max-width: 768px) {
-    .avatar {
-      width: 25vw; /* Increase size for smaller screens */
-      height: 25vw; 
-    }
-    
-    .initials {
-      font-size: 12vw; /* Adjust font size for smaller screens */
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .avatar {
-      width: 30vw; /* Further increase size for smaller screens */
-      height: 30vw;
-    }
-    
-    .initials {
-      font-size: 15vw; /* Adjust font size for smaller screens */
-    }
-  }
   

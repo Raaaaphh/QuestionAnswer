@@ -40,7 +40,6 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ userId }) => {
         className="avatar"
         style={{
           backgroundColor: user?.color ? `#${user.color}` : ""
-
         }}
         >
             <span className="initials">{getInitials(user.name)}</span>

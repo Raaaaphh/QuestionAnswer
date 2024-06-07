@@ -12,13 +12,25 @@ const Home = () => {
   const [sectionTitle, setSectionTitle] = useState("Top Unsolved Questions");
 
   useEffect(() => {
-    fetchQuestionsFromDatabase();
+    fetchQuestionsFromDatabase(filter);
     updateSectionTitle();
   }, [filter]);
 
-  const fetchQuestionsFromDatabase = async () => {
+  const fetchQuestionsFromDatabase = async (filter: string) => {
     try {
-      const response = await axiosInstance.get("questions");
+      let endpoint = "questions/all/params?limit=20";
+      switch (filter) {
+        case "topUnsolved":
+          endpoint = "questions/unsolved?limit=20";
+          break;
+        case "topSolved":
+          endpoint = "questions/solved?limit=20";
+          break;
+        case "mostRecent":
+          endpoint = "questions/all/params?limit=20";
+          break;
+      }
+      const response = await axiosInstance.get(endpoint);
       setQuestions(response.data);
       console.log("Questions fetched from database:", response.data);
       console.log("Questions:", questions);
@@ -78,10 +90,7 @@ const Home = () => {
           <h2 className="sectionTitle">{sectionTitle}</h2>
           <div className="questionsContainer">
             {questions.map((question: any) => (
-              <QuestionComp
-                idQuest={question.idQuest}
-                reportDisplay={false}
-              />
+              <QuestionComp idQuest={question.idQuest} reportDisplay={false} />
             ))}
           </div>
         </div>

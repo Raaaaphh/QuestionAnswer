@@ -21,4 +21,11 @@
   .answerContent {
     width: 95%;
   }
+
+  .answerFull{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
   
