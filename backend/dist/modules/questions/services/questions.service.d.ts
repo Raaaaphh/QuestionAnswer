@@ -18,6 +18,7 @@ export declare class QuestionsService {
     getQuestion(id: string): Promise<Question>;
     findAll(): Promise<Question[]>;
     findAllWithLimit(limit: string, page: string): Promise<Question[]>;
+    findReportedQuestions(limit: string, page: string): Promise<Question[]>;
     searchQuestions(search: string, limit: string): Promise<Question[]>;
     searchQuestionsByFilter(filter: string, limit: string): Promise<Question[]>;
     searchQuestionsByUser(id: string): Promise<Question[]>;

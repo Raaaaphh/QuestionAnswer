@@ -6,7 +6,7 @@ export declare class QuestionsController {
     getQuestion(id: string): Promise<import("../question.model").Question>;
     findAll(): Promise<import("../question.model").Question[]>;
     findAllWithLimit(limit: string, page: string): Promise<import("../question.model").Question[]>;
-    findReportedQuestions(limit: string, page: string): any;
+    findReportedQuestions(limit: string, page: string): Promise<import("../question.model").Question[]>;
     searchQuestions(search: string, limit: string): Promise<import("../question.model").Question[]>;
     searchQuestionsByFilter(filter: string, limit: string): Promise<import("../question.model").Question[]>;
     searchQuestionsByUser(id: string): Promise<import("../question.model").Question[]>;
