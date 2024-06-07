@@ -60,7 +60,7 @@ export class QuestionsController {
     }
 
     @Get('findByName/params')
-    searchQuestions(@Query('search') search: string, @Query('limit') limit: string) {
+    searchQuestions(@Query('search') search: string, @Query('limit') limit: string, @Query('page') page: string) {
         try {
             if (search === undefined) {
                 throw new Error('Search is required');
@@ -68,7 +68,10 @@ export class QuestionsController {
             if (limit === undefined) {
                 limit = '20';
             }
-            return this.questionsService.searchQuestions(search, limit);
+            if (page === undefined) {
+                page = '1';
+            }
+            return this.questionsService.searchQuestions(search, limit, page);
         }
         catch (error) {
             console.log(error);
@@ -76,7 +79,7 @@ export class QuestionsController {
     }
 
     @Get('findByFilter/params')
-    searchQuestionsByFilter(@Query('filter') filter: string, @Query('limit') limit: string) {
+    searchQuestionsByFilter(@Query('filter') filter: string, @Query('limit') limit: string, @Query('page') page: string) {
         try {
             if (filter === undefined) {
                 throw new Error('Filter is required');
@@ -84,17 +87,29 @@ export class QuestionsController {
             if (limit === undefined) {
                 limit = '20';
             }
-            return this.questionsService.searchQuestionsByFilter(filter, limit);
+            if (page === undefined) {
+                page = '1';
+            }
+            return this.questionsService.searchQuestionsByFilter(filter, limit, page);
         }
         catch (error) {
             console.log(error);
         }
     }
 
-    @Get('findByUser/:id')
-    searchQuestionsByUser(@Param('id') id: string) {
+    @Get('findByUser/params')
+    searchQuestionsByUser(@Query('id') id: string, @Query('limit') limit: string, @Query('page') page: string) {
         try {
-            return this.questionsService.searchQuestionsByUser(id);
+            if (id === undefined) {
+                throw new Error('User ID is required');
+            }
+            if (limit === undefined) {
+                limit = '20';
+            }
+            if (page === undefined) {
+                page = '1';
+            }
+            return this.questionsService.searchQuestionsByUser(id, limit, page);
         }
         catch (error) {
             console.log(error);
@@ -102,7 +117,7 @@ export class QuestionsController {
     }
 
     @Get('findByTags/params')
-    async searchQuestionsByTags(@Query('tags') tags: string, @Query('limit') limit: string) {
+    async searchQuestionsByTags(@Query('tags') tags: string, @Query('limit') limit: string, @Query('page') page: string) {
         try {
             if (!tags) {
                 throw new BadRequestException('Tags query parameter is required');
@@ -116,7 +131,10 @@ export class QuestionsController {
             if (limit === undefined) {
                 limit = '20';
             }
-            return await this.questionsService.searchQuestionsByTags(tagsArray, limit);
+            if (page === undefined) {
+                page = '1';
+            }
+            return await this.questionsService.searchQuestionsByTags(tagsArray, limit, page);
         }
         catch (error) {
             console.log(error);

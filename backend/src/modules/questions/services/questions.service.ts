@@ -77,8 +77,10 @@ export class QuestionsService {
     }
 
 
-    async searchQuestions(search: string, limit: string) {
+    async searchQuestions(search: string, limit: string, page: string) {
         const intLimit = parseInt(limit, 10);
+        const intPage = parseInt(page, 10);
+        const offset = (intPage - 1) * intLimit;
 
         const questions = await this.questModel.findAll({
             where: {
@@ -87,6 +89,7 @@ export class QuestionsService {
                 }
             },
             limit: intLimit,
+            //offset: offset,
         });
 
         if (!questions || questions.length === 0) {
@@ -96,14 +99,17 @@ export class QuestionsService {
     }
 
 
-    async searchQuestionsByFilter(filter: string, limit: string) {
+    async searchQuestionsByFilter(filter: string, limit: string, page: string) {
         const intLimit = parseInt(limit, 10);
+        const intPage = parseInt(page, 10);
+        const offset = (intPage - 1) * intLimit;
 
         const questions = await this.questModel.findAll({
             where: {
                 status: filter,
             },
             limit: intLimit,
+            //offset: offset,
             order: [['votes', 'DESC']]
         });
 
@@ -113,21 +119,34 @@ export class QuestionsService {
         return questions;
     }
 
-    async searchQuestionsByUser(id: string) {
-        const questions = await this.questModel.findAll({
-            where: {
-                idUser: id
+    async searchQuestionsByUser(id: string, limit: string, page: string) {
+        try {
+            if (!isValidUUID(id)) {
+                throw new BadRequestException('Invalid user ID');
             }
-        });
+            const intLimit = parseInt(limit, 10);
+            const intPage = parseInt(page, 10);
+            const offset = (intPage - 1) * intLimit;
 
-        if (!questions || questions.length === 0) {
-            throw new ForbiddenException('Questions not found');
+            const questions = await this.questModel.findAll({
+                where: {
+                    idUser: id
+                },
+                limit: intLimit,
+                //offset: offset,
+            });
+
+            if (!questions || questions.length === 0) {
+                throw new ForbiddenException('Questions not found');
+            }
+            return questions;
+        } catch (error) {
+            console.log(error);
         }
-        return questions;
     }
 
 
-    async searchQuestionsByTags(tags: string[], limit: string) {
+    async searchQuestionsByTags(tags: string[], limit: string, page: string) {
         const transaction = await this.sequelize.transaction();
         try {
             const tempQuestions = await this.questTagModel.findAll({
@@ -138,13 +157,17 @@ export class QuestionsService {
                 },
                 transaction
             });
+            const intLimit = parseInt(limit, 10);
+            const intPage = parseInt(page, 10);
+            const offset = (intPage - 1) * intLimit;
 
             const idQuests = tempQuestions.map(question => question.idQuest);
             const questions = await this.questModel.findAll({
                 where: {
                     idQuest: idQuests
                 },
-                limit: parseInt(limit, 10),
+                limit: intLimit,
+                //offset: offset,
                 transaction
             });
 
