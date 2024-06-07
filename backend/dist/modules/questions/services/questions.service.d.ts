@@ -4,8 +4,8 @@ import { QuestionCreateDto, QuestionEditDto, QuestionFlagDto, QuestionVoteDto } 
 import { QuestionTag } from "../../questiontags/questiontag.model";
 import { Picture } from "../../pictures/picture.model";
 import { Vote } from "../../votes/vote.model";
-import { Favorite } from "src/modules/favorites/favorite.model";
-import { Flag } from "src/modules/flags/flag.model";
+import { Favorite } from "../../favorites/favorite.model";
+import { Flag } from "../../flags/flag.model";
 export declare class QuestionsService {
     private questModel;
     private questTagModel;

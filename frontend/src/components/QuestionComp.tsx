@@ -14,6 +14,16 @@ interface QuestionProps {
   reportDisplay: boolean;
 }
 
+type Tag = {
+  idTag: string;
+  idUser: string;
+  name: string;
+  description: string;
+  occurrence: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
 const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
   const [question, setQuestion] = useState<{
     idUser: string;
@@ -25,10 +35,10 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
     flagsSpam: number;
     flagsInappropriate: number;
   }>({
-    idUser: '',
-    title: '',
-    description: '',
-    context: '',
+    idUser: "",
+    title: "",
+    description: "",
+    context: "",
     votes: 0,
     status: false,
     flagsSpam: 0,
@@ -36,7 +46,7 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
   });
   const [user, setUser] = useState<{ name: string } | null>(null);
   const [loading, setLoading] = useState(true);
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -62,6 +72,16 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
       }
     };
 
+    const fetchTagsFromDatabase = async () => {
+      try {
+        const response = await axiosInstance.get(`/tags/${idQuest}`);
+        setTags(response.data);
+        console.log("Tags fetched from database:", response.data);
+      } catch (error) {
+        console.error("Error fetching tags from database:", error);
+      }
+    };
+
     fetchUserData();
   }, [idQuest]);
 
@@ -76,7 +96,9 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
 
   const handleKeep = async () => {
     try {
-      await axiosInstance.post(`------------------------------------------------------`); // route to remove flag and innapropiate
+      await axiosInstance.post(
+        `------------------------------------------------------`
+      );
       console.log("Question kept successfully");
     } catch (error) {
       console.error("Error keeping question", error);
@@ -89,17 +111,16 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
 
   return (
     <div key={idQuest} className="questionItem">
-      {reportDisplay === false && <AnimatedUpVote voteCount={question?.votes ?? 0} />}
-      {reportDisplay ===true && 
-      <div className="reportCount">
-        <img src={flagLogo} alt="flag" className="flagLogo" />
-        <p>{question?.flagsSpam + question?.flagsInappropriate}</p>
-      </div>
-      
-      }
-      
-        
-    
+      {reportDisplay === false && (
+        <AnimatedUpVote voteCount={question?.votes ?? 0} />
+      )}
+      {reportDisplay === true && (
+        <div className="reportCount">
+          <img src={flagLogo} alt="flag" className="flagLogo" />
+          <p>{question?.flagsSpam + question?.flagsInappropriate}</p>
+        </div>
+      )}
+
       <div className="textRightPart">
         <div className="questionTop">
           <Link to={`/question/${idQuest}`} className="title">
@@ -116,15 +137,15 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
             {tags &&
               tags.map((tag, index) => (
                 <p key={index} className="tagQComp">
-                  {tag}
+                  {tag.name}
                 </p>
               ))}
           </div>
           <p className="postedBy">Posted by: {user?.name}</p>
         </div>
       </div>
-      {reportDisplay === true && 
-      <div className="actionButtons">
+      {reportDisplay === true && (
+        <div className="actionButtons">
           <div className="tooltip">
             <img src={deleteLogo} alt="Delete" onClick={handleDelete} />
             <span className="tooltiptext">Delete question</span>
@@ -134,7 +155,7 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
             <span className="tooltiptext">Keep question</span>
           </div>
         </div>
-      } 
+      )}
     </div>
   );
 };

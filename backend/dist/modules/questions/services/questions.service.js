@@ -59,8 +59,6 @@ let QuestionsService = class QuestionsService {
             limit: intLimit,
             offset: offset,
             order: [['createdAt', 'DESC']]
-<<<<<<< HEAD
-=======
         });
         if (!questions || questions.length === 0) {
             throw new common_1.ForbiddenException('Questions not found');
@@ -79,7 +77,6 @@ let QuestionsService = class QuestionsService {
             order: [
                 [flagSum, 'DESC']
             ]
->>>>>>> f204de7df3d87a91a093863536582cec412bab8e
         });
         if (!questions || questions.length === 0) {
             throw new common_1.ForbiddenException('Questions not found');
