@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { Picture } from "../picture.model";
@@ -10,74 +10,88 @@ export class PicturesService {
     constructor(@InjectModel(Picture) private pictModel: typeof Picture) { }
 
     async getPicture(id: string) {
-        if (!isValidUUID(id)) {
-            throw new BadRequestException('Invalid picture ID');
-        }
-
-        const picture = await this.pictModel.findOne({
-            where: {
-                idPict: id
+        try {
+            if (!isValidUUID(id)) {
+                throw new BadRequestException('Invalid picture ID');
             }
-        });
 
-        if (!picture) {
-            throw new ForbiddenException('Picture not found');
+            const picture = await this.pictModel.findOne({
+                where: {
+                    idPict: id
+                }
+            });
+
+            if (!picture) {
+                throw new NotFoundException('Picture not found');
+            }
+            return picture;
+        } catch (error) {
+            throw error;
         }
-        return picture;
     }
-
 
     async getPicturesByQuestion(id: string) {
-        if (!isValidUUID(id)) {
-            throw new BadRequestException('Invalid question ID');
-        }
-
-        const pictures = await this.pictModel.findAll({
-            where: {
-                idQuest: id
+        try {
+            if (!isValidUUID(id)) {
+                throw new BadRequestException('Invalid question ID');
             }
-        });
 
-        if (!pictures || pictures.length === 0) {
-            throw new ForbiddenException('Pictures not found');
+            const pictures = await this.pictModel.findAll({
+                where: {
+                    idQuest: id
+                }
+            });
+
+            if (!pictures || pictures.length === 0) {
+                throw new NotFoundException('Pictures not found');
+            }
+            return pictures;
+        } catch (error) {
+            throw error;
         }
-        return pictures;
     }
 
-
     async getPicturesByAnswer(id: string) {
-        if (!isValidUUID(id)) {
-            throw new BadRequestException('Invalid answer ID');
-        }
-
-        const pictures = await this.pictModel.findAll({
-            where: {
-                idAnsw: id
+        try {
+            if (!isValidUUID(id)) {
+                throw new BadRequestException('Invalid answer ID');
             }
-        });
 
-        if (!pictures || pictures.length === 0) {
-            throw new ForbiddenException('Pictures not found');
+            const pictures = await this.pictModel.findAll({
+                where: {
+                    idAnsw: id
+                }
+            });
+
+            if (!pictures || pictures.length === 0) {
+                throw new NotFoundException('Pictures not found');
+            }
+            return pictures;
+        } catch (error) {
+            throw error;
         }
-        return pictures;
     }
 
     async deletePicture(id: string) {
-        if (!isValidUUID(id)) {
-            throw new BadRequestException('Invalid picture ID');
-        }
-
-        const picture = await this.pictModel.findOne({
-            where: {
-                idPict: id
+        try {
+            if (!isValidUUID(id)) {
+                throw new BadRequestException('Invalid picture ID');
             }
-        });
 
-        if (!picture) {
-            throw new ForbiddenException('Picture not found');
+            const picture = await this.pictModel.findOne({
+                where: {
+                    idPict: id
+                }
+            });
+
+            if (!picture) {
+                throw new NotFoundException('Picture not found');
+            }
+
+            await picture.destroy();
+            return picture;
+        } catch (error) {
+            throw error;
         }
-
-        await picture.destroy();
-        return picture;
     }
 }

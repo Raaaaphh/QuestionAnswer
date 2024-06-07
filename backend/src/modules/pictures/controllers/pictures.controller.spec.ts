@@ -37,12 +37,12 @@ describe('PicturesController', () => {
             expect(service.getPicture).toHaveBeenCalledWith(id);
         });
 
-        it('should log error if picturesService.getPicture throws', () => {
+        it('should log error if picturesService.getPicture throws', async () => {
             const consoleSpy = jest.spyOn(console, 'log');
             const id = '1';
             jest.spyOn(service, 'getPicture').mockImplementation(() => { throw new Error('Test Error') });
             try {
-                controller.getPicture(id);
+                await controller.getPicture(id);
             } catch (error) {
                 expect(consoleSpy).toHaveBeenCalledWith(new Error('Test Error'));
             }
@@ -56,12 +56,12 @@ describe('PicturesController', () => {
             expect(service.getPicturesByQuestion).toHaveBeenCalledWith(id);
         });
 
-        it('should log error if picturesService.getPicturesByQuestion throws', () => {
+        it('should log error if picturesService.getPicturesByQuestion throws', async () => {
             const consoleSpy = jest.spyOn(console, 'log');
             const id = '1';
             jest.spyOn(service, 'getPicturesByQuestion').mockImplementation(() => { throw new Error('Test Error') });
             try {
-                controller.getPicturesByQuestion(id);
+                await controller.getPicturesByQuestion(id);
             } catch (error) {
                 expect(consoleSpy).toHaveBeenCalledWith(new Error('Test Error'));
             }
@@ -75,12 +75,12 @@ describe('PicturesController', () => {
             expect(service.getPicturesByAnswer).toHaveBeenCalledWith(id);
         });
 
-        it('should log error if picturesService.getPicturesByAnswer throws', () => {
+        it('should log error if picturesService.getPicturesByAnswer throws', async () => {
             const consoleSpy = jest.spyOn(console, 'log');
             const id = '1';
             jest.spyOn(service, 'getPicturesByAnswer').mockImplementation(() => { throw new Error('Test Error') });
             try {
-                controller.getPicturesByAnswer(id);
+                await controller.getPicturesByAnswer(id);
             } catch (error) {
                 expect(consoleSpy).toHaveBeenCalledWith(new Error('Test Error'));
             }
@@ -94,12 +94,12 @@ describe('PicturesController', () => {
             expect(service.deletePicture).toHaveBeenCalledWith(id);
         });
 
-        it('should log error if picturesService.deletePicture throws', () => {
+        it('should log error if picturesService.deletePicture throws', async () => {
             const consoleSpy = jest.spyOn(console, 'log');
             const id = '1';
             jest.spyOn(service, 'deletePicture').mockImplementation(() => { throw new Error('Test Error') });
             try {
-                controller.deletePicture(id);
+                await controller.deletePicture(id);
             } catch (error) {
                 expect(consoleSpy).toHaveBeenCalledWith(new Error('Test Error'));
             }

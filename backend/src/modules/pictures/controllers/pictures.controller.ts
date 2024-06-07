@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param } from "@nestjs/common";
+import { Controller, Delete, Get, HttpException, HttpStatus, Param } from "@nestjs/common";
 import { PicturesService } from "../services/pictures.service";
 
 @Controller('pictures')
@@ -6,43 +6,47 @@ export class PicturesController {
 
     constructor(private picturesService: PicturesService) { }
 
-    @Get(':id')
-    getPicture(@Param('id') id: string) {
+    @Get('')
+    async getPicture(@Param('id') id: string) {
         try {
-            return this.picturesService.getPicture(id);
-        }
-        catch (error) {
+            const picture = await this.picturesService.getPicture(id);
+            return picture;
+        } catch (error) {
             console.log(error);
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @Get('question/:id')
-    getPicturesByQuestion(@Param('id') id: string) {
+    @Get('question/')
+    async getPicturesByQuestion(@Param('id') id: string) {
         try {
-            return this.picturesService.getPicturesByQuestion(id);
-        }
-        catch (error) {
+            const pictures = await this.picturesService.getPicturesByQuestion(id);
+            return pictures;
+        } catch (error) {
             console.log(error);
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @Get('answer/:id')
-    getPicturesByAnswer(@Param('id') id: string) {
+    @Get('answer/')
+    async getPicturesByAnswer(@Param('id') id: string) {
         try {
-            return this.picturesService.getPicturesByAnswer(id);
-        }
-        catch (error) {
+            const pictures = await this.picturesService.getPicturesByAnswer(id);
+            return pictures;
+        } catch (error) {
             console.log(error);
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @Delete(':id')
-    deletePicture(@Param('id') id: string) {
+    @Delete('')
+    async deletePicture(@Param('id') id: string) {
         try {
-            return this.picturesService.deletePicture(id);
-        }
-        catch (error) {
+            const picture = await this.picturesService.deletePicture(id);
+            return picture;
+        } catch (error) {
             console.log(error);
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
         }
     }
 }
