@@ -34,6 +34,15 @@ export const Routes = () => {
           />
 
           <Route
+            path="/reported"
+            element={
+              <ProtectedRoute>
+                <Report />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
             path="/ask"
             element={
               <ProtectedRoute>

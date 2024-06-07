@@ -6,8 +6,9 @@ import Answer from "../components/Answer";
 import AnimatedUpVote from "../components/AnimatedUpVote";
 import axiosInstance from "../utils/axiosInstance";
 import { useParams } from "react-router-dom";
-import { use } from "marked";
 import BannerQuestion from "../components/BannerQuestion";
+import flagLogo from "../assets/flagLogo.svg";
+import returnArrow from "../assets/returnArrow.svg";
 
 interface Question {
   idQuest: string;
@@ -17,6 +18,7 @@ interface Question {
   context: string;
   updatedAt: string;
   votes: number;
+  status: string; // Changed to string
 }
 
 interface User {
@@ -48,27 +50,20 @@ const Question: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const { idQuest } = useParams<{ idQuest: string }>();
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const questionResponse = await axiosInstance.get(
-          `questions/${idQuest}`
-        );
+        const questionResponse = await axiosInstance.get(`questions/${idQuest}`);
         const fetchedQuestion = questionResponse.data;
         setQuestion(fetchedQuestion);
 
         if (fetchedQuestion.idUser) {
-          const userResponse = await axiosInstance.get(
-            `users/${fetchedQuestion.idUser}`
-          );
+          const userResponse = await axiosInstance.get(`users/${fetchedQuestion.idUser}`);
           setUser(userResponse.data);
         }
 
         if (fetchedQuestion.idQuest) {
-          const answersResponse = await axiosInstance.get(
-            `answers/findByQuestion/${fetchedQuestion.idQuest}`
-          );
+          const answersResponse = await axiosInstance.get(`answers/findByQuestion/${fetchedQuestion.idQuest}`);
           setAnswers(answersResponse.data);
         }
       } catch (error) {
@@ -82,7 +77,15 @@ const Question: React.FC = () => {
   return (
     <div>
       <Header />
-
+      <div className="topInfos">
+      <img src={returnArrow} alt="return arrow" />
+      {question?.status === "Solved" && (
+        <div className="status solved">
+          Question solved!
+        </div>
+      )}
+        <img src={flagLogo} alt="Flag logo" />
+      </div>
       <div className="questionPage">
         <div className="upVote">
           <AnimatedUpVote voteCount={question ? question.votes : 0} />
@@ -94,25 +97,21 @@ const Question: React.FC = () => {
           <div className="questionDescription">
             <h2>Description:</h2>
             <p>
-             
-                {question ? (
-                  <MarkdownRenderer markdownSource={question.description} />
-                ) : (
-                  "Loading..."
-                )}
-        
+              {question ? (
+                <MarkdownRenderer markdownSource={question.description} />
+              ) : (
+                "Loading..."
+              )}
             </p>
           </div>
           <div className="questionContext">
             <h2>Context:</h2>
             <p>
-              <div>
-                {question ? (
-                  <MarkdownRenderer markdownSource={question.context} />
-                ) : (
-                  "Loading..."
-                )}
-              </div>
+              {question ? (
+                <MarkdownRenderer markdownSource={question.context} />
+              ) : (
+                "Loading..."
+              )}
             </p>
           </div>
         </div>
@@ -121,12 +120,12 @@ const Question: React.FC = () => {
             <p>No answers available.</p>
           ) : (
             answers.map((answer) => (
-              <Answer key={answer.idAnsw} answer={answer} idAnswer={answer.idAnsw}/>
+              <Answer key={answer.idAnsw} answer={answer} idAnswer={answer.idAnsw} />
             ))
           )}
         </div>
       </div>
-      </div>
+    </div>
   );
 };
 
