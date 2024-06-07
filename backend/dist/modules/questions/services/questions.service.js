@@ -23,13 +23,15 @@ const questiontag_model_1 = require("../../questiontags/questiontag.model");
 const picture_model_1 = require("../../pictures/picture.model");
 const vote_model_1 = require("../../votes/vote.model");
 const favorite_model_1 = require("../../favorites/favorite.model");
+const flag_model_1 = require("../../flags/flag.model");
 let QuestionsService = class QuestionsService {
-    constructor(questModel, questTagModel, pictureModel, voteModel, favoriteModel, sequelize) {
+    constructor(questModel, questTagModel, pictureModel, voteModel, favoriteModel, flagModel, sequelize) {
         this.questModel = questModel;
         this.questTagModel = questTagModel;
         this.pictureModel = pictureModel;
         this.voteModel = voteModel;
         this.favoriteModel = favoriteModel;
+        this.flagModel = flagModel;
         this.sequelize = sequelize;
     }
     async getQuestion(id) {
@@ -56,7 +58,7 @@ let QuestionsService = class QuestionsService {
         const questions = await this.questModel.findAll({
             limit: intLimit,
             offset: offset,
-            order: [['createdAt', 'ASC']]
+            order: [['createdAt', 'DESC']]
         });
         if (!questions || questions.length === 0) {
             throw new common_1.ForbiddenException('Questions not found');
@@ -78,11 +80,14 @@ let QuestionsService = class QuestionsService {
         }
         return questions;
     }
-    async searchQuestionsByFilter(filter, limit, order) {
+    async searchQuestionsByFilter(filter, limit) {
         const intLimit = parseInt(limit, 10);
         const questions = await this.questModel.findAll({
+            where: {
+                status: filter,
+            },
             limit: intLimit,
-            order: [[filter, order]]
+            order: [['votes', 'DESC']]
         });
         if (!questions || questions.length === 0) {
             throw new common_1.ForbiddenException('Questions not found');
@@ -270,6 +275,85 @@ let QuestionsService = class QuestionsService {
             throw new common_1.HttpException(error.message || 'Error during the removal of vote', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    async addFlag(dto) {
+        const idFlag = (0, uuid_1.v4)();
+        const { idUser, idQuest, flagType } = dto;
+        const transaction = await this.sequelize.transaction();
+        try {
+            const existingFlag = await this.flagModel.findOne({
+                where: { idUser, idQuest, flagType },
+                transaction,
+            });
+            if (existingFlag) {
+                throw new common_1.HttpException('User has already flagged this question', common_1.HttpStatus.BAD_REQUEST);
+            }
+            const quest = await this.questModel.findOne({
+                where: { idQuest },
+                transaction,
+            });
+            if (!quest) {
+                throw new common_1.HttpException('Question not found', common_1.HttpStatus.NOT_FOUND);
+            }
+            if (flagType === 'Spam') {
+                quest.flagsSpam += 1;
+            }
+            else {
+                quest.flagsInappropriate += 1;
+            }
+            await quest.save({ transaction });
+            await this.flagModel.create({
+                idFlag: idFlag,
+                idUser,
+                idQuest,
+                flagType: flagType,
+            }, { transaction });
+            await transaction.commit();
+            return { status: 'Success', message: 'Flag added successfully' };
+        }
+        catch (error) {
+            await transaction.rollback();
+            console.error(error);
+            throw new common_1.HttpException(error.message || 'Error during the flagging of the question', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async removeFlag(dto) {
+        const { idUser, idQuest, flagType } = dto;
+        const transaction = await this.sequelize.transaction();
+        try {
+            const flag = await this.flagModel.findOne({
+                where: { idUser, idQuest, flagType },
+                transaction,
+            });
+            if (!flag) {
+                throw new common_1.HttpException('Report not found', common_1.HttpStatus.NOT_FOUND);
+            }
+            const quest = await this.questModel.findOne({
+                where: { idQuest },
+                transaction,
+            });
+            if (!quest) {
+                throw new common_1.HttpException('Question not found', common_1.HttpStatus.NOT_FOUND);
+            }
+            if (flag.flagType === 'Spam') {
+                quest.flagsSpam -= 1;
+            }
+            else {
+                quest.flagsInappropriate -= 1;
+            }
+            await quest.save({ transaction });
+            await this.flagModel.destroy({
+                where: { idFlag: flag.idFlag },
+                transaction,
+            });
+            await transaction.commit();
+            return { status: 'Success', message: 'Flag removed successfully' };
+        }
+        catch (error) {
+            await transaction.rollback();
+            console.error(error);
+            throw new common_1.HttpException(error.message || 'Error during the removal of report', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     async editQuestion(question) {
         const transaction = await this.sequelize.transaction();
         try {
@@ -339,6 +423,7 @@ exports.QuestionsService = QuestionsService = __decorate([
     __param(2, (0, sequelize_1.InjectModel)(picture_model_1.Picture)),
     __param(3, (0, sequelize_1.InjectModel)(vote_model_1.Vote)),
     __param(4, (0, sequelize_1.InjectModel)(favorite_model_1.Favorite)),
-    __metadata("design:paramtypes", [Object, Object, Object, Object, Object, sequelize_typescript_1.Sequelize])
+    __param(5, (0, sequelize_1.InjectModel)(flag_model_1.Flag)),
+    __metadata("design:paramtypes", [Object, Object, Object, Object, Object, Object, sequelize_typescript_1.Sequelize])
 ], QuestionsService);
 //# sourceMappingURL=questions.service.js.map

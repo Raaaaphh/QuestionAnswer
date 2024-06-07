@@ -34,11 +34,11 @@ let AuthService = class AuthService {
         try {
             const user = await this.userModel.findOne({ where: { name: authlog.name } });
             if (!user) {
-                throw new common_1.ForbiddenException('User not found');
+                throw new common_1.ForbiddenException('Username incorrect');
             }
             const valid = await argon.verify(user.password, authlog.password);
             if (!valid) {
-                throw new common_1.ForbiddenException('Invalid password');
+                throw new common_1.ForbiddenException('Password incorrect');
             }
             if (!user.confirmed) {
                 throw new common_1.ForbiddenException('User not confirmed');
@@ -56,6 +56,21 @@ let AuthService = class AuthService {
             }
             console.log(error);
             throw new common_1.InternalServerErrorException('An unexpected error occurred during login');
+        }
+    }
+    async logout(token) {
+        try {
+            const payload = this.jwtService.verify(token);
+            if (!payload) {
+                throw new common_1.ForbiddenException('Invalid token');
+            }
+            return { status: 'Success', message: 'User logged out successfully' };
+        }
+        catch (error) {
+            if (error instanceof common_1.ForbiddenException) {
+                throw error;
+            }
+            throw new common_1.InternalServerErrorException('An unexpected error occurred during logout');
         }
     }
     async register(authreg) {

@@ -18,10 +18,13 @@ function AuthForm({ isRegister = false }: AuthFormProps) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/");
-    }
+    const checkTokenAndNavigate = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        await navigate("/");
+      }
+    };
+    checkTokenAndNavigate();
   }, [navigate]);
 
   const handleSubmit = async (e: FormEvent) => {

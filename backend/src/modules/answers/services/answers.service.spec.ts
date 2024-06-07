@@ -4,7 +4,7 @@ import { Answer } from '../answer.model';
 import { Picture } from '../../pictures/picture.model';
 import { Sequelize } from 'sequelize-typescript';
 import { getModelToken } from '@nestjs/sequelize';
-import { BadRequestException, ForbiddenException, HttpException, HttpStatus } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 
 const mockAnswerModel = {
     findOne: jest.fn(),
@@ -56,9 +56,9 @@ describe('AnswersService', () => {
             await expect(service.getAnswer('invalid-uuid')).rejects.toThrow(BadRequestException);
         });
 
-        it('should throw ForbiddenException if the answer is not found', async () => {
+        it('should throw NotFoundException if the answer is not found', async () => {
             mockAnswerModel.findOne.mockResolvedValue(null);
-            await expect(service.getAnswer('b3d6a5d7-54d7-44fd-929d-7352f462e635')).rejects.toThrow(ForbiddenException);
+            await expect(service.getAnswer('b3d6a5d7-54d7-44fd-929d-7352f462e635')).rejects.toThrow(NotFoundException);
         });
 
         it('should return the answer if found', async () => {
@@ -79,9 +79,9 @@ describe('AnswersService', () => {
     });
 
     describe('searchAnswersByUser', () => {
-        it('should throw ForbiddenException if no answers are found', async () => {
+        it('should throw NotFoundException if no answers are found', async () => {
             mockAnswerModel.findAll.mockResolvedValue([]);
-            await expect(service.searchAnswersByUser('user-id')).rejects.toThrow(ForbiddenException);
+            await expect(service.searchAnswersByUser('user-id')).rejects.toThrow(NotFoundException);
         });
 
         it('should return answers if found', async () => {
@@ -93,9 +93,9 @@ describe('AnswersService', () => {
     });
 
     describe('searchAnswersByQuestion', () => {
-        it('should throw ForbiddenException if no answers are found', async () => {
+        it('should throw NotFoundException if no answers are found', async () => {
             mockAnswerModel.findAll.mockResolvedValue([]);
-            await expect(service.searchAnswersByQuestion('question-id')).rejects.toThrow(ForbiddenException);
+            await expect(service.searchAnswersByQuestion('question-id')).rejects.toThrow(NotFoundException);
         });
 
         it('should return answers if found', async () => {
@@ -139,9 +139,9 @@ describe('AnswersService', () => {
     });
 
     describe('deleteAnswer', () => {
-        it('should throw ForbiddenException if the answer is not found', async () => {
+        it('should throw NotFoundException if the answer is not found', async () => {
             mockAnswerModel.findOne.mockResolvedValue(null);
-            await expect(service.deleteAnswer('answer-id')).rejects.toThrow(ForbiddenException);
+            await expect(service.deleteAnswer('answer-id')).rejects.toThrow(NotFoundException);
         });
 
         it('should delete the answer and return it', async () => {

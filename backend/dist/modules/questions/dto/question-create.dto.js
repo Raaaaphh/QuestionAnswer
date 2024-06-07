@@ -38,7 +38,7 @@ __decorate([
     (0, class_validator_1.IsArray)(),
     (0, class_validator_1.ArrayNotEmpty)(),
     (0, class_validator_1.ArrayMinSize)(1),
-    (0, class_validator_1.IsString)({ each: true }),
+    (0, class_validator_1.IsUUID)(undefined, { each: true }),
     __metadata("design:type", Array)
 ], QuestionCreateDto.prototype, "listTags", void 0);
 __decorate([

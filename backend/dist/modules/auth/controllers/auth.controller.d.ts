@@ -8,6 +8,10 @@ export declare class AuthController {
         user: import("../../users/user.model").User;
         token: string;
     }>;
+    logout(req: any): Promise<{
+        status: string;
+        message: string;
+    }>;
     register(authreg: AuthRegisterDto): Promise<import("../../users/user.model").User>;
     verifyEmail(emailToken: string): Promise<{
         status: string;

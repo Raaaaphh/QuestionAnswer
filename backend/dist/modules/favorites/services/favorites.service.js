@@ -22,81 +22,116 @@ let FavoritesService = class FavoritesService {
         this.favModel = favModel;
     }
     async getFavorites() {
-        return await this.favModel.findAll();
+        try {
+            return await this.favModel.findAll();
+        }
+        catch (error) {
+            throw new Error(error);
+        }
     }
     async getFavoritesQuestion(id) {
-        if (!(0, uuid_1.validate)(id)) {
-            throw new common_1.BadRequestException('Invalid question ID');
-        }
-        const favorites = await this.favModel.findAll({
-            where: {
-                idQuest: id
+        try {
+            if (!(0, uuid_1.validate)(id)) {
+                throw new common_1.BadRequestException('Invalid question ID');
             }
-        });
-        if (!favorites) {
-            throw new common_1.ForbiddenException('Question or User not found');
+            const favorites = await this.favModel.findAll({
+                where: {
+                    idQuest: id
+                }
+            });
+            if (!favorites) {
+                throw new common_1.NotFoundException('Question not found');
+            }
+            return favorites;
         }
-        return favorites;
+        catch (error) {
+            throw error;
+        }
     }
     async getFavoritesUser(id) {
-        if (!(0, uuid_1.validate)(id)) {
-            throw new common_1.BadRequestException('Invalid user ID');
-        }
-        const favorites = await this.favModel.findAll({
-            where: {
-                idUser: id
+        try {
+            if (!(0, uuid_1.validate)(id)) {
+                throw new common_1.BadRequestException('Invalid user ID');
             }
-        });
-        if (!favorites) {
-            throw new common_1.ForbiddenException('Question or User not found');
+            const favorites = await this.favModel.findAll({
+                where: {
+                    idUser: id
+                }
+            });
+            if (!favorites) {
+                throw new common_1.NotFoundException('User not found');
+            }
+            return favorites;
         }
-        return favorites;
+        catch (error) {
+            throw error;
+        }
     }
     async notifyFavorites(id) {
-        if (!(0, uuid_1.validate)(id)) {
-            throw new common_1.BadRequestException('Invalid User ID');
-        }
-        const favorites = await this.favModel.findAll({
-            where: {
-                idUser: id,
-                notified: true
+        try {
+            if (!(0, uuid_1.validate)(id)) {
+                throw new common_1.BadRequestException('Invalid User ID');
             }
-        });
-        return favorites;
+            const favorites = await this.favModel.findAll({
+                where: {
+                    idUser: id,
+                    notified: true
+                }
+            });
+            return favorites;
+        }
+        catch (error) {
+            throw error;
+        }
     }
     async deleteNotified(dto) {
-        const favorite = await this.favModel.findOne({
-            where: {
-                idUser: dto.idUser,
-                idQuest: dto.idQuest
+        try {
+            const favorite = await this.favModel.findOne({
+                where: {
+                    idUser: dto.idUser,
+                    idQuest: dto.idQuest
+                }
+            });
+            if (!favorite) {
+                throw new common_1.NotFoundException('Favorite not found');
             }
-        });
-        if (!favorite) {
-            throw new common_1.ForbiddenException('Favorite not found');
+            favorite.notified = false;
+            await favorite.save();
+            return favorite;
         }
-        favorite.notified = false;
-        await favorite.save();
-        return favorite;
+        catch (error) {
+            throw error;
+        }
     }
     async addFavorite(favDto) {
-        const favorite = await this.favModel.create({
-            idUser: favDto.idUser,
-            idQuest: favDto.idQuest,
-        });
-        return favorite;
+        try {
+            const favorite = await this.favModel.create({
+                idUser: favDto.idUser,
+                idQuest: favDto.idQuest,
+            });
+            return favorite;
+        }
+        catch (error) {
+            throw new Error(error);
+        }
     }
     async removeFavorite(favDto) {
-        const favorite = await this.favModel.findOne({
-            where: {
-                idUser: favDto.idUser,
-                idQuest: favDto.idQuest
+        try {
+            const favorite = await this.favModel.findOne({
+                where: {
+                    idUser: favDto.idUser,
+                    idQuest: favDto.idQuest
+                }
+            });
+            if (!favorite) {
+                throw new common_1.NotFoundException('Favorite not found');
             }
-        });
-        if (!favorite) {
-            throw new common_1.ForbiddenException('Favorite not found');
+            await favorite.destroy();
+            return favorite;
         }
-        await favorite.destroy();
-        return favorite;
+        catch (error) {
+            throw error;
+        }
     }
 };
 exports.FavoritesService = FavoritesService;

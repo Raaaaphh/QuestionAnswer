@@ -30,6 +30,23 @@ let AuthController = class AuthController {
         }
         catch (error) {
             console.log(error);
+            if (error instanceof common_1.ForbiddenException || error instanceof common_1.BadRequestException) {
+                throw error;
+            }
+            throw new common_1.HttpException('Something went wrong', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    logout(req) {
+        try {
+            const token = req.headers.authorization.split(' ')[1];
+            return this.authService.logout(token);
+        }
+        catch (error) {
+            console.log(error);
+            if (error instanceof common_1.BadRequestException || error instanceof common_1.ForbiddenException) {
+                throw error;
+            }
+            throw new common_1.HttpException('Something went wrong', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     register(authreg) {
@@ -39,6 +56,10 @@ let AuthController = class AuthController {
         }
         catch (error) {
             console.log(error);
+            if (error instanceof common_1.BadRequestException) {
+                throw error;
+            }
+            throw new common_1.HttpException('Something went wrong', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     async verifyEmail(emailToken) {
@@ -47,7 +68,10 @@ let AuthController = class AuthController {
         }
         catch (error) {
             console.log(error);
-            throw error;
+            if (error instanceof common_1.BadRequestException || error instanceof common_1.ForbiddenException) {
+                throw error;
+            }
+            throw new common_1.HttpException('Something went wrong', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     async registerWithToken(token, authreg) {
@@ -56,7 +80,10 @@ let AuthController = class AuthController {
         }
         catch (error) {
             console.log(error);
-            throw error;
+            if (error instanceof common_1.BadRequestException || error instanceof common_1.ForbiddenException) {
+                throw error;
+            }
+            throw new common_1.HttpException('Something went wrong', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 };
@@ -74,6 +101,13 @@ __decorate([
     __metadata("design:paramtypes", [dto_1.AuthLoginDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "login", null);
+__decorate([
+    (0, common_1.Post)('logout'),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "logout", null);
 __decorate([
     (0, common_1.Post)('register'),
     __param(0, (0, common_1.Body)()),

@@ -20,6 +20,16 @@ type QuestionCreateDto = {
   listPictures?: string[];
 };
 
+type Tag = {
+  idTag: string;
+  idUser: string;
+  name: string;
+  description: string;
+  occurrence: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
 function AskAQuestion() {
   const [images, setImages] = useState<string[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
@@ -31,6 +41,7 @@ function AskAQuestion() {
   const [context, setContext] = useState("");
   const [title, setTitle] = useState("");
   const [idUser, setIdUser] = useState("");
+  const [tags, setTags] = useState<Tag[]>([]);
 
   const navigate = useNavigate();
 
@@ -41,6 +52,12 @@ function AskAQuestion() {
   ];
 
   const tagDropdownRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    axiosInstance.get("/tags").then((response) => {
+      setTags(response.data);
+    });
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: { target: any }) => {

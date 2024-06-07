@@ -1,5 +1,7 @@
 DROP TABLE IF EXISTS `Favorites`;
 
+DROP TABLE IF EXISTS `Flags`;
+
 DROP TABLE IF EXISTS `Votes`;
 
 DROP TABLE IF EXISTS `Invitations`;
@@ -131,4 +133,20 @@ CREATE TABLE `Votes` (
     FOREIGN KEY (`idUser`) REFERENCES `Users` (`idUser`) ON DELETE CASCADE,
     FOREIGN KEY (`idQuest`) REFERENCES `Questions` (`idQuest`) ON DELETE CASCADE,
     UNIQUE (`idUser`, `idQuest`)
+);
+
+CREATE TABLE `Flags` (
+    `idFlag` varchar(100) PRIMARY KEY,
+    `idUser` varchar(100) NOT NULL,
+    `idQuest` varchar(100) NOT NULL,
+    `flagType` enum('Spam', 'Inappropriate') NOT NULL,
+    `createdAt` datetime NOT NULL,
+    `updatedAt` datetime NOT NULL,
+    FOREIGN KEY (`idUser`) REFERENCES `Users` (`idUser`) ON DELETE CASCADE,
+    FOREIGN KEY (`idQuest`) REFERENCES `Questions` (`idQuest`) ON DELETE CASCADE,
+    UNIQUE (
+        `idUser`,
+        `idQuest`,
+        `flagType`
+    )
 );

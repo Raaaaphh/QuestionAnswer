@@ -35,7 +35,7 @@ let AnswersService = class AnswersService {
             }
         });
         if (!answer) {
-            throw new common_1.ForbiddenException('Answer not found');
+            throw new common_1.NotFoundException('Answer not found');
         }
         return answer;
     }
@@ -49,7 +49,7 @@ let AnswersService = class AnswersService {
             }
         });
         if (!answers || answers.length === 0) {
-            throw new common_1.ForbiddenException('Answers not found');
+            throw new common_1.NotFoundException('Answers not found');
         }
         return answers;
     }
@@ -60,7 +60,7 @@ let AnswersService = class AnswersService {
             }
         });
         if (!answers || answers.length === 0) {
-            throw new common_1.ForbiddenException('Answers not found');
+            throw new common_1.NotFoundException('Answers not found');
         }
         return answers;
     }
@@ -95,7 +95,7 @@ let AnswersService = class AnswersService {
             }
         });
         if (!answer) {
-            throw new common_1.ForbiddenException('Answer not found');
+            throw new common_1.NotFoundException('Answer not found');
         }
         await answer.destroy();
         return answer;

@@ -17,7 +17,6 @@ import Report from "./pages/Report";
 export const Routes = () => {
   return (
     <Router>
-
       <AuthProvider>
         <RoutesComponents>
           {/* <Route path="/" element={<Home />} /> */}
@@ -58,17 +57,6 @@ export const Routes = () => {
               </ProtectedRoute>
             }
           />
-
-          <Route 
-            path="/reported" 
-            element={
-            <ProtectedRoute>
-              <Report />
-            </ProtectedRoute>
-            }
-          />
-
-          
         </RoutesComponents>
       </AuthProvider>
     </Router>

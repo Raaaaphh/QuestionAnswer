@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/sequelize';
-import { BadRequestException, ForbiddenException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { Favorite } from '../favorite.model';
 import { FavoritesService } from './favorites.service';
@@ -47,6 +47,12 @@ describe('FavoritesService', () => {
             expect(mockFavoriteModel.findAll).toHaveBeenCalled();
             expect(result).toEqual(favorites);
         });
+
+        it('should throw an Error if an error occurs', async () => {
+            mockFavoriteModel.findAll.mockRejectedValue(new Error('Test error'));
+
+            await expect(service.getFavorites()).rejects.toThrow(Error);
+        });
     });
 
     describe('getFavoritesQuestion', () => {
@@ -67,11 +73,11 @@ describe('FavoritesService', () => {
             await expect(service.getFavoritesQuestion(id)).rejects.toThrow(BadRequestException);
         });
 
-        it('should throw a ForbiddenException if no favorites are found', async () => {
+        it('should throw a NotFoundException if no favorites are found', async () => {
             const id = uuidv4();
             mockFavoriteModel.findAll.mockResolvedValue(null);
 
-            await expect(service.getFavoritesQuestion(id)).rejects.toThrow(ForbiddenException);
+            await expect(service.getFavoritesQuestion(id)).rejects.toThrow(NotFoundException);
         });
     });
 
@@ -93,12 +99,36 @@ describe('FavoritesService', () => {
             await expect(service.getFavoritesUser(id)).rejects.toThrow(BadRequestException);
         });
 
-        it('should throw a ForbiddenException if no favorites are found', async () => {
+        it('should throw a NotFoundException if no favorites are found', async () => {
             const id = uuidv4();
             mockFavoriteModel.findAll.mockResolvedValue(null);
 
-            await expect(service.getFavoritesUser(id)).rejects.toThrow(ForbiddenException);
+            await expect(service.getFavoritesUser(id)).rejects.toThrow(NotFoundException);
         });
+    });
+
+    describe('notifyFavorites', () => {
+        it('should return favorites for a user', async () => {
+            const id = uuidv4();
+            const favorites = [{ id: 1 }, { id: 2 }];
+            mockFavoriteModel.findAll.mockResolvedValue(favorites);
+
+            const result = await service.notifyFavorites(id);
+
+            expect(mockFavoriteModel.findAll).toHaveBeenCalledWith({ where: { idUser: id, notified: true } });
+            expect(result).toEqual(favorites);
+        });
+
+        it('should throw a BadRequestException for an invalid user ID', async () => {
+            const id = 'invalid-id';
+
+            await expect(service.notifyFavorites(id)).rejects.toThrow(BadRequestException);
+        });
+
+    });
+
+    describe('deleteNotified', () => {
+        // A faire
     });
 
     describe('addFavorite', () => {
@@ -148,14 +178,14 @@ describe('FavoritesService', () => {
             expect(result).toEqual(favorite);
         });
 
-        it('should throw a ForbiddenException if the favorite is not found', async () => {
+        it('should throw a NotFoundException if the favorite is not found', async () => {
             const favDto: FavoriteDto = {
                 idUser: uuidv4(),
                 idQuest: uuidv4(),
             };
             mockFavoriteModel.findOne.mockResolvedValue(null);
 
-            await expect(service.removeFavorite(favDto)).rejects.toThrow(ForbiddenException);
+            await expect(service.removeFavorite(favDto)).rejects.toThrow(NotFoundException);
         });
     });
 });

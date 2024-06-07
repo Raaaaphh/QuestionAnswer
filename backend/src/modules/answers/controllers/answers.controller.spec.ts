@@ -3,7 +3,7 @@ import { AnswersController } from './answers.controller';
 import { AnswersService } from '../services/answers.service';
 import { AnswerCreateDto } from '../dto';
 import { ExecutionContext } from '@nestjs/common';
-import { AdminGuard } from '../../../guards/admin.guard';
+import { AnswerGuard } from '../../../guards/answer.guard';
 
 describe('AnswersController', () => {
     let controller: AnswersController;
@@ -18,7 +18,7 @@ describe('AnswersController', () => {
         deleteAnswer: jest.fn(),
     };
 
-    const mockAdminGuard = {
+    const mockAnswerGuard = {
         canActivate: (context: ExecutionContext) => {
             return true;
         },
@@ -31,8 +31,8 @@ describe('AnswersController', () => {
                 { provide: AnswersService, useValue: mockAnswersService },
             ],
         })
-            .overrideGuard(AdminGuard)
-            .useValue(mockAdminGuard)
+            .overrideGuard(AnswerGuard)
+            .useValue(mockAnswerGuard)
             .compile();
 
         controller = module.get<AnswersController>(AnswersController);
