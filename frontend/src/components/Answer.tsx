@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MarkdownRenderer from "../components/MarkdownRenderer";
 import "./Answer.css";
-import { useParams } from "react-router-dom";
-import { use } from "marked";
 import axiosInstance from "../utils/axiosInstance";
 import BannerQuestion from "./BannerQuestion";
 
@@ -28,7 +26,8 @@ interface User {
   updatedAt: string;
 }
 
-const Answer: React.FC<AnswerProps> = ({ answer }, idAnswer) => {
+const Answer: React.FC<AnswerProps> = ({ answer, idAnswer }) => {
+  console.log("ID Answer---------------:", idAnswer);
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -44,10 +43,13 @@ const Answer: React.FC<AnswerProps> = ({ answer }, idAnswer) => {
   }, [answer.idUser]);
 
   return (
-    <div className="answerContainer">
-      {idAnswer && <BannerQuestion idQuestAns={idAnswer} isAnswer={false} />}
-      <div className="answerContent">
-        <MarkdownRenderer markdownSource={answer.content} />
+    <div className="answerFull">
+      {idAnswer && <BannerQuestion idQuestAns={idAnswer} isAnswer={true} />}
+      <div className="answerContainer">
+        
+        <div className="answerContent">
+          <MarkdownRenderer markdownSource={answer.content} />
+        </div>
       </div>
     </div>
   );

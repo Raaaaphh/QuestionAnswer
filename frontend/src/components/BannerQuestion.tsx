@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './BannerQuestion.css';
 import axiosInstance from '../utils/axiosInstance';
+import axios from 'axios';
 import ProfilePicture from './ProfilePicture';
 
 interface BannerQuestionProps {
@@ -25,25 +26,30 @@ const BannerQuestion: React.FC<BannerQuestionProps> = ({ idQuestAns, isAnswer })
         const fetchData = async () => {
             try {
                 let response;
-                if (isAnswer) {
+                if (isAnswer == true) {
+                    console.log(`Fetching answer with ID: ${idQuestAns}`);
                     response = await axiosInstance.get(`answers/${idQuestAns}`);
                 } else {
-                    console.log("Question ID: ", idQuestAns);
+                    console.log(`Fetching question with ID: ${idQuestAns}`);
                     response = await axiosInstance.get(`questions/${idQuestAns}`);
                 }
 
                 const fetchedQuestAns = response.data;
+                console.log('Fetched question/answer:', fetchedQuestAns);
                 setQuestionOrAnswer(fetchedQuestAns);
 
                 if (fetchedQuestAns.idUser) {
                     const userResponse = await axiosInstance.get(`users/${fetchedQuestAns.idUser}`);
-                    console.log(userResponse);
-                    const fetchedUser = userResponse.data;
-                    setUser(fetchedUser);
+                    console.log('Fetched user:', userResponse.data);
+                    setUser(userResponse.data);
                 }
 
             } catch (error) {
-                console.error("Error fetching data from database:", error);
+                if (axios.isAxiosError(error)) {
+                    console.error('Axios error:', error.response);
+                } else {
+                    console.error('Unexpected error:', error);
+                }
             }
         };
 
