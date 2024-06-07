@@ -24,14 +24,16 @@ const picture_model_1 = require("../../pictures/picture.model");
 const vote_model_1 = require("../../votes/vote.model");
 const favorite_model_1 = require("../../favorites/favorite.model");
 const flag_model_1 = require("../../flags/flag.model");
+const tag_model_1 = require("../../tags/tag.model");
 let QuestionsService = class QuestionsService {
-    constructor(questModel, questTagModel, pictureModel, voteModel, favoriteModel, flagModel, sequelize) {
+    constructor(questModel, questTagModel, pictureModel, voteModel, favoriteModel, flagModel, tagModel, sequelize) {
         this.questModel = questModel;
         this.questTagModel = questTagModel;
         this.pictureModel = pictureModel;
         this.voteModel = voteModel;
         this.favoriteModel = favoriteModel;
         this.flagModel = flagModel;
+        this.tagModel = tagModel;
         this.sequelize = sequelize;
     }
     async getQuestion(id) {
@@ -83,8 +85,10 @@ let QuestionsService = class QuestionsService {
         }
         return questions;
     }
-    async searchQuestions(search, limit) {
+    async searchQuestions(search, limit, page) {
         const intLimit = parseInt(limit, 10);
+        const intPage = parseInt(page, 10);
+        const offset = (intPage - 1) * intLimit;
         const questions = await this.questModel.findAll({
             where: {
                 title: {
@@ -98,8 +102,10 @@ let QuestionsService = class QuestionsService {
         }
         return questions;
     }
-    async searchQuestionsByFilter(filter, limit) {
+    async searchQuestionsByFilter(filter, limit, page) {
         const intLimit = parseInt(limit, 10);
+        const intPage = parseInt(page, 10);
+        const offset = (intPage - 1) * intLimit;
         const questions = await this.questModel.findAll({
             where: {
                 status: filter,
@@ -112,18 +118,30 @@ let QuestionsService = class QuestionsService {
         }
         return questions;
     }
-    async searchQuestionsByUser(id) {
-        const questions = await this.questModel.findAll({
-            where: {
-                idUser: id
+    async searchQuestionsByUser(id, limit, page) {
+        try {
+            if (!(0, uuid_1.validate)(id)) {
+                throw new common_1.BadRequestException('Invalid user ID');
             }
-        });
-        if (!questions || questions.length === 0) {
-            throw new common_1.ForbiddenException('Questions not found');
+            const intLimit = parseInt(limit, 10);
+            const intPage = parseInt(page, 10);
+            const offset = (intPage - 1) * intLimit;
+            const questions = await this.questModel.findAll({
+                where: {
+                    idUser: id
+                },
+                limit: intLimit,
+            });
+            if (!questions || questions.length === 0) {
+                throw new common_1.ForbiddenException('Questions not found');
+            }
+            return questions;
         }
-        return questions;
+        catch (error) {
+            console.log(error);
+        }
     }
-    async searchQuestionsByTags(tags, limit) {
+    async searchQuestionsByTags(tags, limit, page) {
         const transaction = await this.sequelize.transaction();
         try {
             const tempQuestions = await this.questTagModel.findAll({
@@ -134,12 +152,15 @@ let QuestionsService = class QuestionsService {
                 },
                 transaction
             });
+            const intLimit = parseInt(limit, 10);
+            const intPage = parseInt(page, 10);
+            const offset = (intPage - 1) * intLimit;
             const idQuests = tempQuestions.map(question => question.idQuest);
             const questions = await this.questModel.findAll({
                 where: {
                     idQuest: idQuests
                 },
-                limit: parseInt(limit, 10),
+                limit: intLimit,
                 transaction
             });
             if (!questions || questions.length === 0) {
@@ -152,6 +173,38 @@ let QuestionsService = class QuestionsService {
             await transaction.rollback();
             console.error(error);
             throw new common_1.HttpException('Error while searching questions by tags', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async getTagsForQuestion(id) {
+        const transaction = await this.sequelize.transaction();
+        try {
+            if (!(0, uuid_1.validate)(id)) {
+                throw new common_1.BadRequestException('Invalid question ID');
+            }
+            const tempTags = await this.questTagModel.findAll({
+                where: {
+                    idQuest: id
+                },
+                transaction
+            });
+            if (!tempTags || tempTags.length === 0) {
+                throw new common_1.BadRequestException('Question has no tags');
+            }
+            const idTags = tempTags.map(tag => tag.idTag);
+            const tags = await this.tagModel.findAll({
+                where: {
+                    idTag: idTags
+                },
+                transaction
+            });
+            if (!tags || tags.length === 0) {
+                throw new common_1.NotFoundException('Tags not found');
+            }
+            await transaction.commit();
+            return tags;
+        }
+        catch (error) {
+            console.log(error);
         }
     }
     async createQuestion(quest) {
@@ -442,6 +495,7 @@ exports.QuestionsService = QuestionsService = __decorate([
     __param(3, (0, sequelize_1.InjectModel)(vote_model_1.Vote)),
     __param(4, (0, sequelize_1.InjectModel)(favorite_model_1.Favorite)),
     __param(5, (0, sequelize_1.InjectModel)(flag_model_1.Flag)),
-    __metadata("design:paramtypes", [Object, Object, Object, Object, Object, Object, sequelize_typescript_1.Sequelize])
+    __param(6, (0, sequelize_1.InjectModel)(tag_model_1.Tag)),
+    __metadata("design:paramtypes", [Object, Object, Object, Object, Object, Object, Object, sequelize_typescript_1.Sequelize])
 ], QuestionsService);
 //# sourceMappingURL=questions.service.js.map

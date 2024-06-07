@@ -8,9 +8,10 @@ import { QuestionsService } from './services/questions.service';
 import { VotesModule } from '../votes/votes.module';
 import { FavoritesModule } from '../favorites/favorites.module';
 import { FlagsModule } from '../flags/flags.module';
+import { TagsModule } from '../tags/tags.module';
 
 @Module({
-    imports: [SequelizeModule.forFeature([Question]), QuestiontagsModule, PicturesModule, VotesModule, FavoritesModule, FlagsModule],
+    imports: [SequelizeModule.forFeature([Question]), QuestiontagsModule, PicturesModule, VotesModule, FavoritesModule, FlagsModule, TagsModule],
     providers: [QuestionsService],
     controllers: [QuestionsController],
     exports: [SequelizeModule, QuestionsService]

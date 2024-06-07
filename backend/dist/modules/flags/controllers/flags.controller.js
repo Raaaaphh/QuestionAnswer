@@ -21,10 +21,16 @@ let FlagsController = class FlagsController {
     }
     async checkFlag(idUser, idQuest) {
         try {
-            return this.flagsService.hasUserFlagged(idUser, idQuest);
+            const hasUserFlagged = await this.flagsService.hasUserFlagged(idUser, idQuest);
+            return { hasUserFlagged };
         }
         catch (error) {
-            console.log(error);
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new common_1.HttpException('An error occurred while checking the flag', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
     }
 };

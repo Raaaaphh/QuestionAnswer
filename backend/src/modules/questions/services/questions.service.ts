@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, HttpException, HttpStatus, BadRequestException } from "@nestjs/common";
+import { ForbiddenException, Injectable, HttpException, HttpStatus, BadRequestException, NotFoundException } from "@nestjs/common";
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { InjectModel } from "@nestjs/sequelize";
 import { Op } from "sequelize";
@@ -10,11 +10,12 @@ import { Picture } from "../../pictures/picture.model";
 import { Vote } from "../../votes/vote.model";
 import { Favorite } from "../../favorites/favorite.model";
 import { Flag, FlagType } from "../../flags/flag.model";
+import { Tag } from "src/modules/tags/tag.model";
 
 @Injectable()
 export class QuestionsService {
 
-    constructor(@InjectModel(Question) private questModel: typeof Question, @InjectModel(QuestionTag) private questTagModel: typeof QuestionTag, @InjectModel(Picture) private pictureModel: typeof Picture, @InjectModel(Vote) private voteModel: typeof Vote, @InjectModel(Favorite) private favoriteModel: typeof Favorite, @InjectModel(Flag) private flagModel: typeof Flag, private readonly sequelize: Sequelize) { }
+    constructor(@InjectModel(Question) private questModel: typeof Question, @InjectModel(QuestionTag) private questTagModel: typeof QuestionTag, @InjectModel(Picture) private pictureModel: typeof Picture, @InjectModel(Vote) private voteModel: typeof Vote, @InjectModel(Favorite) private favoriteModel: typeof Favorite, @InjectModel(Flag) private flagModel: typeof Flag, @InjectModel(Tag) private tagModel: typeof Tag, private readonly sequelize: Sequelize) { }
 
     async getQuestion(id: string) {
         if (!isValidUUID(id)) {
@@ -77,8 +78,10 @@ export class QuestionsService {
     }
 
 
-    async searchQuestions(search: string, limit: string) {
+    async searchQuestions(search: string, limit: string, page: string) {
         const intLimit = parseInt(limit, 10);
+        const intPage = parseInt(page, 10);
+        const offset = (intPage - 1) * intLimit;
 
         const questions = await this.questModel.findAll({
             where: {
@@ -87,6 +90,7 @@ export class QuestionsService {
                 }
             },
             limit: intLimit,
+            //offset: offset,
         });
 
         if (!questions || questions.length === 0) {
@@ -96,14 +100,17 @@ export class QuestionsService {
     }
 
 
-    async searchQuestionsByFilter(filter: string, limit: string) {
+    async searchQuestionsByFilter(filter: string, limit: string, page: string) {
         const intLimit = parseInt(limit, 10);
+        const intPage = parseInt(page, 10);
+        const offset = (intPage - 1) * intLimit;
 
         const questions = await this.questModel.findAll({
             where: {
                 status: filter,
             },
             limit: intLimit,
+            //offset: offset,
             order: [['votes', 'DESC']]
         });
 
@@ -113,21 +120,34 @@ export class QuestionsService {
         return questions;
     }
 
-    async searchQuestionsByUser(id: string) {
-        const questions = await this.questModel.findAll({
-            where: {
-                idUser: id
+    async searchQuestionsByUser(id: string, limit: string, page: string) {
+        try {
+            if (!isValidUUID(id)) {
+                throw new BadRequestException('Invalid user ID');
             }
-        });
+            const intLimit = parseInt(limit, 10);
+            const intPage = parseInt(page, 10);
+            const offset = (intPage - 1) * intLimit;
 
-        if (!questions || questions.length === 0) {
-            throw new ForbiddenException('Questions not found');
+            const questions = await this.questModel.findAll({
+                where: {
+                    idUser: id
+                },
+                limit: intLimit,
+                //offset: offset,
+            });
+
+            if (!questions || questions.length === 0) {
+                throw new ForbiddenException('Questions not found');
+            }
+            return questions;
+        } catch (error) {
+            console.log(error);
         }
-        return questions;
     }
 
 
-    async searchQuestionsByTags(tags: string[], limit: string) {
+    async searchQuestionsByTags(tags: string[], limit: string, page: string) {
         const transaction = await this.sequelize.transaction();
         try {
             const tempQuestions = await this.questTagModel.findAll({
@@ -138,13 +158,17 @@ export class QuestionsService {
                 },
                 transaction
             });
+            const intLimit = parseInt(limit, 10);
+            const intPage = parseInt(page, 10);
+            const offset = (intPage - 1) * intLimit;
 
             const idQuests = tempQuestions.map(question => question.idQuest);
             const questions = await this.questModel.findAll({
                 where: {
                     idQuest: idQuests
                 },
-                limit: parseInt(limit, 10),
+                limit: intLimit,
+                //offset: offset,
                 transaction
             });
 
@@ -162,7 +186,43 @@ export class QuestionsService {
         }
     }
 
+    async getTagsForQuestion(id: string) {
+        const transaction = await this.sequelize.transaction();
+        try {
+            if (!isValidUUID(id)) {
+                throw new BadRequestException('Invalid question ID');
+            }
+            const tempTags = await this.questTagModel.findAll({
+                where: {
+                    idQuest: id
+                },
+                transaction
+            });
 
+            if (!tempTags || tempTags.length === 0) {
+                throw new BadRequestException('Question has no tags');
+            }
+
+            const idTags = tempTags.map(tag => tag.idTag);
+
+            const tags = await this.tagModel.findAll({
+                where: {
+                    idTag: idTags
+                },
+                transaction
+            });
+
+            if (!tags || tags.length === 0) {
+                throw new NotFoundException('Tags not found');
+            }
+
+            await transaction.commit();
+            return tags;
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     async createQuestion(quest: QuestionCreateDto) {
         const idQuest = uuidv4();

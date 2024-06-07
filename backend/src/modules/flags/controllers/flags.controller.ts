@@ -1,19 +1,21 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, HttpException, HttpStatus } from '@nestjs/common';
 import { FlagsService } from '../services/flags.service';
 
 @Controller('flags')
 export class FlagsController {
-    constructor(private flagsService: FlagsService) {
-    }
+    constructor(private flagsService: FlagsService) { }
 
     @Get('check')
     async checkFlag(@Query('idUser') idUser: string, @Query('idQuest') idQuest: string) {
         try {
-            return this.flagsService.hasUserFlagged(idUser, idQuest);
-        }
-        catch (error) {
-            console.log(error);
+            const hasUserFlagged = await this.flagsService.hasUserFlagged(idUser, idQuest);
+            return { hasUserFlagged };
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                throw new HttpException('An error occurred while checking the flag', HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
     }
-
 }
