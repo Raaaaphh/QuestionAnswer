@@ -62,16 +62,14 @@ describe('FavoritesController', () => {
             expect(service.addFavorite).toHaveBeenCalledWith(dto);
         });
 
-        // it('should log error if favoritesService.addFavorite throws', async () => {
-        //     const consoleSpy = jest.spyOn(console, 'log');
-        //     const dto: FavoriteDto = { idUser: '1', idQuest: '1' };
-        //     jest.spyOn(service, 'addFavorite').mockImplementation(() => { throw new Error('Test Error') });
-        //     try {
-        //         await controller.addFavorite(dto);
-        //     } catch (error) {
-        //         expect(consoleSpy).toHaveBeenCalledWith(new Error('Test Error'));
-        //     }
-        // });
+        it('should throw an error if favoritesService.addFavorite throws', async () => {
+            const dto: FavoriteDto = { idUser: '1', idQuest: '1' };
+            jest.spyOn(service, 'addFavorite').mockImplementation(() => {
+                throw new HttpException('Test Error', 500);
+            });
+
+            await expect(controller.addFavorite(dto)).rejects.toThrow(HttpException);
+        });
     });
 
     describe('removeFavorite', () => {
@@ -81,15 +79,13 @@ describe('FavoritesController', () => {
             expect(service.removeFavorite).toHaveBeenCalledWith(dto);
         });
 
-        // it('should log error if favoritesService.removeFavorite throws', async () => {
-        //     const consoleSpy = jest.spyOn(console, 'log');
-        //     const dto: FavoriteDto = { idUser: '1', idQuest: '1' };
-        //     jest.spyOn(service, 'removeFavorite').mockImplementation(() => { throw new Error('Test Error') });
-        //     try {
-        //         await controller.removeFavorite(dto);
-        //     } catch (error) {
-        //         expect(consoleSpy).toHaveBeenCalledWith(new Error('Test Error'));
-        //     }
-        // });
+        it('should throw an error if favoritesService.removeFavorite throws', async () => {
+            const dto: FavoriteDto = { idUser: '1', idQuest: '1' };
+            jest.spyOn(service, 'removeFavorite').mockImplementation(() => {
+                throw new HttpException('Test Error', 500);
+            });
+
+            await expect(controller.removeFavorite(dto)).rejects.toThrow(HttpException);
+        });
     });
 });
