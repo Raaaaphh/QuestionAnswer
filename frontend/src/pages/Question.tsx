@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./Question.css";
 import Header from "../components/Header";
 import MarkdownRenderer from "../components/MarkdownRenderer";
 import Answer from "../components/Answer";
 import AnimatedUpVote from "../components/AnimatedUpVote";
 import axiosInstance from "../utils/axiosInstance";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import BannerQuestion from "../components/BannerQuestion";
 import flagLogo from "../assets/flagLogo.svg";
 import returnArrow from "../assets/returnArrow.svg";
@@ -18,7 +18,7 @@ interface Question {
   context: string;
   updatedAt: string;
   votes: number;
-  status: string; // Changed to string
+  status: string;
 }
 
 interface User {
@@ -49,6 +49,10 @@ const Question: React.FC = () => {
   const [question, setQuestion] = useState<Question | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const { idQuest } = useParams<{ idQuest: string }>();
+  const [showFlagMenu, setShowFlagMenu] = useState(false);
+  const [selectedFlagType, setSelectedFlagType] = useState<string>("");
+  const flagMenuRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,17 +78,75 @@ const Question: React.FC = () => {
     fetchData();
   }, [idQuest]);
 
+  const handleFlagClick = async () => {
+    
+    if (!user || !question || !selectedFlagType) {
+      alert("User, question data, or flag type is missing.");
+      return;
+    }
+
+    const flagData = {
+      idUser: user.idUser,
+      idQuest: question.idQuest,
+      flagType: selectedFlagType
+    };
+
+    try {
+      console.log("Flagging question", typeof(question.idQuest),typeof(user.idUser), typeof(selectedFlagType));
+      await axiosInstance.post('questions/addFlag', flagData);
+      alert('Question flagged successfully');
+      setShowFlagMenu(false);
+    } catch (error) {
+      console.error('Error flagging the question', error);
+      alert('Failed to flag the question');
+    }
+  };
+
+  const toggleFlagMenu = () => {
+    setShowFlagMenu(!showFlagMenu);
+  };
+
+  const selectFlagType = (type: string) => {
+    setSelectedFlagType(type);
+    handleFlagClick();
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (flagMenuRef.current && !flagMenuRef.current.contains(event.target as Node)) {
+      setShowFlagMenu(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleReturnClick = () => {
+    navigate(-1);
+  };
+
   return (
     <div>
       <Header />
       <div className="topInfos">
-      <img src={returnArrow} alt="return arrow" />
-      {question?.status === "Solved" && (
-        <div className="status solved">
-          Question solved!
+        <img src={returnArrow} alt="return arrow" onClick={handleReturnClick} style={{ cursor: 'pointer' }} />
+        {question?.status === "Solved" && (
+          <div className="status solved">
+            Question solved!
+          </div>
+        )}
+        <div className="flagMenuContainer" ref={flagMenuRef}>
+          <img src={flagLogo} alt="Flag logo" onClick={toggleFlagMenu} style={{ cursor: 'pointer' }} />
+          {showFlagMenu && (
+            <div className="flagMenu">
+              <button onClick={() => selectFlagType("Spam")}>Spam</button>
+              <button onClick={() => selectFlagType("Inappropriate")}>Inappropriate</button>
+            </div>
+          )}
         </div>
-      )}
-        <img src={flagLogo} alt="Flag logo" />
       </div>
       <div className="questionPage">
         <div className="upVote">
