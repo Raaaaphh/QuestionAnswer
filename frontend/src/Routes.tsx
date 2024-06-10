@@ -24,14 +24,15 @@ export const Routes = () => {
           <Route path="/auth/login" element={<AuthForm />} />
           <Route path="/auth/register" element={<AuthForm isRegister />} />
           <Route path="/verify-email" element={<VerifyUserEmail />} />
-          <Route
+          <Route path="/" element={<Home />} />
+          {/* <Route
             path="/"
             element={
               <ProtectedRoute>
                 <Home />
               </ProtectedRoute>
             }
-          />
+          /> */}
 
           <Route
             path="/ask"

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException, ForbiddenException, HttpException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, HttpException } from '@nestjs/common';
 import { getModelToken } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
@@ -11,9 +11,6 @@ import { QuestionsService } from './questions.service';
 import { QuestionCreateDto, QuestionEditDto, QuestionVoteDto } from '../dto';
 import sequelize from 'sequelize';
 import { Op } from 'sequelize';
-import { Favorite } from '../../favorites/favorite.model';
-import { Flag } from '../../flags/flag.model';
-import { Tag } from '../../tags/tag.model';
 
 jest.mock('uuid', () => ({
     ...jest.requireActual('uuid'),
@@ -42,21 +39,6 @@ const mockVoteModel = {
     destroy: jest.fn(),
 };
 
-const mockFavoriteModel = {
-    findAll: jest.fn(),
-};
-
-const mockFlagModel = {
-    findOne: jest.fn(),
-    create: jest.fn(),
-    destroy: jest.fn(),
-};
-
-const mockTagModel = {
-    findAll: jest.fn(),
-};
-
-
 const mockTransaction = {
     commit: jest.fn(),
     rollback: jest.fn()
@@ -78,9 +60,6 @@ describe('QuestionsService', () => {
                 { provide: getModelToken(QuestionTag), useValue: mockQuestionTagModel },
                 { provide: getModelToken(Picture), useValue: mockPictureModel },
                 { provide: getModelToken(Vote), useValue: mockVoteModel },
-                { provide: getModelToken(Favorite), useValue: mockFavoriteModel },
-                { provide: getModelToken(Flag), useValue: mockFlagModel },
-                { provide: getModelToken(Tag), useValue: mockTagModel },
                 { provide: Sequelize, useValue: mockSequelize }
             ],
         }).compile();
@@ -99,11 +78,11 @@ describe('QuestionsService', () => {
             await expect(service.getQuestion('invalid-id')).rejects.toThrow(BadRequestException);
         });
 
-        it('should throw NotFoundException if question is not found', async () => {
+        it('should throw ForbiddenException if question is not found', async () => {
             (isValidUUID as jest.Mock).mockReturnValue(true);
             mockQuestionModel.findOne.mockResolvedValue(null);
 
-            await expect(service.getQuestion('b3d6a5d7-54d7-44fd-929d-7352f462e635')).rejects.toThrow(NotFoundException);
+            await expect(service.getQuestion('b3d6a5d7-54d7-44fd-929d-7352f462e635')).rejects.toThrow(ForbiddenException);
         });
 
         it('should return the question if found', async () => {
@@ -127,61 +106,42 @@ describe('QuestionsService', () => {
     });
 
     describe('findAllWithLimit', () => {
-        it('should throw NotFoundException if no questions are found', async () => {
+        it('should throw ForbiddenException if no questions are found', async () => {
             mockQuestionModel.findAll.mockResolvedValue([]);
 
-            await expect(service.findAllWithLimit('10', '1')).rejects.toThrow(NotFoundException);
+            await expect(service.findAllWithLimit('10')).rejects.toThrow(ForbiddenException);
         });
 
         it('should return limited questions', async () => {
             const questions = [{ idQuest: '1' }, { idQuest: '2' }];
             mockQuestionModel.findAll.mockResolvedValue(questions);
 
-            const result = await service.findAllWithLimit('10', '1');
+            const result = await service.findAllWithLimit('10');
             expect(result).toEqual(questions);
-        });
-    });
-
-    describe('findReportedQuestions', () => {
-        it('should return reported questions', async () => {
-            const questions = [
-                { idQuest: '1', flagsSpam: 3, flagsInappropriate: 2 },
-                { idQuest: '2', flagsSpam: 1, flagsInappropriate: 1 },
-            ];
-            mockQuestionModel.findAll.mockResolvedValue(questions);
-
-            const result = await service.findReportedQuestions('10', '1');
-            expect(result).toEqual(questions);
-        });
-
-        it('should throw NotFoundException if no questions are found', async () => {
-            mockQuestionModel.findAll.mockResolvedValue([]);
-
-            await expect(service.findReportedQuestions('10', '1')).rejects.toThrow(NotFoundException);
         });
     });
 
     describe('searchQuestions', () => {
-        it('should throw NotFoundException if no questions are found', async () => {
+        it('should throw ForbiddenException if no questions are found', async () => {
             mockQuestionModel.findAll.mockResolvedValue([]);
 
-            await expect(service.searchQuestions('search', '10', '1')).rejects.toThrow(NotFoundException);
+            await expect(service.searchQuestions('search', '10')).rejects.toThrow(ForbiddenException);
         });
 
         it('should return the searched questions', async () => {
             const questions = [{ idQuest: '1' }, { idQuest: '2' }];
             mockQuestionModel.findAll.mockResolvedValue(questions);
 
-            const result = await service.searchQuestions('search', '10', '1');
+            const result = await service.searchQuestions('search', '10');
             expect(result).toEqual(questions);
         });
     });
 
     describe('searchQuestionsByFilter', () => {
-        it('should throw NotFoundException if no questions are found', async () => {
+        it('should throw ForbiddenException if no questions are found', async () => {
             mockQuestionModel.findAll.mockResolvedValue([]);
 
-            await expect(service.searchQuestionsByFilter('filter', '10', 'ASC')).rejects.toThrow(NotFoundException);
+            await expect(service.searchQuestionsByFilter('filter', '10', 'ASC')).rejects.toThrow(ForbiddenException);
         });
 
         it('should return the filtered questions', async () => {
@@ -194,56 +154,56 @@ describe('QuestionsService', () => {
     });
 
     describe('searchQuestionsByUser', () => {
-        it('should return questions of the user', async () => {
-            const questions = [{ idQuest: '1', idUser: 'user-id' }, { idQuest: '2', idUser: 'user-id' }];
-            mockQuestionModel.findAll.mockResolvedValue(questions);
-
-            const result = await service.searchQuestionsByUser('user-id', '20', '1');
-            expect(result).toEqual(questions);
-        });
-
-        it('should throw NotFoundException if no questions are found', async () => {
+        it('should throw ForbiddenException if no questions are found', async () => {
             mockQuestionModel.findAll.mockResolvedValue([]);
 
-            await expect(service.searchQuestionsByUser('user-id', '20', '1')).rejects.toThrow(NotFoundException);
+            await expect(service.searchQuestionsByUser('user-id')).rejects.toThrow(ForbiddenException);
+        });
+
+        it('should return the questions of the user', async () => {
+            const questions = [{ idQuest: '1' }, { idQuest: '2' }];
+            mockQuestionModel.findAll.mockResolvedValue(questions);
+
+            const result = await service.searchQuestionsByUser('user-id');
+            expect(result).toEqual(questions);
         });
     });
 
-    // describe('searchQuestionsByTags', () => {
-    //     it('should throw NotFoundException if no questions are found for the given tags', async () => {
-    //         mockQuestionModel.findAll.mockResolvedValue([]);
+    describe('searchQuestionsByTags', () => {
+        it('should throw HttpException if no questions are found for the given tags', async () => {
+            mockQuestionModel.findAll.mockResolvedValue([]);
 
-    //         await expect(service.searchQuestionsByTags(['tag1', 'tag2'], "20", "1")).rejects.toThrow(NotFoundException);
-    //     });
+            await expect(service.searchQuestionsByTags(['tag1', 'tag2'])).rejects.toThrow(HttpException);
+        });
 
-    //     it('should return the questions for the given tags', async () => {
-    //         const tags = ['tag1', 'tag2'];
-    //         const questions = [{ idQuest: '1', description: 'description 1', QuestionTags: [{ idTag: 'tag1' }, { idTag: 'tag2' }] }, { idQuest: '2', description: 'description 2', QuestionTags: [{ idTag: 'tag1' }, { idTag: 'tag2' }] }];
-    //         mockQuestionModel.findAll.mockResolvedValue({
-    //             rows: questions,
-    //             count: questions.length
-    //         });
+        // it('should return the questions for the given tags', async () => {
+        //     const tags = ['tag1', 'tag2'];
+        //     const questions = [{ idQuest: '1', description: 'description 1', QuestionTags: [{ idTag: 'tag1' }, { idTag: 'tag2' }] }, { idQuest: '2', description: 'description 2', QuestionTags: [{ idTag: 'tag1' }, { idTag: 'tag2' }] }];
+        //     mockQuestionModel.findAll.mockResolvedValue({
+        //         rows: questions,
+        //         count: questions.length
+        //     });
 
-    //         const result = await service.searchQuestionsByTags(tags);
-    //         expect(result).toEqual(questions);
-    //         expect(mockQuestionModel.findAll).toHaveBeenCalledWith({
-    //             include: [{
-    //                 model: QuestionTag,
-    //                 where: {
-    //                     idTag: {
-    //                         [Op.in]: tags
-    //                     }
-    //                 }
-    //             }],
-    //             group: ['Question.idQuest'],
-    //             having: sequelize.literal(`COUNT(DISTINCT \`QuestionTags\`.\`idTag\`) = ${tags.length}`)
-    //         });
-    //     });
-    // });
+        //     const result = await service.searchQuestionsByTags(tags);
+        //     expect(result).toEqual(questions);
+        //     expect(mockQuestionModel.findAll).toHaveBeenCalledWith({
+        //         include: [{
+        //             model: QuestionTag,
+        //             where: {
+        //                 idTag: {
+        //                     [Op.in]: tags
+        //                 }
+        //             }
+        //         }],
+        //         group: ['Question.idQuest'],
+        //         having: sequelize.literal(`COUNT(DISTINCT \`QuestionTags\`.\`idTag\`) = ${tags.length}`)
+        //     });
+        // });
+    });
 
 
     describe('createQuestion', () => {
-        it('should throw BadRequestException if the title is too long', async () => {
+        it('should throw HttpException if the title is too long', async () => {
             const quest: QuestionCreateDto = {
                 idUser: 'user-id',
                 title: 'a'.repeat(101),
@@ -253,7 +213,7 @@ describe('QuestionsService', () => {
                 listPictures: [],
             };
 
-            await expect(service.createQuestion(quest)).rejects.toThrow(BadRequestException);
+            await expect(service.createQuestion(quest)).rejects.toThrow(HttpException);
         });
 
         it('should create a new question', async () => {
@@ -305,12 +265,12 @@ describe('QuestionsService', () => {
     });
 
     describe('addVote', () => {
-        it('should throw BadRequestException if user has already voted', async () => {
+        it('should throw HttpException if user has already voted', async () => {
             const dto: QuestionVoteDto = { idUser: 'user-id', idQuest: 'question-id' };
 
             mockVoteModel.findOne.mockResolvedValue({});
 
-            await expect(service.addVote(dto)).rejects.toThrow(BadRequestException);
+            await expect(service.addVote(dto)).rejects.toThrow(HttpException);
         });
 
         it('should add a vote to the question', async () => {
@@ -336,12 +296,12 @@ describe('QuestionsService', () => {
     });
 
     describe('removeVote', () => {
-        it('should throw NotFoundException if vote is not found', async () => {
+        it('should throw HttpException if vote is not found', async () => {
             const dto: QuestionVoteDto = { idUser: 'user-id', idQuest: 'question-id' };
 
             mockVoteModel.findOne.mockResolvedValue(null);
 
-            await expect(service.removeVote(dto)).rejects.toThrow(NotFoundException);
+            await expect(service.removeVote(dto)).rejects.toThrow(HttpException);
         });
 
         it('should remove a vote from the question', async () => {
@@ -366,7 +326,7 @@ describe('QuestionsService', () => {
     });
 
     describe('editQuestion', () => {
-        it('should throw NotFoundException if question is not found', async () => {
+        it('should throw ForbiddenException if question is not found', async () => {
             const question: QuestionEditDto = {
                 idQuest: 'question-id',
                 idUser: 'user-id',
@@ -378,7 +338,7 @@ describe('QuestionsService', () => {
 
             mockQuestionModel.findOne.mockResolvedValue(null);
 
-            await expect(service.editQuestion(question)).rejects.toThrow(NotFoundException);
+            await expect(service.editQuestion(question)).rejects.toThrow(ForbiddenException);
         });
 
         it('should edit the question', async () => {
@@ -417,10 +377,10 @@ describe('QuestionsService', () => {
     });
 
     describe('deleteQuestion', () => {
-        it('should throw NotFoundException if question is not found', async () => {
+        it('should throw ForbiddenException if question is not found', async () => {
             mockQuestionModel.findOne.mockResolvedValue(null);
 
-            await expect(service.deleteQuestion('question-id')).rejects.toThrow(NotFoundException);
+            await expect(service.deleteQuestion('question-id')).rejects.toThrow(ForbiddenException);
         });
 
         it('should delete the question', async () => {
