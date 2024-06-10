@@ -1,59 +1,190 @@
-import React, { useEffect, useState } from "react";
-import './Question.css';
-import Header from '../components/Header';
-import MarkdownRenderer from '../components/MarkdownRenderer';
+import React, { useEffect, useState, useRef } from "react";
+import "./Question.css";
+import Header from "../components/Header";
+import MarkdownRenderer from "../components/MarkdownRenderer";
+import Answer from "../components/Answer";
+import AnimatedUpVote from "../components/AnimatedUpVote";
+import axiosInstance from "../utils/axiosInstance";
+import { useParams, useNavigate } from "react-router-dom";
+import BannerQuestion from "../components/BannerQuestion";
+import flagLogo from "../assets/flagLogo.svg";
+import returnArrow from "../assets/returnArrow.svg";
 
-const fetchMarkdownFromDatabase = async () => {
-  // Simulate a database fetch
-  return `
-# Example Question
-
-Here is a code snippet:
-
-\`\`\`javascript
-function sayHello() {
-  console.log("Hello, world!");
+interface Question {
+  idQuest: string;
+  idUser: string;
+  title: string;
+  description: string;
+  context: string;
+  updatedAt: string;
+  votes: number;
+  status: string;
 }
-\`\`\`
 
-And some other content.
-  `;
-};
+interface User {
+  idUser: string;
+  name: string;
+  email: string;
+  password: string;
+  confirmed: boolean;
+  banned: boolean;
+  color: string;
+  createdAt: string;
+  emailToken: string;
+  role: string;
+  updatedAt: string;
+}
+
+interface Answer {
+  idAnsw: string;
+  idUser: string;
+  idQuest: string;
+  description: string;
+  updatedAt: string;
+}
 
 const Question: React.FC = () => {
   const [markdownContent, setMarkdownContent] = useState<string>("");
+  const [answers, setAnswers] = useState<any[]>([]);
+  const [question, setQuestion] = useState<Question | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const { idQuest } = useParams<{ idQuest: string }>();
+  const [showFlagMenu, setShowFlagMenu] = useState(false);
+  const [selectedFlagType, setSelectedFlagType] = useState<string>("");
+  const flagMenuRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const getData = async () => {
-      const data = await fetchMarkdownFromDatabase();
-      setMarkdownContent(data);
+    const fetchData = async () => {
+      try {
+        const questionResponse = await axiosInstance.get(`questions/${idQuest}`);
+        const fetchedQuestion = questionResponse.data;
+        setQuestion(fetchedQuestion);
+
+        if (fetchedQuestion.idUser) {
+          const userResponse = await axiosInstance.get(`users/${fetchedQuestion.idUser}`);
+          setUser(userResponse.data);
+        }
+
+        if (fetchedQuestion.idQuest) {
+          const answersResponse = await axiosInstance.get(`answers/findByQuestion/${fetchedQuestion.idQuest}`);
+          setAnswers(answersResponse.data);
+        }
+      } catch (error) {
+        console.error("Error fetching data from database:", error);
+      }
     };
 
-    getData();
+    fetchData();
+  }, [idQuest]);
+
+  const handleFlagClick = async () => {
+    
+    if (!user || !question || !selectedFlagType) {
+      alert("User, question data, or flag type is missing.");
+      return;
+    }
+
+    const flagData = {
+      idUser: user.idUser,
+      idQuest: question.idQuest,
+      flagType: selectedFlagType
+    };
+
+    try {
+      console.log("Flagging question", typeof(question.idQuest),typeof(user.idUser), typeof(selectedFlagType));
+      await axiosInstance.post('questions/addFlag', flagData);
+      alert('Question flagged successfully');
+      setShowFlagMenu(false);
+    } catch (error) {
+      console.error('Error flagging the question', error);
+      alert('Failed to flag the question');
+    }
+  };
+
+  const toggleFlagMenu = () => {
+    setShowFlagMenu(!showFlagMenu);
+  };
+
+  const selectFlagType = (type: string) => {
+    setSelectedFlagType(type);
+    handleFlagClick();
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (flagMenuRef.current && !flagMenuRef.current.contains(event.target as Node)) {
+      setShowFlagMenu(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
+
+  const handleReturnClick = () => {
+    navigate(-1);
+  };
 
   return (
     <div>
       <Header />
-      <div className='questionPage'>
-        <div className='questionHeader'>
-          <div className='avatarAndUsername'>
-            <img src='https://www.w3schools.com/howto/img_avatar.png' alt='avatar' className='avatarQuestion' />
-            <p className='username'>Username</p>
+      <div className="topInfos">
+        <img src={returnArrow} alt="return arrow" onClick={handleReturnClick} style={{ cursor: 'pointer' }} />
+        {question?.status === "Solved" && (
+          <div className="status solved">
+            Question solved!
           </div>
-          <div className='date'>
-            <p>Posted on: 2021-09-01</p>
+        )}
+        <div className="flagMenuContainer" ref={flagMenuRef}>
+          <img src={flagLogo} alt="Flag logo" onClick={toggleFlagMenu} style={{ cursor: 'pointer' }} />
+          {showFlagMenu && (
+            <div className="flagMenu">
+              <button onClick={() => selectFlagType("Spam")}>Spam</button>
+              <button onClick={() => selectFlagType("Inappropriate")}>Inappropriate</button>
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="questionPage">
+        <div className="upVote">
+          <AnimatedUpVote voteCount={question ? question.votes : 0} />
+        </div>
+        {question && <BannerQuestion idQuestAns={question.idQuest} isAnswer={false} />}
+        
+        <div className="questionContainer">
+          <h1>{question ? question.title : "Loading..."}</h1>
+          <div className="questionDescription">
+            <h2>Description:</h2>
+            <p>
+              {question ? (
+                <MarkdownRenderer markdownSource={question.description} />
+              ) : (
+                "Loading..."
+              )}
+            </p>
+          </div>
+          <div className="questionContext">
+            <h2>Context:</h2>
+            <p>
+              {question ? (
+                <MarkdownRenderer markdownSource={question.context} />
+              ) : (
+                "Loading..."
+              )}
+            </p>
           </div>
         </div>
-        <div className='questionContainer'>
-          <h1>How to center a div in CSS?</h1>
-          <div className='questionDescription'>
-            <h2>Description:</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...</p>
-          </div>
-          <div className='questionContext'>
-            <MarkdownRenderer markdownSource={markdownContent} />
-          </div>
+        <div className="answersSection">
+          {answers.length === 0 ? (
+            <p>No answers available.</p>
+          ) : (
+            answers.map((answer) => (
+              <Answer key={answer.idAnsw} answer={answer} idAnswer={answer.idAnsw} />
+            ))
+          )}
         </div>
       </div>
     </div>

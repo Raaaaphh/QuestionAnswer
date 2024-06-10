@@ -16,4 +16,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./question-create.dto"), exports);
 __exportStar(require("./question-edit.dto"), exports);
+__exportStar(require("./question-vote.dto"), exports);
+__exportStar(require("./question-flag.dto"), exports);
 //# sourceMappingURL=index.js.map

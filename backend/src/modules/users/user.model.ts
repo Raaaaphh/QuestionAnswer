@@ -1,8 +1,10 @@
 import { Column, HasMany, Model, PrimaryKey, Table } from 'sequelize-typescript';
-import { Answer } from 'src/modules/answers/answer.model';
-import { Favorite } from 'src/modules/favorites/favorite.model';
-import { Question } from 'src/modules/questions/question.model';
+import { Question } from '../questions/question.model';
+import { Answer } from '../answers/answer.model';
+import { Favorite } from '../favorites/favorite.model';
 import { Tag } from '../tags/tag.model';
+import { Vote } from '../votes/vote.model';
+
 
 enum Role {
     SuperAdmin = 'SuperAdmin',
@@ -37,6 +39,9 @@ export class User extends Model {
     @Column
     color: string;
 
+    @Column
+    banned: boolean;
+
     @HasMany(() => Question)
     questions: Question[];
 
@@ -48,5 +53,8 @@ export class User extends Model {
 
     @HasMany(() => Tag)
     tags: Tag[];
+
+    @HasMany(() => Vote)
+    listVotes: Vote[];
 }
 

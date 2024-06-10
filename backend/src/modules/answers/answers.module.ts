@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AnswersService } from './answers.service';
-import { AnswersController } from './answers.controller';
+import { AnswersController } from './controllers/answers.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Answer } from './answer.model';
 import { PicturesModule } from '../pictures/pictures.module';
+import { AnswersService } from './services/answers.service';
+import { QuestionsModule } from '../questions/questions.module';
 
 @Module({
-    imports: [SequelizeModule.forFeature([Answer]), PicturesModule],
+    imports: [SequelizeModule.forFeature([Answer]), PicturesModule, QuestionsModule],
     providers: [AnswersService],
     controllers: [AnswersController],
 })

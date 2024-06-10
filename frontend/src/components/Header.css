@@ -21,8 +21,6 @@ header {
   z-index: 2;
 }
 
-
-
 h1 {
   font-size: 1.5em;
   font-weight: bold;
@@ -35,30 +33,25 @@ h1 {
   object-fit: contain;
 }
 
-.homeButton{
+.homeButton {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-decoration: none;
 }
 
-.homeButton:visited{
+.homeButton:visited {
   text-decoration: none;
   color: #8F8F8F;
-}
-
-.underline {
-  border-bottom: 2px solid #C88A12;
-  width: 90%;
 }
 
 .homeButtonText {
-  margin: 0px 10px 0px 10px;
+  margin: 0px 30px -5px 30px;
   font-weight: 300;
+  font-size: 30px;
   color: #8F8F8F;
   text-decoration: none;
 }
-
 
 .homeButtonText:visited {
   color: #8F8F8F;
@@ -123,14 +116,27 @@ h1 {
 }
 
 .btnQuestion {
-  padding: 10px 20px;
+  padding: 0px 30px;
+  border: #004A85 5px solid;
   background-color: #004A85;
   color: white;
-  border-radius: 5px;
+  white-space: nowrap;
+  border-radius: 35px;
   text-decoration: none;
+  font-size: 20px;
   cursor: pointer;
-  margin-left: 20px;
   text-align: center;
+}
+
+.btnQuestion:hover {
+  border: #C88A12 5px solid;
+  text-decoration: none;
+  box-shadow: 0px 0px 10px 0px rgba(255, 184, 43, 0.5);
+}
+
+.btnQuestion:active {
+  text-decoration: none;
+  scale: 95%;
 }
 
 .notificationMenu, .profileMenu, .filterMenu {
@@ -141,11 +147,40 @@ h1 {
   background-color: transparent;
   border: none;
   cursor: pointer;
-  padding: 10px;
+  padding: 15px;
 }
 
 .notificationButton img, .profileButton img, .filterButton img {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
 }
 
+/* Dropdown styling */
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  z-index: 10;
+  display: none;
+}
+
+.notificationMenu .dropdown,
+.profileMenu .dropdown,
+.filterMenu .dropdown {
+  display: block;
+}
+
+.dropdownItem {
+  display: flex;
+  flex-direction: row;
+  padding: 10px 20px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dropdownItem:hover {
+  background-color: #f1f1f1;
+}

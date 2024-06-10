@@ -2,10 +2,10 @@ import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/commo
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { JwtPayload } from 'jsonwebtoken';
-import { UsersService } from 'src/modules/users/users.service';
+import { UsersService } from 'src/modules/users/services/users.service';
 
 interface CustomRequest extends Request {
-    user?: any; // Déclarez une propriété `user` optionnelle
+    user?: any;
 }
 
 @Injectable()

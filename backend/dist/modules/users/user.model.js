@@ -11,10 +11,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
+const question_model_1 = require("../questions/question.model");
 const answer_model_1 = require("../answers/answer.model");
 const favorite_model_1 = require("../favorites/favorite.model");
-const question_model_1 = require("../questions/question.model");
 const tag_model_1 = require("../tags/tag.model");
+const vote_model_1 = require("../votes/vote.model");
 var Role;
 (function (Role) {
     Role["SuperAdmin"] = "SuperAdmin";
@@ -58,6 +59,10 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "color", void 0);
 __decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", Boolean)
+], User.prototype, "banned", void 0);
+__decorate([
     (0, sequelize_typescript_1.HasMany)(() => question_model_1.Question),
     __metadata("design:type", Array)
 ], User.prototype, "questions", void 0);
@@ -73,6 +78,10 @@ __decorate([
     (0, sequelize_typescript_1.HasMany)(() => tag_model_1.Tag),
     __metadata("design:type", Array)
 ], User.prototype, "tags", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => vote_model_1.Vote),
+    __metadata("design:type", Array)
+], User.prototype, "listVotes", void 0);
 exports.User = User = __decorate([
     sequelize_typescript_1.Table
 ], User);

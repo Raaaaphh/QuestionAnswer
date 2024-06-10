@@ -1,9 +1,11 @@
 import { BelongsTo, Column, ForeignKey, PrimaryKey, Table, Model, HasMany } from "sequelize-typescript";
-import { Answer } from "src/modules/answers/answer.model";
-import { Favorite } from "src/modules/favorites/favorite.model";
-import { User } from "src/modules/users/user.model";
+import { User } from "../users/user.model";
+import { Answer } from "../answers/answer.model";
+import { Favorite } from "../favorites/favorite.model";
 import { QuestionTag } from "../questiontags/questiontag.model";
 import { Picture } from "../pictures/picture.model";
+import { Vote } from "../votes/vote.model";
+
 
 @Table
 export class Question extends Model {
@@ -34,7 +36,7 @@ export class Question extends Model {
     flagsSpam: number;
 
     @Column
-    flagsInappropiate: number;
+    flagsInappropriate: number;
 
     @Column
     status: boolean;
@@ -50,5 +52,8 @@ export class Question extends Model {
 
     @HasMany(() => Picture)
     pictures: Picture[];
+
+    @HasMany(() => Vote)
+    listVotes: Vote[];
 
 }

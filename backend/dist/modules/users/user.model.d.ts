@@ -1,8 +1,9 @@
 import { Model } from 'sequelize-typescript';
-import { Answer } from 'src/modules/answers/answer.model';
-import { Favorite } from 'src/modules/favorites/favorite.model';
-import { Question } from 'src/modules/questions/question.model';
+import { Question } from '../questions/question.model';
+import { Answer } from '../answers/answer.model';
+import { Favorite } from '../favorites/favorite.model';
 import { Tag } from '../tags/tag.model';
+import { Vote } from '../votes/vote.model';
 declare enum Role {
     SuperAdmin = "SuperAdmin",
     Lecturer = "Lecturer",
@@ -17,9 +18,11 @@ export declare class User extends Model {
     emailToken: string;
     role: Role;
     color: string;
+    banned: boolean;
     questions: Question[];
     answers: Answer[];
     favorites: Favorite[];
     tags: Tag[];
+    listVotes: Vote[];
 }
 export {};

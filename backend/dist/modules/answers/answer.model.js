@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Answer = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const question_model_1 = require("../questions/question.model");
-const user_model_1 = require("../users/user.model");
 const picture_model_1 = require("../pictures/picture.model");
+const user_model_1 = require("../users/user.model");
 let Answer = class Answer extends sequelize_typescript_1.Model {
 };
 exports.Answer = Answer;

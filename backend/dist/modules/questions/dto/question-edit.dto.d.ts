@@ -4,4 +4,5 @@ export declare class QuestionEditDto {
     description: string;
     context: string;
     idUser: string;
+    listTags: string[];
 }

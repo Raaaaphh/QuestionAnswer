@@ -11,11 +11,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Question = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
+const user_model_1 = require("../users/user.model");
 const answer_model_1 = require("../answers/answer.model");
 const favorite_model_1 = require("../favorites/favorite.model");
-const user_model_1 = require("../users/user.model");
 const questiontag_model_1 = require("../questiontags/questiontag.model");
 const picture_model_1 = require("../pictures/picture.model");
+const vote_model_1 = require("../votes/vote.model");
 let Question = class Question extends sequelize_typescript_1.Model {
 };
 exports.Question = Question;
@@ -56,7 +57,7 @@ __decorate([
 __decorate([
     sequelize_typescript_1.Column,
     __metadata("design:type", Number)
-], Question.prototype, "flagsInappropiate", void 0);
+], Question.prototype, "flagsInappropriate", void 0);
 __decorate([
     sequelize_typescript_1.Column,
     __metadata("design:type", Boolean)
@@ -77,6 +78,10 @@ __decorate([
     (0, sequelize_typescript_1.HasMany)(() => picture_model_1.Picture),
     __metadata("design:type", Array)
 ], Question.prototype, "pictures", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => vote_model_1.Vote),
+    __metadata("design:type", Array)
+], Question.prototype, "listVotes", void 0);
 exports.Question = Question = __decorate([
     sequelize_typescript_1.Table
 ], Question);

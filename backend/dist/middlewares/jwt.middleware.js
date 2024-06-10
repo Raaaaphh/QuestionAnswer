@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.JwtMiddleware = void 0;
 const common_1 = require("@nestjs/common");
 const jwt = require("jsonwebtoken");
-const users_service_1 = require("../modules/users/users.service");
+const users_service_1 = require("../modules/users/services/users.service");
 let JwtMiddleware = class JwtMiddleware {
     constructor(userService) {
         this.userService = userService;

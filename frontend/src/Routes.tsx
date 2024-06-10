@@ -1,26 +1,73 @@
-import { BrowserRouter as Router, Routes as RoutesComponents, Route} from 'react-router-dom';
-import Home from './pages/Home';
-import NotFound from './pages/NotFound';
-import AskAQuestion from './pages/AskAQuestion';
-import AuthForm from './pages/AuthForm';
-import Profile from './pages/Profile';
-import Question from './pages/Question';
+import {
+  BrowserRouter as Router,
+  Routes as RoutesComponents,
+  Route,
+} from "react-router-dom";
+import Home from "./pages/Home";
+import NotFound from "./pages/NotFound";
+import AskAQuestion from "./pages/AskAQuestion";
+import AuthForm from "./pages/AuthForm";
+import Profile from "./pages/Profile";
+import Question from "./pages/Question";
+import ProtectedRoute from "./components/ProtectedRoute";
+import VerifyUserEmail from "./components/EmailVerif";
+import { AuthProvider } from "./context/AuthContext";
+import Report from "./pages/Report";
 
 export const Routes = () => {
-    return (
-        <Router>
-            <RoutesComponents>
-                <Route path="/" element={<Home/>}/>
-                <Route path="*" element={<NotFound/>}/>
-                <Route path="/login" element={<AuthForm />} />
-                <Route path="/register" element={<AuthForm isRegister />} />
-                <Route path="/ask" element={<AskAQuestion/>}/>
-                <Route path="/profile" element={<Profile/>}/>
-                <Route path="/question" element={<Question/>}/>
-                {/* <Route path="/question/:id" element={<Question/>}/> */}
-            </RoutesComponents>
-        </Router>
-    );
+  return (
+    <Router>
+      <AuthProvider>
+        <RoutesComponents>
+          {/* <Route path="/" element={<Home />} /> */}
+          <Route path="*" element={<NotFound />} />
+          <Route path="/auth/login" element={<AuthForm />} />
+          <Route path="/auth/register" element={<AuthForm isRegister />} />
+          <Route path="/verify-email" element={<VerifyUserEmail />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/reported"
+            element={
+              <ProtectedRoute>
+                <Report />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/ask"
+            element={
+              <ProtectedRoute>
+                <AskAQuestion />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile/:idUser"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/question/:idQuest"
+            element={
+              <ProtectedRoute>
+                <Question />
+              </ProtectedRoute>
+            }
+          />
+        </RoutesComponents>
+      </AuthProvider>
+    </Router>
+  );
 };
-
-

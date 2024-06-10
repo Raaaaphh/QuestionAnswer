@@ -1,14 +1,22 @@
-DROP TABLE IF EXISTS `Favorite`;
+DROP TABLE IF EXISTS `Favorites`;
 
-DROP TABLE IF EXISTS `QuestionTag`;
+DROP TABLE IF EXISTS `Flags`;
 
-DROP TABLE IF EXISTS `Tag`;
+DROP TABLE IF EXISTS `Votes`;
 
-DROP TABLE IF EXISTS `Answer`;
+DROP TABLE IF EXISTS `Invitations`;
 
-DROP TABLE IF EXISTS `Question`;
+DROP TABLE IF EXISTS `Pictures`;
 
-DROP TABLE IF EXISTS `User`;
+DROP TABLE IF EXISTS `QuestionTags`;
+
+DROP TABLE IF EXISTS `Tags`;
+
+DROP TABLE IF EXISTS `Answers`;
+
+DROP TABLE IF EXISTS `Questions`;
+
+DROP TABLE IF EXISTS `Users`;
 
 Create table `Users` (
     `idUser` varchar(100) not null,
@@ -23,9 +31,11 @@ Create table `Users` (
         'Student'
     ) default 'Student',
     `color` varchar(100) not NULL,
+    `banned` boolean default false,
     `createdAt` datetime not null,
     `updatedAt` datetime not null,
-    primary key (`idUser`)
+    primary key (`idUser`),
+    UNIQUE (`email`)
 );
 
 Create table `Questions` (
@@ -36,7 +46,7 @@ Create table `Questions` (
     `context` text not null,
     `votes` int default 0,
     `flagsSpam` int default 0,
-    `flagsInappropiate` int default 0,
+    `flagsInappropriate` int default 0,
     `status` enum('Solved', 'Unsolved') default 'Unsolved',
     `createdAt` datetime not null,
     `updatedAt` datetime not null,
@@ -82,6 +92,7 @@ Create table `QuestionTags` (
 Create table `Favorites` (
     `idUser` varchar(100) not null,
     `idQuest` varchar(100) not null,
+    `notified` boolean default false,
     `createdAt` datetime not null,
     `updatedAt` datetime not null,
     primary key (`idUser`, `idQuest`),
@@ -91,12 +102,14 @@ Create table `Favorites` (
 
 CREATE TABLE `Invitations` (
     `idInvitation` INT AUTO_INCREMENT PRIMARY KEY,
-    `idSender` varchar(100) NOT NULL,
-    `idRecipient` varchar(100) NOT NULL,
+    `email` varchar(255) NOT NULL,
+    `role` enum(
+        'SuperAdmin',
+        'Lecturer',
+        'Student'
+    ) default 'Student',
     `createdAt` datetime NOT NULL,
-    `updatedAt` datetime NOT NULL,
-    FOREIGN KEY (`idSender`) REFERENCES `User` (`idUser`) ON DELETE CASCADE,
-    FOREIGN KEY (`idRecipient`) REFERENCES `User` (`idUser`) ON DELETE CASCADE
+    `updatedAt` datetime NOT NULL
 );
 
 CREATE TABLE `Pictures` (
@@ -106,7 +119,34 @@ CREATE TABLE `Pictures` (
     `imageUrl` varchar(255) NOT NULL,
     `createdAt` datetime NOT NULL,
     `updatedAt` datetime NOT NULL,
-    PRIMARY KEY (`idImage`),
+    PRIMARY KEY (`idPicture`),
     FOREIGN KEY (`idQuest`) REFERENCES `Questions` (`idQuest`) ON DELETE CASCADE,
     FOREIGN KEY (`idAnsw`) REFERENCES `Answers` (`idAnsw`) ON DELETE CASCADE
+);
+
+CREATE TABLE `Votes` (
+    `idVote` varchar(100) PRIMARY KEY,
+    `idUser` varchar(100) NOT NULL,
+    `idQuest` varchar(100) NOT NULL,
+    `createdAt` datetime NOT NULL,
+    `updatedAt` datetime NOT NULL,
+    FOREIGN KEY (`idUser`) REFERENCES `Users` (`idUser`) ON DELETE CASCADE,
+    FOREIGN KEY (`idQuest`) REFERENCES `Questions` (`idQuest`) ON DELETE CASCADE,
+    UNIQUE (`idUser`, `idQuest`)
+);
+
+CREATE TABLE `Flags` (
+    `idFlag` varchar(100) PRIMARY KEY,
+    `idUser` varchar(100) NOT NULL,
+    `idQuest` varchar(100) NOT NULL,
+    `flagType` enum('Spam', 'Inappropriate') NOT NULL,
+    `createdAt` datetime NOT NULL,
+    `updatedAt` datetime NOT NULL,
+    FOREIGN KEY (`idUser`) REFERENCES `Users` (`idUser`) ON DELETE CASCADE,
+    FOREIGN KEY (`idQuest`) REFERENCES `Questions` (`idQuest`) ON DELETE CASCADE,
+    UNIQUE (
+        `idUser`,
+        `idQuest`,
+        `flagType`
+    )
 );

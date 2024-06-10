@@ -1,6 +1,5 @@
-import { Routes } from './Routes';
-import './App.css';
-
+import { Routes } from "./Routes";
+import "./App.css";
 
 function App() {
   fetch("http://localhost:3000/auth/test")
@@ -16,9 +15,8 @@ function App() {
     });
   return (
     <div>
-      <Routes/>
+      <Routes />
     </div>
-    
   );
 }
 

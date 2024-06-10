@@ -10,8 +10,8 @@ exports.UsersModule = void 0;
 const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
 const user_model_1 = require("./user.model");
-const users_service_1 = require("./users.service");
-const users_controller_1 = require("./users.controller");
+const users_service_1 = require("./services/users.service");
+const users_controller_1 = require("./controllers/users.controller");
 let UsersModule = class UsersModule {
 };
 exports.UsersModule = UsersModule;

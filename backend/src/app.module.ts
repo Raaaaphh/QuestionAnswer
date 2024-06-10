@@ -14,17 +14,21 @@ import { Favorite } from './modules/favorites/favorite.model';
 import { QuestiontagsModule } from './modules/questiontags/questiontags.module';
 import { InvitationsModule } from './modules/invitations/invitations.module';
 import { TagsModule } from './modules/tags/tags.module';
-import { MailerModule } from '@nestjs-modules/mailer';
 import { Tag } from './modules/tags/tag.model';
 import { QuestionTag } from './modules/questiontags/questiontag.model';
 import { Picture } from './modules/pictures/picture.model';
 import { PicturesModule } from './modules/pictures/pictures.module';
 import { JwtMiddleware } from './middlewares/jwt.middleware';
+import { Invitation } from './modules/invitations/invitation.model';
+import { VotesModule } from './modules/votes/votes.module';
+import { Vote } from './modules/votes/vote.model';
+import { FlagsModule } from './modules/flags/flags.module';
+import { Flag } from './modules/flags/flag.model';
 
 @Module({
   imports: [ConfigModule.forRoot({
     isGlobal: true,
-    envFilePath: '.env',
+    envFilePath: '../.env',
   }),
     AuthModule,
   SequelizeModule.forRootAsync({
@@ -36,7 +40,7 @@ import { JwtMiddleware } from './middlewares/jwt.middleware';
       username: configService.get('DB_USER'),
       password: configService.get('DB_PASSWORD'),
       database: configService.get('DB_NAME'),
-      models: [User, Question, Answer, Favorite, Tag, QuestionTag, Picture],
+      models: [User, Question, Answer, Favorite, Tag, QuestionTag, Picture, Invitation, Vote, Flag],
       //autoLoadModels: true,
       //synchronize: true,
     }),
@@ -51,15 +55,8 @@ import { JwtMiddleware } from './middlewares/jwt.middleware';
     TagsModule,
     QuestionsModule,
     PicturesModule,
-    // MailerModule.forRoot({
-    //   transport: {
-    //     host: 'smtp.gmail.com',
-    //     auth: {
-    //       user: 'corsica0107@gmail.com',
-    //       pass: 'raphael11022004',
-    //     },
-    //   },
-    // }),
+    VotesModule,
+    FlagsModule,
   ],
   providers: [AppService],
 })
@@ -73,5 +70,4 @@ export class AppModule {
       )
       .forRoutes('*');
   }
-
 }

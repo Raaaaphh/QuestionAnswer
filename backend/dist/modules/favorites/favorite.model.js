@@ -11,8 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Favorite = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
-const question_model_1 = require("../questions/question.model");
 const user_model_1 = require("../users/user.model");
+const question_model_1 = require("../questions/question.model");
 let Favorite = class Favorite extends sequelize_typescript_1.Model {
 };
 exports.Favorite = Favorite;
@@ -36,6 +36,10 @@ __decorate([
     (0, sequelize_typescript_1.BelongsTo)(() => question_model_1.Question),
     __metadata("design:type", question_model_1.Question)
 ], Favorite.prototype, "question", void 0);
+__decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", Boolean)
+], Favorite.prototype, "notified", void 0);
 exports.Favorite = Favorite = __decorate([
     sequelize_typescript_1.Table
 ], Favorite);

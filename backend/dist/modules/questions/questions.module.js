@@ -8,20 +8,25 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QuestionsModule = void 0;
 const common_1 = require("@nestjs/common");
-const questions_service_1 = require("./questions.service");
-const questions_controller_1 = require("./questions.controller");
+const questions_controller_1 = require("./controllers/questions.controller");
 const sequelize_1 = require("@nestjs/sequelize");
 const question_model_1 = require("./question.model");
 const questiontags_module_1 = require("../questiontags/questiontags.module");
 const pictures_module_1 = require("../pictures/pictures.module");
+const questions_service_1 = require("./services/questions.service");
+const votes_module_1 = require("../votes/votes.module");
+const favorites_module_1 = require("../favorites/favorites.module");
+const flags_module_1 = require("../flags/flags.module");
+const tags_module_1 = require("../tags/tags.module");
 let QuestionsModule = class QuestionsModule {
 };
 exports.QuestionsModule = QuestionsModule;
 exports.QuestionsModule = QuestionsModule = __decorate([
     (0, common_1.Module)({
-        imports: [sequelize_1.SequelizeModule.forFeature([question_model_1.Question]), questiontags_module_1.QuestiontagsModule, pictures_module_1.PicturesModule],
+        imports: [sequelize_1.SequelizeModule.forFeature([question_model_1.Question]), questiontags_module_1.QuestiontagsModule, pictures_module_1.PicturesModule, votes_module_1.VotesModule, favorites_module_1.FavoritesModule, flags_module_1.FlagsModule, tags_module_1.TagsModule],
         providers: [questions_service_1.QuestionsService],
         controllers: [questions_controller_1.QuestionsController],
+        exports: [sequelize_1.SequelizeModule, questions_service_1.QuestionsService]
     })
 ], QuestionsModule);
 //# sourceMappingURL=questions.module.js.map

@@ -1,0 +1,35 @@
+/* ProfilePicture.css */
+.avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20vw; 
+    height: 20vw; 
+    max-width: 100px;
+    max-height: 100px;
+    margin: 0 auto; 
+    border-radius: 50%; 
+    overflow: hidden; 
+    background-color: #f0f0f0;
+    margin-right: 15px;
+  }
+  
+  .initials {
+    font-size: 50px;
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1; 
+  }
+  
+  .lecturer-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    border-radius: 50%; 
+    margin-right: 15px;
+  }
+  
+  
