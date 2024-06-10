@@ -65,7 +65,7 @@ let QuestionsController = class QuestionsController {
             console.log(error);
         }
     }
-    searchQuestions(search, limit) {
+    searchQuestions(search, limit, page) {
         try {
             if (search === undefined) {
                 throw new Error('Search is required');
@@ -73,13 +73,16 @@ let QuestionsController = class QuestionsController {
             if (limit === undefined) {
                 limit = '20';
             }
-            return this.questionsService.searchQuestions(search, limit);
+            if (page === undefined) {
+                page = '1';
+            }
+            return this.questionsService.searchQuestions(search, limit, page);
         }
         catch (error) {
             console.log(error);
         }
     }
-    searchQuestionsByFilter(filter, limit) {
+    searchQuestionsByFilter(filter, limit, page) {
         try {
             if (filter === undefined) {
                 throw new Error('Filter is required');
@@ -87,21 +90,33 @@ let QuestionsController = class QuestionsController {
             if (limit === undefined) {
                 limit = '20';
             }
-            return this.questionsService.searchQuestionsByFilter(filter, limit);
+            if (page === undefined) {
+                page = '1';
+            }
+            return this.questionsService.searchQuestionsByFilter(filter, limit, page);
         }
         catch (error) {
             console.log(error);
         }
     }
-    searchQuestionsByUser(id) {
+    searchQuestionsByUser(id, limit, page) {
         try {
-            return this.questionsService.searchQuestionsByUser(id);
+            if (id === undefined) {
+                throw new Error('User ID is required');
+            }
+            if (limit === undefined) {
+                limit = '20';
+            }
+            if (page === undefined) {
+                page = '1';
+            }
+            return this.questionsService.searchQuestionsByUser(id, limit, page);
         }
         catch (error) {
             console.log(error);
         }
     }
-    async searchQuestionsByTags(tags, limit) {
+    async searchQuestionsByTags(tags, limit, page) {
         try {
             if (!tags) {
                 throw new common_1.BadRequestException('Tags query parameter is required');
@@ -113,11 +128,22 @@ let QuestionsController = class QuestionsController {
             if (limit === undefined) {
                 limit = '20';
             }
-            return await this.questionsService.searchQuestionsByTags(tagsArray, limit);
+            if (page === undefined) {
+                page = '1';
+            }
+            return await this.questionsService.searchQuestionsByTags(tagsArray, limit, page);
         }
         catch (error) {
             console.log(error);
             throw error;
+        }
+    }
+    getTagsForQuestion(id) {
+        try {
+            return this.questionsService.getTagsForQuestion(id);
+        }
+        catch (error) {
+            console.log(error);
         }
     }
     createQuestion(quest) {
@@ -219,33 +245,45 @@ __decorate([
     (0, common_1.Get)('findByName/params'),
     __param(0, (0, common_1.Query)('search')),
     __param(1, (0, common_1.Query)('limit')),
+    __param(2, (0, common_1.Query)('page')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "searchQuestions", null);
 __decorate([
     (0, common_1.Get)('findByFilter/params'),
     __param(0, (0, common_1.Query)('filter')),
     __param(1, (0, common_1.Query)('limit')),
+    __param(2, (0, common_1.Query)('page')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "searchQuestionsByFilter", null);
 __decorate([
-    (0, common_1.Get)('findByUser/:id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)('findByUser/params'),
+    __param(0, (0, common_1.Query)('id')),
+    __param(1, (0, common_1.Query)('limit')),
+    __param(2, (0, common_1.Query)('page')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "searchQuestionsByUser", null);
 __decorate([
     (0, common_1.Get)('findByTags/params'),
     __param(0, (0, common_1.Query)('tags')),
     __param(1, (0, common_1.Query)('limit')),
+    __param(2, (0, common_1.Query)('page')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], QuestionsController.prototype, "searchQuestionsByTags", null);
+__decorate([
+    (0, common_1.Get)('tagsForQuestion/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], QuestionsController.prototype, "getTagsForQuestion", null);
 __decorate([
     (0, common_1.Post)('create'),
     (0, common_1.UseGuards)(student_guard_1.StudentGuard),

@@ -19,7 +19,8 @@ exports.TagsModule = TagsModule = __decorate([
     (0, common_1.Module)({
         imports: [sequelize_1.SequelizeModule.forFeature([tag_model_1.Tag])],
         controllers: [tags_controller_1.TagsController],
-        providers: [tags_service_1.TagsService]
+        providers: [tags_service_1.TagsService],
+        exports: [sequelize_1.SequelizeModule]
     })
 ], TagsModule);
 //# sourceMappingURL=tags.module.js.map

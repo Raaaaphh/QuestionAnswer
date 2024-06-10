@@ -18,13 +18,13 @@ const Home = () => {
 
   const fetchQuestionsFromDatabase = async (filter: string) => {
     try {
-      let endpoint = "questions/all/params?limit=20";
+      let endpoint = "questions/findByFilter/params?filter=unsolved&limit=20";
       switch (filter) {
         case "topUnsolved":
-          endpoint = "questions/unsolved?limit=20";
+          endpoint = "questions/findByFilter/params?filter=unsolved&limit=20";
           break;
         case "topSolved":
-          endpoint = "questions/solved?limit=20";
+          endpoint = "questions/findByFilter/params?filter=solved&limit=20";
           break;
         case "mostRecent":
           endpoint = "questions/all/params?limit=20";

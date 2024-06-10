@@ -21,7 +21,7 @@ exports.AuthModule = AuthModule = __decorate([
         imports: [users_module_1.UsersModule,
             jwt_1.JwtModule.register({
                 secret: 'questionanswer',
-                signOptions: { expiresIn: '60m' },
+                signOptions: { expiresIn: '1d' },
             }),
             invitations_module_1.InvitationsModule,
         ],
