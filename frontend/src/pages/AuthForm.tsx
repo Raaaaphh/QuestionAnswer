@@ -21,7 +21,7 @@ function AuthForm({ isRegister = false }: AuthFormProps) {
     const checkTokenAndNavigate = async () => {
       const token = localStorage.getItem("token");
       if (token) {
-        await navigate("/");
+        navigate("/");
       }
     };
     checkTokenAndNavigate();
@@ -35,24 +35,38 @@ function AuthForm({ isRegister = false }: AuthFormProps) {
       const payload = isRegister
         ? { name, email, password }
         : { name, password };
+
+      console.log("Sending request to:", url);
+      console.log("Payload:", payload);
+
       const response = await axiosInstance.post(url, payload, {
         headers: {
           "Content-Type": "application/json",
         },
       });
 
+      console.log("Response data:", response.data);
+
       if (response.data) {
         if (isRegister) {
           navigate("/auth/login");
-        } else if (response.data.token) {
-          localStorage.setItem("token", response.data.token);
-          navigate("/");
         } else {
-          setError("An error as occurred while sending the request.");
+          const token = response.data.token;
+          if (token) {
+            localStorage.setItem("token", token);
+            navigate("/");
+          } else {
+            setError("Token not found in response.");
+          }
         }
+      } else {
+        setError("No response data.");
       }
     } catch (error: any) {
-      setError(error.response.data.message);
+      console.error("Error during submission:", error);
+      setError(
+        error.response?.data?.message || "An unexpected error occurred."
+      );
     }
   };
 
@@ -85,8 +99,8 @@ function AuthForm({ isRegister = false }: AuthFormProps) {
           />
           <button type="submit">{isRegister ? "Register" : "Login"}</button>
         </form>
+        {error && <p className="error">{error}</p>}
       </div>
-      {error && <p>{error}</p>}
     </div>
   );
 }
