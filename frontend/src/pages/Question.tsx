@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./Question.css";
 import Header from "../components/Header";
 import MarkdownRenderer from "../components/MarkdownRenderer";
@@ -6,7 +6,7 @@ import MarkdownEditor from "../components/MarkdownEditor"; // Import the Markdow
 import Answer from "../components/Answer";
 import AnimatedUpVote from "../components/AnimatedUpVote";
 import axiosInstance from "../utils/axiosInstance";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import BannerQuestion from "../components/BannerQuestion";
 import flagLogo from "../assets/flagLogo.svg";
 import returnArrow from "../assets/returnArrow.svg";
@@ -19,7 +19,7 @@ interface Question {
   context: string;
   updatedAt: string;
   votes: number;
-  status: string; // Changed to string
+  status: string;
 }
 
 interface User {
@@ -53,6 +53,10 @@ const Question: React.FC = () => {
   const [answerImages, setAnswerImages] = useState<string[]>([]); // State for the answer images
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const { idQuest } = useParams<{ idQuest: string }>();
+  const [showFlagMenu, setShowFlagMenu] = useState(false);
+  const [selectedFlagType, setSelectedFlagType] = useState<string>("");
+  const flagMenuRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -141,10 +145,10 @@ const Question: React.FC = () => {
       };
 
       const response = await axiosInstance.post('/answers/create', answerData);
-      setAnswers([...answers, response.data]); 
-      setAnswerText(""); 
-      setAnswerImages([]);
-      setImagePreviews([]);
+      setAnswers([...answers, response.data]); // Add the new answer to the list of answers
+      setAnswerText(""); // Clear the editor
+      setAnswerImages([]); // Clear the images
+      setImagePreviews([]); // Clear the image previews
     } catch (error) {
       console.error('Error submitting the answer', error);
       alert('Failed to submit the answer');
@@ -181,13 +185,21 @@ const Question: React.FC = () => {
     <div>
       <Header />
       <div className="topInfos">
-      <img src={returnArrow} alt="return arrow" />
-      {question?.status === "Solved" && (
-        <div className="status solved">
-          Question solved!
+        <img src={returnArrow} alt="return arrow" onClick={handleReturnClick} style={{ cursor: 'pointer' }} />
+        {question?.status === "Solved" && (
+          <div className="status solved">
+            Question solved!
+          </div>
+        )}
+        <div className="flagMenuContainer" ref={flagMenuRef}>
+          <img src={flagLogo} alt="Flag logo" onClick={toggleFlagMenu} style={{ cursor: 'pointer' }} />
+          {showFlagMenu && (
+            <div className="flagMenu">
+              <button onClick={() => selectFlagType("Spam")}>Spam</button>
+              <button onClick={() => selectFlagType("Inappropriate")}>Inappropriate</button>
+            </div>
+          )}
         </div>
-      )}
-        <img src={flagLogo} alt="Flag logo" />
       </div>
       <div className="questionPage">
         <div className="upVote">
@@ -228,7 +240,8 @@ const Question: React.FC = () => {
           )}
         </div>
 
-        {question?.status !== "Solved" && (
+        {/* Conditionally render the MarkdownEditor if the question is not solved and the user is a Lecturer */}
+        {(question?.status !== "Solved" && user?.role === "Lecturer") && (
           <div className="answerEditorSection">
             <h2>Write your answer:</h2>
             <MarkdownEditor value={answerText} onChange={setAnswerText} />
