@@ -37,116 +37,86 @@ let QuestionsService = class QuestionsService {
         this.sequelize = sequelize;
     }
     async getQuestion(id) {
-        try {
-            if (!(0, uuid_1.validate)(id)) {
-                throw new common_1.BadRequestException('Invalid question ID');
-            }
-            const question = await this.questModel.findOne({
-                where: {
-                    idQuest: id
-                }
-            });
-            if (!question) {
-                throw new common_1.NotFoundException('Question not found');
-            }
-            return question;
+        if (!(0, uuid_1.validate)(id)) {
+            throw new common_1.BadRequestException('Invalid question ID');
         }
-        catch (error) {
-            throw error;
+        const question = await this.questModel.findOne({
+            where: {
+                idQuest: id
+            }
+        });
+        if (!question) {
+            throw new common_1.ForbiddenException('Question not found');
         }
+        return question;
     }
     findAll() {
-        try {
-            return this.questModel.findAll();
-        }
-        catch (error) {
-            console.log(error);
-        }
+        return this.questModel.findAll();
     }
     async findAllWithLimit(limit, page) {
-        try {
-            const intLimit = parseInt(limit, 10);
-            const intPage = parseInt(page, 10);
-            const offset = (intPage - 1) * intLimit;
-            const questions = await this.questModel.findAll({
-                limit: intLimit,
-                offset: offset,
-                order: [['createdAt', 'DESC']]
-            });
-            if (!questions || questions.length === 0) {
-                throw new common_1.NotFoundException('Questions not found');
-            }
-            return questions;
+        const intLimit = parseInt(limit, 10);
+        const intPage = parseInt(page, 10);
+        const offset = (intPage - 1) * intLimit;
+        const questions = await this.questModel.findAll({
+            limit: intLimit,
+            offset: offset,
+            order: [['createdAt', 'DESC']]
+        });
+        if (!questions || questions.length === 0) {
+            throw new common_1.ForbiddenException('Questions not found');
         }
-        catch (error) {
-            throw error;
-        }
+        return questions;
     }
     async findReportedQuestions(limit, page) {
-        try {
-            const intLimit = parseInt(limit, 10);
-            const intPage = parseInt(page, 10);
-            const offset = (intPage - 1) * intLimit;
-            const flagSum = sequelize_typescript_1.Sequelize.literal('`flagsSpam` + `flagsInappropriate`');
-            const questions = await this.questModel.findAll({
-                where: sequelize_typescript_1.Sequelize.where(flagSum, sequelize_2.Op.gte, 5),
-                limit: intLimit,
-                offset: offset,
-                order: [
-                    [flagSum, 'DESC']
-                ]
-            });
-            if (!questions || questions.length === 0) {
-                throw new common_1.NotFoundException('Questions not found');
-            }
-            return questions;
+        const intLimit = parseInt(limit, 10);
+        const intPage = parseInt(page, 10);
+        const offset = (intPage - 1) * intLimit;
+        const flagSum = sequelize_typescript_1.Sequelize.literal('`flagsSpam` + `flagsInappropriate`');
+        const questions = await this.questModel.findAll({
+            where: sequelize_typescript_1.Sequelize.where(flagSum, sequelize_2.Op.gte, 5),
+            limit: intLimit,
+            offset: offset,
+            order: [
+                [flagSum, 'DESC']
+            ]
+        });
+        if (!questions || questions.length === 0) {
+            throw new common_1.ForbiddenException('Questions not found');
         }
-        catch (error) {
-            throw error;
-        }
+        return questions;
     }
     async searchQuestions(search, limit, page) {
-        try {
-            const intLimit = parseInt(limit, 10);
-            const intPage = parseInt(page, 10);
-            const offset = (intPage - 1) * intLimit;
-            const questions = await this.questModel.findAll({
-                where: {
-                    title: {
-                        [sequelize_2.Op.like]: `%${search}%`
-                    }
-                },
-                limit: intLimit,
-            });
-            if (!questions || questions.length === 0) {
-                throw new common_1.NotFoundException('Questions not found');
-            }
-            return questions;
+        const intLimit = parseInt(limit, 10);
+        const intPage = parseInt(page, 10);
+        const offset = (intPage - 1) * intLimit;
+        const questions = await this.questModel.findAll({
+            where: {
+                title: {
+                    [sequelize_2.Op.like]: `%${search}%`
+                }
+            },
+            limit: intLimit,
+        });
+        if (!questions || questions.length === 0) {
+            throw new common_1.ForbiddenException('Questions not found');
         }
-        catch (error) {
-            throw error;
-        }
+        return questions;
     }
     async searchQuestionsByFilter(filter, limit, page) {
-        try {
-            const intLimit = parseInt(limit, 10);
-            const intPage = parseInt(page, 10);
-            const offset = (intPage - 1) * intLimit;
-            const questions = await this.questModel.findAll({
-                where: {
-                    status: filter,
-                },
-                limit: intLimit,
-                order: [['votes', 'DESC']]
-            });
-            if (!questions || questions.length === 0) {
-                throw new common_1.NotFoundException('Questions not found');
-            }
-            return questions;
+        const intLimit = parseInt(limit, 10);
+        const intPage = parseInt(page, 10);
+        const offset = (intPage - 1) * intLimit;
+        const questions = await this.questModel.findAll({
+            where: {
+                status: filter,
+            },
+            limit: intLimit,
+            order: [['votes', 'DESC']]
+        });
+        if (!questions || questions.length === 0) {
+            throw new common_1.ForbiddenException('Questions not found');
         }
-        catch (error) {
-            throw error;
-        }
+        return questions;
     }
     async searchQuestionsByUser(id, limit, page) {
         try {
@@ -163,12 +133,12 @@ let QuestionsService = class QuestionsService {
                 limit: intLimit,
             });
             if (!questions || questions.length === 0) {
-                throw new common_1.NotFoundException('Questions not found');
+                throw new common_1.ForbiddenException('Questions not found');
             }
             return questions;
         }
         catch (error) {
-            throw error;
+            console.log(error);
         }
     }
     async searchQuestionsByTags(tags, limit, page) {
@@ -182,9 +152,6 @@ let QuestionsService = class QuestionsService {
                 },
                 transaction
             });
-            if (!tempQuestions || tempQuestions.length === 0) {
-                throw new common_1.NotFoundException('Questions not found');
-            }
             const intLimit = parseInt(limit, 10);
             const intPage = parseInt(page, 10);
             const offset = (intPage - 1) * intLimit;
@@ -197,16 +164,14 @@ let QuestionsService = class QuestionsService {
                 transaction
             });
             if (!questions || questions.length === 0) {
-                throw new common_1.NotFoundException('Questions not found');
+                throw new common_1.ForbiddenException('Questions not found');
             }
             await transaction.commit();
             return questions;
         }
         catch (error) {
             await transaction.rollback();
-            if (error instanceof common_1.NotFoundException) {
-                throw error;
-            }
+            console.error(error);
             throw new common_1.HttpException('Error while searching questions by tags', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -239,7 +204,7 @@ let QuestionsService = class QuestionsService {
             return tags;
         }
         catch (error) {
-            throw error;
+            console.log(error);
         }
     }
     async createQuestion(quest) {
@@ -247,7 +212,7 @@ let QuestionsService = class QuestionsService {
         const transaction = await this.sequelize.transaction();
         try {
             if (quest.title.length > 100) {
-                throw new common_1.BadRequestException('The title is too long');
+                throw new common_1.HttpException('The title is too long', common_1.HttpStatus.BAD_REQUEST);
             }
             const newTitleWords = quest.title.toLowerCase().split(' ').filter(word => word.length > 0);
             const existingQuestions = await this.questModel.findAll();
@@ -255,7 +220,7 @@ let QuestionsService = class QuestionsService {
                 const existingTitleWords = existingQuestion.title.toLowerCase().split(' ').filter(word => word.length > 0);
                 const similarWordsCount = this.findSimilarWordsCount(newTitleWords, existingTitleWords);
                 if (similarWordsCount >= 80) {
-                    throw new common_1.ConflictException('A question with a similar title already exists');
+                    throw new common_1.HttpException('A question with a similar title already exists', common_1.HttpStatus.CONFLICT);
                 }
             }
             const question = await this.questModel.create({
@@ -276,9 +241,7 @@ let QuestionsService = class QuestionsService {
         }
         catch (error) {
             await transaction.rollback();
-            if (error instanceof common_1.BadRequestException || error instanceof common_1.ConflictException) {
-                throw error;
-            }
+            console.error(error);
             throw new common_1.HttpException(error.message || 'Error during the creation of the question', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -291,10 +254,10 @@ let QuestionsService = class QuestionsService {
                 transaction,
             });
             if (!quest) {
-                throw new common_1.NotFoundException('Question not found');
+                throw new common_1.HttpException('Question not found', common_1.HttpStatus.NOT_FOUND);
             }
             if (quest.idUser !== idUser) {
-                throw new common_1.ForbiddenException('User is not the author of the question');
+                throw new common_1.HttpException('User is not the author of the question', common_1.HttpStatus.FORBIDDEN);
             }
             quest.status = true;
             await quest.save({ transaction });
@@ -311,9 +274,7 @@ let QuestionsService = class QuestionsService {
         }
         catch (error) {
             await transaction.rollback();
-            if (error instanceof common_1.ForbiddenException || error instanceof common_1.NotFoundException) {
-                throw error;
-            }
+            console.error(error);
             throw new common_1.HttpException(error.message || 'Error during the setting of the question as solved', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -327,14 +288,14 @@ let QuestionsService = class QuestionsService {
                 transaction,
             });
             if (existingVote) {
-                throw new common_1.BadRequestException('User has already voted for this question');
+                throw new common_1.HttpException('User has already voted for this question', common_1.HttpStatus.BAD_REQUEST);
             }
             const quest = await this.questModel.findOne({
                 where: { idQuest },
                 transaction,
             });
             if (!quest) {
-                throw new common_1.NotFoundException('Question not found');
+                throw new common_1.HttpException('Question not found', common_1.HttpStatus.NOT_FOUND);
             }
             quest.votes += 1;
             await quest.save({ transaction });
@@ -348,9 +309,7 @@ let QuestionsService = class QuestionsService {
         }
         catch (error) {
             await transaction.rollback();
-            if (error instanceof common_1.BadRequestException || error instanceof common_1.NotFoundException) {
-                throw error;
-            }
+            console.error(error);
             throw new common_1.HttpException(error.message || 'Error during the upload of votes', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -363,14 +322,14 @@ let QuestionsService = class QuestionsService {
                 transaction,
             });
             if (!vote) {
-                throw new common_1.NotFoundException('Vote not found');
+                throw new common_1.HttpException('Vote not found', common_1.HttpStatus.NOT_FOUND);
             }
             const quest = await this.questModel.findOne({
                 where: { idQuest },
                 transaction,
             });
             if (!quest) {
-                throw new common_1.NotFoundException('Question not found');
+                throw new common_1.HttpException('Question not found', common_1.HttpStatus.NOT_FOUND);
             }
             quest.votes -= 1;
             await quest.save({ transaction });
@@ -383,9 +342,7 @@ let QuestionsService = class QuestionsService {
         }
         catch (error) {
             await transaction.rollback();
-            if (error instanceof common_1.NotFoundException) {
-                throw error;
-            }
+            console.error(error);
             throw new common_1.HttpException(error.message || 'Error during the removal of vote', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -399,14 +356,14 @@ let QuestionsService = class QuestionsService {
                 transaction,
             });
             if (existingFlag) {
-                throw new common_1.BadRequestException('User has already flagged this question');
+                throw new common_1.HttpException('User has already flagged this question', common_1.HttpStatus.BAD_REQUEST);
             }
             const quest = await this.questModel.findOne({
                 where: { idQuest },
                 transaction,
             });
             if (!quest) {
-                throw new common_1.NotFoundException('Question not found');
+                throw new common_1.HttpException('Question not found', common_1.HttpStatus.NOT_FOUND);
             }
             if (flagType === 'Spam') {
                 quest.flagsSpam += 1;
@@ -426,9 +383,7 @@ let QuestionsService = class QuestionsService {
         }
         catch (error) {
             await transaction.rollback();
-            if (error instanceof common_1.BadRequestException || error instanceof common_1.NotFoundException) {
-                throw error;
-            }
+            console.error(error);
             throw new common_1.HttpException(error.message || 'Error during the flagging of the question', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -441,14 +396,14 @@ let QuestionsService = class QuestionsService {
                 transaction,
             });
             if (!flag) {
-                throw new common_1.NotFoundException('Report not found');
+                throw new common_1.HttpException('Report not found', common_1.HttpStatus.NOT_FOUND);
             }
             const quest = await this.questModel.findOne({
                 where: { idQuest },
                 transaction,
             });
             if (!quest) {
-                throw new common_1.NotFoundException('Question not found');
+                throw new common_1.HttpException('Question not found', common_1.HttpStatus.NOT_FOUND);
             }
             if (flag.flagType === 'Spam') {
                 quest.flagsSpam -= 1;
@@ -466,9 +421,7 @@ let QuestionsService = class QuestionsService {
         }
         catch (error) {
             await transaction.rollback();
-            if (error instanceof common_1.NotFoundException) {
-                throw error;
-            }
+            console.error(error);
             throw new common_1.HttpException(error.message || 'Error during the removal of report', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -482,7 +435,7 @@ let QuestionsService = class QuestionsService {
                 transaction
             });
             if (!quest) {
-                throw new common_1.NotFoundException('Question not found');
+                throw new common_1.ForbiddenException('Question not found');
             }
             quest.title = question.title;
             quest.description = question.description;
@@ -502,34 +455,23 @@ let QuestionsService = class QuestionsService {
         }
         catch (error) {
             console.error(error);
-            if (error instanceof common_1.NotFoundException) {
+            if (error instanceof common_1.ForbiddenException) {
                 throw error;
             }
             throw new common_1.HttpException(error.message || 'Error during the edition of the question', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     async deleteQuestion(id) {
-        try {
-            if (!(0, uuid_1.validate)(id)) {
-                throw new common_1.BadRequestException('Invalid question ID');
+        const question = await this.questModel.findOne({
+            where: {
+                idQuest: id
             }
-            const question = await this.questModel.findOne({
-                where: {
-                    idQuest: id
-                }
-            });
-            if (!question) {
-                throw new common_1.NotFoundException('Question not found');
-            }
-            await question.destroy();
-            return question;
+        });
+        if (!question) {
+            throw new common_1.ForbiddenException('Question not found');
         }
-        catch (error) {
-            if (error instanceof common_1.NotFoundException || error instanceof common_1.BadRequestException) {
-                throw error;
-            }
-            throw new common_1.HttpException(error.message || 'Error during the deletion of the question', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        await question.destroy();
+        return question;
     }
     findSimilarWordsCount(title1, title2) {
         const set1 = new Set(title1);
