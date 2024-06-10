@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "./Question.css";
 import Header from "../components/Header";
 import MarkdownRenderer from "../components/MarkdownRenderer";
+import MarkdownEditor from "../components/MarkdownEditor"; // Import the MarkdownEditor component
 import Answer from "../components/Answer";
 import AnimatedUpVote from "../components/AnimatedUpVote";
 import axiosInstance from "../utils/axiosInstance";
@@ -48,6 +49,9 @@ const Question: React.FC = () => {
   const [answers, setAnswers] = useState<any[]>([]);
   const [question, setQuestion] = useState<Question | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [answerText, setAnswerText] = useState<string>(""); // State for the answer text
+  const [answerImages, setAnswerImages] = useState<string[]>([]); // State for the answer images
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const { idQuest } = useParams<{ idQuest: string }>();
   const [showFlagMenu, setShowFlagMenu] = useState(false);
   const [selectedFlagType, setSelectedFlagType] = useState<string>("");
@@ -79,7 +83,6 @@ const Question: React.FC = () => {
   }, [idQuest]);
 
   const handleFlagClick = async () => {
-    
     if (!user || !question || !selectedFlagType) {
       alert("User, question data, or flag type is missing.");
       return;
@@ -92,8 +95,7 @@ const Question: React.FC = () => {
     };
 
     try {
-      console.log("Flagging question", typeof(question.idQuest),typeof(user.idUser), typeof(selectedFlagType));
-      await axiosInstance.post('questions/addFlag', flagData);
+      await axiosInstance.post('/your-flag-endpoint', flagData);
       alert('Question flagged successfully');
       setShowFlagMenu(false);
     } catch (error) {
@@ -126,6 +128,57 @@ const Question: React.FC = () => {
 
   const handleReturnClick = () => {
     navigate(-1);
+  };
+
+  const handleAnswerSubmit = async () => {
+    if (!user || !question) {
+      alert("User or question data is missing.");
+      return;
+    }
+
+    try {
+      const answerData = {
+        idUser: user.idUser,
+        idQuest: question.idQuest,
+        content: answerText,
+        listPictures: answerImages,
+      };
+
+      const response = await axiosInstance.post('/answers/create', answerData);
+      setAnswers([...answers, response.data]); 
+      setAnswerText(""); 
+      setAnswerImages([]);
+      setImagePreviews([]);
+    } catch (error) {
+      console.error('Error submitting the answer', error);
+      alert('Failed to submit the answer');
+    }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      const validFiles = filesArray
+        .filter((file: File) => file.type.startsWith("image/"))
+        .slice(0, 5 - answerImages.length);
+
+      if (validFiles.length !== filesArray.length) {
+        alert("Please upload only image files.");
+      } else {
+        const newImageUrls = validFiles.map((file) => URL.createObjectURL(file));
+        setAnswerImages((prevImages) => [...prevImages, ...validFiles.map((file) => file.name)]);
+        setImagePreviews((prevPreviews) => [...prevPreviews, ...newImageUrls]);
+      }
+    }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    const newImages = [...answerImages];
+    const newPreviews = [...imagePreviews];
+    newImages.splice(index, 1);
+    newPreviews.splice(index, 1);
+    setAnswerImages(newImages);
+    setImagePreviews(newPreviews);
   };
 
   return (
@@ -186,6 +239,35 @@ const Question: React.FC = () => {
             ))
           )}
         </div>
+
+        {question?.status !== "Solved" && (
+          <div className="answerEditorSection">
+            <h2>Write your answer:</h2>
+            <MarkdownEditor value={answerText} onChange={setAnswerText} />
+            <div className="fileSelectorContainer">
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageChange}
+                className="fileInput"
+              />
+              <div className="imagePreviews">
+                {imagePreviews.map((preview, index) => (
+                  <div key={index} className="imagePreviewContainer">
+                    <img src={preview} alt={`Preview ${index}`} className="imagePreview" />
+                    <button onClick={() => handleRemoveImage(index)} className="removeImageButton">
+                      Remove
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <button onClick={handleAnswerSubmit} className="submitButton">
+              Submit Answer
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
