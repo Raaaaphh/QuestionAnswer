@@ -20,9 +20,6 @@ let InvitationsService = class InvitationsService {
         this.jwtService = jwtService;
     }
     async sendInvitation(email, role) {
-        if (!email || !role) {
-            throw new common_1.BadRequestException('Email and role are required');
-        }
         const invitation = new invitation_model_1.Invitation();
         invitation.idInvitation = (0, uuid_1.v4)();
         invitation.email = email;
@@ -35,9 +32,6 @@ let InvitationsService = class InvitationsService {
         return invitation;
     }
     async validateInvitation(token) {
-        if (!token) {
-            throw new common_1.BadRequestException('Token is required');
-        }
         try {
             const decoded = this.jwtService.verify(token);
             return { email: decoded.email, role: decoded.role };

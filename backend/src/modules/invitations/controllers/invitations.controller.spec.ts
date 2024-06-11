@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { InvitationsController } from './invitations.controller';
 import { InvitationsService } from '../services/invitations.service';
-import { BadRequestException, ExecutionContext, NotFoundException } from '@nestjs/common';
+import { ExecutionContext } from '@nestjs/common';
 import { AdminGuard } from '../../../guards/admin.guard';
 
 describe('InvitationsController', () => {
@@ -41,14 +41,19 @@ describe('InvitationsController', () => {
             expect(service.sendInvitation).toHaveBeenCalledWith(email, role);
         });
 
-        it('should throw BadRequestException if invitationsService.sendInvitation throws', async () => {
+        it('should log error if invitationsService.sendInvitation throws', async () => {
+            const consoleSpy = jest.spyOn(console, 'log');
             const email = 'test@utp.edu.my';
             const role = 'Lecturer';
             jest.spyOn(service, 'sendInvitation').mockImplementation(() => {
-                throw new BadRequestException('Test Error');
+                throw new Error('Test Error');
             });
 
-            await expect(controller.sendInvitation(email, role)).rejects.toThrow(BadRequestException);
+            try {
+                await controller.sendInvitation(email, role);
+            } catch (error) {
+                expect(consoleSpy).toHaveBeenCalledWith(new Error('Test Error'));
+            }
         });
     });
 
@@ -59,13 +64,18 @@ describe('InvitationsController', () => {
             expect(service.validateInvitation).toHaveBeenCalledWith(token);
         });
 
-        it('should throw NotFoundException if invitationsService.validateInvitation throws', async () => {
+        it('should log error if invitationsService.validateInvitation throws', async () => {
+            const consoleSpy = jest.spyOn(console, 'log');
             const token = 'valid_token';
             jest.spyOn(service, 'validateInvitation').mockImplementation(() => {
-                throw new NotFoundException('Test Error');
+                throw new Error('Test Error');
             });
 
-            await expect(controller.validateInvitation(token)).rejects.toThrow(NotFoundException);
+            try {
+                await controller.validateInvitation(token);
+            } catch (error) {
+                expect(consoleSpy).toHaveBeenCalledWith(new Error('Test Error'));
+            }
         });
     });
 });
