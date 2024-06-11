@@ -6,13 +6,14 @@ import {
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import AskAQuestion from "./pages/AskAQuestion";
-import AuthForm from "./pages/AuthForm";
 import Profile from "./pages/Profile";
 import Question from "./pages/Question";
 import ProtectedRoute from "./components/ProtectedRoute";
 import VerifyUserEmail from "./components/EmailVerif";
 import { AuthProvider } from "./context/AuthContext";
 import Report from "./pages/Report";
+import RegisterForm from "./pages/RegisterForm";
+import LoginForm from "./pages/LoginForm";
 
 export const Routes = () => {
   return (
@@ -21,8 +22,8 @@ export const Routes = () => {
         <RoutesComponents>
           {/* <Route path="/" element={<Home />} /> */}
           <Route path="*" element={<NotFound />} />
-          <Route path="/auth/login" element={<AuthForm />} />
-          <Route path="/auth/register" element={<AuthForm isRegister />} />
+          <Route path="/auth/login" element={<LoginForm />} />
+          <Route path="/auth/register" element={<RegisterForm />} />
           <Route path="/verify-email" element={<VerifyUserEmail />} />
           <Route
             path="/"
