@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import  axiosInstance  from './../utils/axiosInstance';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -19,6 +20,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = (token: string) => {
+    localStorage.removeItem('token');    // NOT SURE ABOUT THIS LINE
     localStorage.setItem('token', token);
     setIsAuthenticated(true);
   };

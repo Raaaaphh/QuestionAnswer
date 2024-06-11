@@ -130,10 +130,7 @@ const ProfileMenu: React.FC<{ idUser: string }> = ({ idUser }) => {
 
   const handleLogout = async () => {
     try {
-      const token = localStorage.getItem("token");
-      console.log("Token from local storage:", token);
-      const response = await axiosInstance.post("/auth/logout", token);
-      console.log("Logout response", response);
+      await axiosInstance.post("/auth/logout");
       localStorage.removeItem("token");
       setIsOpen(false);
       navigate("/auth/login");
