@@ -22,81 +22,61 @@ let PicturesService = class PicturesService {
         this.pictModel = pictModel;
     }
     async getPicture(id) {
-        try {
-            if (!(0, uuid_1.validate)(id)) {
-                throw new common_1.BadRequestException('Invalid picture ID');
-            }
-            const picture = await this.pictModel.findOne({
-                where: {
-                    idPict: id
-                }
-            });
-            if (!picture) {
-                throw new common_1.NotFoundException('Picture not found');
-            }
-            return picture;
+        if (!(0, uuid_1.validate)(id)) {
+            throw new common_1.BadRequestException('Invalid picture ID');
         }
-        catch (error) {
-            throw error;
+        const picture = await this.pictModel.findOne({
+            where: {
+                idPict: id
+            }
+        });
+        if (!picture) {
+            throw new common_1.ForbiddenException('Picture not found');
         }
+        return picture;
     }
     async getPicturesByQuestion(id) {
-        try {
-            if (!(0, uuid_1.validate)(id)) {
-                throw new common_1.BadRequestException('Invalid question ID');
-            }
-            const pictures = await this.pictModel.findAll({
-                where: {
-                    idQuest: id
-                }
-            });
-            if (!pictures || pictures.length === 0) {
-                throw new common_1.NotFoundException('Pictures not found');
-            }
-            return pictures;
+        if (!(0, uuid_1.validate)(id)) {
+            throw new common_1.BadRequestException('Invalid question ID');
         }
-        catch (error) {
-            throw error;
+        const pictures = await this.pictModel.findAll({
+            where: {
+                idQuest: id
+            }
+        });
+        if (!pictures || pictures.length === 0) {
+            throw new common_1.ForbiddenException('Pictures not found');
         }
+        return pictures;
     }
     async getPicturesByAnswer(id) {
-        try {
-            if (!(0, uuid_1.validate)(id)) {
-                throw new common_1.BadRequestException('Invalid answer ID');
-            }
-            const pictures = await this.pictModel.findAll({
-                where: {
-                    idAnsw: id
-                }
-            });
-            if (!pictures || pictures.length === 0) {
-                throw new common_1.NotFoundException('Pictures not found');
-            }
-            return pictures;
+        if (!(0, uuid_1.validate)(id)) {
+            throw new common_1.BadRequestException('Invalid answer ID');
         }
-        catch (error) {
-            throw error;
+        const pictures = await this.pictModel.findAll({
+            where: {
+                idAnsw: id
+            }
+        });
+        if (!pictures || pictures.length === 0) {
+            throw new common_1.ForbiddenException('Pictures not found');
         }
+        return pictures;
     }
     async deletePicture(id) {
-        try {
-            if (!(0, uuid_1.validate)(id)) {
-                throw new common_1.BadRequestException('Invalid picture ID');
-            }
-            const picture = await this.pictModel.findOne({
-                where: {
-                    idPict: id
-                }
-            });
-            if (!picture) {
-                throw new common_1.NotFoundException('Picture not found');
-            }
-            await picture.destroy();
-            return picture;
+        if (!(0, uuid_1.validate)(id)) {
+            throw new common_1.BadRequestException('Invalid picture ID');
         }
-        catch (error) {
-            throw error;
+        const picture = await this.pictModel.findOne({
+            where: {
+                idPict: id
+            }
+        });
+        if (!picture) {
+            throw new common_1.ForbiddenException('Picture not found');
         }
+        await picture.destroy();
+        return picture;
     }
 };
 exports.PicturesService = PicturesService;

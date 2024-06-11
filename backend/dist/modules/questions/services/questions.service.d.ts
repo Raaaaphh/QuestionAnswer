@@ -6,7 +6,7 @@ import { Picture } from "../../pictures/picture.model";
 import { Vote } from "../../votes/vote.model";
 import { Favorite } from "../../favorites/favorite.model";
 import { Flag } from "../../flags/flag.model";
-import { Tag } from "../../tags/tag.model";
+import { Tag } from "src/modules/tags/tag.model";
 export declare class QuestionsService {
     private questModel;
     private questTagModel;
