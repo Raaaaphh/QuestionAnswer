@@ -25,12 +25,7 @@ let InvitationsController = class InvitationsController {
             return await this.invitService.sendInvitation(email, role);
         }
         catch (error) {
-            if (error instanceof common_1.BadRequestException) {
-                throw new common_1.BadRequestException(error.message);
-            }
-            else {
-                throw new common_1.BadRequestException('An error occurred while sending the invitation');
-            }
+            console.log(error);
         }
     }
     async validateInvitation(token) {
@@ -38,12 +33,7 @@ let InvitationsController = class InvitationsController {
             return await this.invitService.validateInvitation(token);
         }
         catch (error) {
-            if (error instanceof common_1.NotFoundException) {
-                throw error;
-            }
-            else {
-                throw new common_1.BadRequestException('An error occurred while validating the invitation');
-            }
+            console.log(error);
         }
     }
 };
