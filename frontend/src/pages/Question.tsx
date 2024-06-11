@@ -10,6 +10,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import BannerQuestion from "../components/BannerQuestion";
 import flagLogo from "../assets/flagLogo.svg";
 import returnArrow from "../assets/returnArrow.svg";
+import { jwtDecode } from "jwt-decode";
 
 interface Question {
   idQuest: string;
@@ -44,11 +45,19 @@ interface Answer {
   updatedAt: string;
 }
 
+interface MyJwtPayload {
+  id: string;
+  exp: number;
+}
+
 const Question: React.FC = () => {
   const [markdownContent, setMarkdownContent] = useState<string>("");
   const [answers, setAnswers] = useState<any[]>([]);
   const [question, setQuestion] = useState<Question | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [userId, setUserId] = useState<string>("");
+  const [userQuestion, setUserQuestion] = useState<User | null>(null);
   const [answerText, setAnswerText] = useState<string>(""); // State for the answer text
   const [answerImages, setAnswerImages] = useState<string[]>([]); // State for the answer images
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
@@ -59,6 +68,24 @@ const Question: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode<MyJwtPayload>(token);
+        const idUser = decodedToken.id;
+        axiosInstance
+          .get(`/users/${idUser}`)
+          .then((response) => {
+            setUser(response.data);
+          })
+          .catch((error) => {
+            console.error("Error fetching user status", error);
+          });
+      } catch (error) {
+        console.error("Error decoding token", error);
+      }
+    }
+
     const fetchData = async () => {
       try {
         const questionResponse = await axiosInstance.get(`questions/${idQuest}`);
@@ -67,7 +94,7 @@ const Question: React.FC = () => {
 
         if (fetchedQuestion.idUser) {
           const userResponse = await axiosInstance.get(`users/${fetchedQuestion.idUser}`);
-          setUser(userResponse.data);
+          setUserQuestion(userResponse.data);
         }
 
         if (fetchedQuestion.idQuest) {
@@ -83,6 +110,7 @@ const Question: React.FC = () => {
   }, [idQuest]);
 
   const handleFlagClick = async () => {
+
     if (!user || !question || !selectedFlagType) {
       alert("User, question data, or flag type is missing.");
       return;
@@ -95,7 +123,8 @@ const Question: React.FC = () => {
     };
 
     try {
-      await axiosInstance.post('/your-flag-endpoint', flagData);
+      console.log("Flagging question", typeof(question.idQuest),typeof(user.idUser), typeof(selectedFlagType));
+      await axiosInstance.post('questions/addFlag', flagData);
       alert('Question flagged successfully');
       setShowFlagMenu(false);
     } catch (error) {
@@ -131,19 +160,30 @@ const Question: React.FC = () => {
   };
 
   const handleAnswerSubmit = async () => {
-    if (!user || !question) {
-      alert("User or question data is missing.");
+    if (!user || !question || !answerText) {
+      alert("User, question, or answer data is missing.");
       return;
     }
-
-    try {
-      const answerData = {
+  
+    let answerData;
+  
+    if (answerImages.length < 1) {
+      answerData = {
+        idUser: user.idUser,
+        idQuest: question.idQuest,
+        content: answerText,
+      };
+    } else {
+      answerData = {
         idUser: user.idUser,
         idQuest: question.idQuest,
         content: answerText,
         listPictures: answerImages,
       };
-
+    }
+  
+    try {
+      console.log("console data", answerData);
       const response = await axiosInstance.post('/answers/create', answerData);
       setAnswers([...answers, response.data]); // Add the new answer to the list of answers
       setAnswerText(""); // Clear the editor
@@ -154,6 +194,7 @@ const Question: React.FC = () => {
       alert('Failed to submit the answer');
     }
   };
+  
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -185,7 +226,7 @@ const Question: React.FC = () => {
     <div>
       <Header />
       <div className="topInfos">
-        <img src={returnArrow} alt="return arrow" onClick={handleReturnClick} style={{ cursor: 'pointer' }} />
+      <img src={returnArrow} alt="return arrow" onClick={handleReturnClick} style={{ cursor: 'pointer' }} />
         {question?.status === "Solved" && (
           <div className="status solved">
             Question solved!
