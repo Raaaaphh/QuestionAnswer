@@ -12,6 +12,7 @@ import flagLogo from "../assets/flagLogo.svg";
 import returnArrow from "../assets/returnArrow.svg";
 import bookmark from "../assets/bookmark.svg";
 import { jwtDecode } from "jwt-decode";
+import TextAreaComponent from "../components/TextArea";
 
 interface Question {
   idQuest: string;
@@ -297,39 +298,16 @@ const Question: React.FC = () => {
           )}
         </div>
 
-        {/* Conditionally render the fancy textArea if the question is not solved and the user is a Lecturer */}
         {(question?.status !== "Solved" && user?.role === "Lecturer") && (
-          <div className="answerEditorSection">
-            <h2>Write your answer:</h2>
-            <textarea
-              className="fancyTextarea"
-              value={answerText}
-              onChange={(e) => setAnswerText(e.target.value)}
-              placeholder="Write your answer here..."
-            />
-            <div className="fileSelectorContainer">
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleImageChange}
-                className="fileInput"
-              />
-              <div className="imagePreviews">
-                {imagePreviews.map((preview, index) => (
-                  <div key={index} className="imagePreviewContainer">
-                    <img src={preview} alt={`Preview ${index}`} className="imagePreview" />
-                    <button onClick={() => handleRemoveImage(index)} className="removeImageButton">
-                      Remove
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <button onClick={handleAnswerSubmit} className="submitButton">
-              Submit Answer
-            </button>
-          </div>
+          <TextAreaComponent
+          answerText={answerText}
+          setAnswerText={setAnswerText}
+          handleAnswerSubmit={handleAnswerSubmit}
+          handleImageChange={handleImageChange}
+          imagePreviews={imagePreviews}
+          handleRemoveImage={handleRemoveImage}
+          useCase="answer"
+        />
         )}
       </div>
     </div>
