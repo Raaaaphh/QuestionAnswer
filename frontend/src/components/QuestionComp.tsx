@@ -72,7 +72,13 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
         const questionTagsResponse = await axiosInstance.get(
           `/tags/${idQuest}`
         );
-        setTags(questionTagsResponse.data);
+
+        setTags(response.data);
+
+        // const questionTagsResponse = await axiosInstance.get(
+        //   `/tags/${idQuest}`
+        // );
+        // setTags(questionTagsResponse.data);
       } catch (error) {
         console.error("Error fetching data", error);
       } finally {
