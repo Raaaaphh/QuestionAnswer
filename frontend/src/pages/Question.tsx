@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "./Question.css";
 import Header from "../components/Header";
 import MarkdownRenderer from "../components/MarkdownRenderer";
-import MarkdownEditor from "../components/MarkdownEditor"; // Import the MarkdownEditor component
+// Removed MarkdownEditor import
 import Answer from "../components/Answer";
 import AnimatedUpVote from "../components/AnimatedUpVote";
 import axiosInstance from "../utils/axiosInstance";
@@ -297,11 +297,16 @@ const Question: React.FC = () => {
           )}
         </div>
 
-        {/* Conditionally render the MarkdownEditor if the question is not solved and the user is a Lecturer */}
+        {/* Conditionally render the fancy textArea if the question is not solved and the user is a Lecturer */}
         {(question?.status !== "Solved" && user?.role === "Lecturer") && (
           <div className="answerEditorSection">
             <h2>Write your answer:</h2>
-            <MarkdownEditor value={answerText} onChange={setAnswerText} />
+            <textarea
+              className="fancyTextarea"
+              value={answerText}
+              onChange={(e) => setAnswerText(e.target.value)}
+              placeholder="Write your answer here..."
+            />
             <div className="fileSelectorContainer">
               <input
                 type="file"
