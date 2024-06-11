@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
-import axios from "axios";
 import QuestionComp from "../components/QuestionComp";
 import "./Home.css";
 import axiosInstance from "../utils/axiosInstance";

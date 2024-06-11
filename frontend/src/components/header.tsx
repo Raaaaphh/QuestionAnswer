@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode"; // Corrected import for jwt-decode
+import {jwtDecode} from "jwt-decode"; // Corrected import for jwt-decode
 import axiosInstance from "../utils/axiosInstance";
 import "./Header.css";
 import UTPLogo from "../assets/logo.png";
@@ -123,14 +123,20 @@ const ProfileMenu: React.FC<{ idUser: string }> = ({ idUser }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setIsOpen(false);
-    navigate("/auth/login");
+  const handleLogout = async () => {
+    try {
+      await axiosInstance.post("/auth/logout");
+      localStorage.removeItem("token");
+      setIsOpen(false);
+      navigate("/auth/login");
+    } catch (error) {
+      console.error("Error during logout", error);
+    }
   };
 
   useEffect(() => {
@@ -169,7 +175,7 @@ const ProfileMenu: React.FC<{ idUser: string }> = ({ idUser }) => {
 
 const Header: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [userStatus, setUserStatus] = useState<string | null>(null);
+  const [userStatus, setUserStatus] = useState<string | null>("");
   const [userId, setUserId] = useState<string>("");
 
   useEffect(() => {
@@ -196,12 +202,12 @@ const Header: React.FC = () => {
             });
         } else {
           console.log("Token has expired");
-          localStorage.removeItem("token"); // Remove token from localStorage
+          localStorage.removeItem("token");
           setIsLoggedIn(false);
         }
       } catch (error) {
         console.error("Error decoding token", error);
-        localStorage.removeItem("token"); // Remove token from localStorage
+        localStorage.removeItem("token");
         setIsLoggedIn(false);
       }
     } else {
@@ -222,7 +228,7 @@ const Header: React.FC = () => {
       {isLoggedIn ? (
         <>
           <FilterMenu />
-          {userStatus === "Student" && <BtnQuestion/>}
+          {userStatus === "Student" && <BtnQuestion />}
           <NotificationMenu />
           <ProfileMenu idUser={userId} />
         </>
