@@ -24,6 +24,8 @@ type Tag = {
   updatedAt: string;
 };
 
+const mockTags = ["Python", "JavaScript", "CSS"];
+
 const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
   const [question, setQuestion] = useState<{
     idUser: string;
@@ -61,6 +63,12 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
         const userResponse = await axiosInstance.get(`/users/${userId}`);
         setUser(userResponse.data);
 
+        const response = await axiosInstance.get(
+          `questions/tagsForQuestion/${idQuest}`
+        );
+
+        setTags(response.data);
+
         const questionTagsResponse = await axiosInstance.get(
           `/tags/${idQuest}`
         );
@@ -74,8 +82,13 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
 
     const fetchTagsFromDatabase = async () => {
       try {
-        const response = await axiosInstance.get(`/tags/${idQuest}`);
+        console.log("laaaaaa", `questions/tagsForQuestion/${idQuest}`);
+        const response = await axiosInstance.get(
+          `questions/tagsForQuestion/${idQuest}`
+        );
+        console.log("Tags fetched from database:", response.data);
         setTags(response.data);
+
         console.log("Tags fetched from database:", response.data);
       } catch (error) {
         console.error("Error fetching tags from database:", error);
