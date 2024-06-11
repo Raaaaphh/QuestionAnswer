@@ -61,7 +61,7 @@ const Profile: React.FC = () => {
         setUser(userResponse.data);
         console.log("User color", userResponse.data.color);
         const previousQuestions = await axiosInstance.get(
-          `/questions/findByUser/${userId}`
+          `/questions/findByUser/${userId}`                                 // A FAIRE AVEC LA PAGINIATION
         );
         setQuestions(previousQuestions.data);
 

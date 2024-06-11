@@ -10,6 +10,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import BannerQuestion from "../components/BannerQuestion";
 import flagLogo from "../assets/flagLogo.svg";
 import returnArrow from "../assets/returnArrow.svg";
+import bookmark from "../assets/bookmark.svg";
 import { jwtDecode } from "jwt-decode";
 
 interface Question {
@@ -108,6 +109,20 @@ const Question: React.FC = () => {
 
     fetchData();
   }, [idQuest]);
+
+  const handleClickFav = async () => {
+    if (!user || !question) {
+      alert("User or question data is missing.");
+      return;
+    }
+    try {
+      await axiosInstance.post(`favorites/add`, { idUser: user.idUser, idQuest: question.idQuest });
+      alert("Question added to favorites.");
+    } catch (error) {
+      console.error("Error adding question to favorites", error);
+      alert("Failed to add question to favorites.");
+    }
+  };
 
   const handleFlagClick = async () => {
 
@@ -245,6 +260,7 @@ const Question: React.FC = () => {
       <div className="questionPage">
         <div className="upVote">
           <AnimatedUpVote voteCount={question ? question.votes : 0} />
+          <img className="favIcon" src={bookmark} alt="Fav logo" onClick={handleClickFav} style={{ cursor: 'pointer' }} />
         </div>
         {question && <BannerQuestion idQuestAns={question.idQuest} isAnswer={false} />}
         

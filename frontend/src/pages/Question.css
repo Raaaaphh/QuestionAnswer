@@ -89,9 +89,12 @@ h2{
     justify-content: center;
     width: 100%;
     margin-top: 20px;
-    justify-content: space-around;
-    gap: 50%;
+    justify-content: space-between;
+}
 
+.topInfos *{
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 .topInfos img{
@@ -170,6 +173,19 @@ h2{
     }
   }
   
+  .favIcon{
+    width: 60px;
+    margin-top: 10px;
+    margin-right: 10px;
+  }
+
+  .upVote{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 
 
 
