@@ -19,75 +19,67 @@ let PicturesController = class PicturesController {
     constructor(picturesService) {
         this.picturesService = picturesService;
     }
-    async getPicture(id) {
+    getPicture(id) {
         try {
-            const picture = await this.picturesService.getPicture(id);
-            return picture;
+            return this.picturesService.getPicture(id);
         }
         catch (error) {
             console.log(error);
-            throw new common_1.HttpException(error.message, common_1.HttpStatus.BAD_REQUEST);
         }
     }
-    async getPicturesByQuestion(id) {
+    getPicturesByQuestion(id) {
         try {
-            const pictures = await this.picturesService.getPicturesByQuestion(id);
-            return pictures;
+            return this.picturesService.getPicturesByQuestion(id);
         }
         catch (error) {
             console.log(error);
-            throw new common_1.HttpException(error.message, common_1.HttpStatus.BAD_REQUEST);
         }
     }
-    async getPicturesByAnswer(id) {
+    getPicturesByAnswer(id) {
         try {
-            const pictures = await this.picturesService.getPicturesByAnswer(id);
-            return pictures;
+            return this.picturesService.getPicturesByAnswer(id);
         }
         catch (error) {
             console.log(error);
-            throw new common_1.HttpException(error.message, common_1.HttpStatus.BAD_REQUEST);
         }
     }
-    async deletePicture(id) {
+    deletePicture(id) {
         try {
-            const picture = await this.picturesService.deletePicture(id);
-            return picture;
+            return this.picturesService.deletePicture(id);
         }
         catch (error) {
             console.log(error);
-            throw new common_1.HttpException(error.message, common_1.HttpStatus.BAD_REQUEST);
         }
     }
 };
 exports.PicturesController = PicturesController;
 __decorate([
-    (0, common_1.Get)(''),
+    (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], PicturesController.prototype, "getPicture", null);
 __decorate([
-    (0, common_1.Get)('question/'),
+    (0, common_1.Get)('question/:id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], PicturesController.prototype, "getPicturesByQuestion", null);
 __decorate([
-    (0, common_1.Get)('answer/'),
+    (0, common_1.Get)('answer/:id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], PicturesController.prototype, "getPicturesByAnswer", null);
 __decorate([
-    (0, common_1.Delete)(''),
+    (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], PicturesController.prototype, "deletePicture", null);
 exports.PicturesController = PicturesController = __decorate([
     (0, common_1.Controller)('pictures'),
