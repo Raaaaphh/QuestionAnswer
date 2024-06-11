@@ -47,8 +47,8 @@ const NotificationMenu: React.FC<{ idUser: string }> = ({ idUser }) => {
 
   const fetchNotifications = async () => {
     try {
-      const response = await axiosInstance.get(`/favorites/notify/${idUser}`);
-      setNotifications(response.data.notifications);
+      const response = await axiosInstance.get(`favorites/notify/${idUser}`);
+      setNotifications(response.data);
     } catch (error) {
       console.error("Error fetching notifications", error);
     }
