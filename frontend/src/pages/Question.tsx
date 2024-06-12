@@ -329,6 +329,11 @@ const Question: React.FC = () => {
           <div className="setSolvedContainer">
             <button className="setSolvedButton" onClick={handleSetSolved()}>Set as solved</button>
           </div>)}
+
+          {question?.idUser===user?.idUser && answers.length==0 && question?.status==="Unsolved" &&(
+            <div className="editQuestionContainer">
+              <button className="editQuestionButton" onClick={() => navigate(`/question/${question.idQuest}/edit`)}>Edit question</button>
+            </div>)}
       </div>
     </div>
   );

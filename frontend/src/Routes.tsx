@@ -15,6 +15,7 @@ import Report from "./pages/Report";
 import RegisterForm from "./pages/RegisterForm";
 import LoginForm from "./pages/LoginForm";
 import ChangeInfo from "./pages/ChangeInfo"; 
+import EditQuestion from "./pages/EditQuestion";
 
 export const Routes = () => {
   return (
@@ -85,7 +86,7 @@ export const Routes = () => {
           path="/question/:idQuest/edit"
           element={
             <ProtectedRoute>
-              <Question />
+              <EditQuestion />
             </ProtectedRoute>
           }
         />
