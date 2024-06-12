@@ -65,7 +65,6 @@ export const Routes = () => {
               </ProtectedRoute>
             }
           />
-          {/* New route for changing password or name */}
           <Route
             path="/profile/:idUser/change-password"
             element={
@@ -82,6 +81,14 @@ export const Routes = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+          path="/question/:idQuest/edit"
+          element={
+            <ProtectedRoute>
+              <Question />
+            </ProtectedRoute>
+          }
+        />
         </RoutesComponents>
       </AuthProvider>
     </Router>
