@@ -107,7 +107,7 @@
     margin-top: 5px;
     z-index: 1001;
     max-height: 150px;
-    overflow-y: auto;
+    /*overflow-y: auto;*/
   }
   
   .tagDropdownItem {

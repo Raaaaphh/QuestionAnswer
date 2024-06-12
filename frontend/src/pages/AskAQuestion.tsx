@@ -34,7 +34,8 @@ function AskAQuestion() {
   const [images, setImages] = useState<string[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+  const [selectedTagID, setSelectedTagID] = useState<string[]>([]);
   const [isTagDropdownOpen, setIsTagDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [description, setDescription] = useState("");
@@ -45,25 +46,20 @@ function AskAQuestion() {
 
   const navigate = useNavigate();
 
-  const mockTags = [
-    "44cce6e6-e4ee-461e-8b6b-54564e0c7440",
-    "f361a618-5440-4042-a833-8bf9a6a3c792",
-    "1be6206e-391a-4031-a346-81e7aa70bf3c",
-  ];
-
   const tagDropdownRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     axiosInstance.get("/tags").then((response) => {
       setTags(response.data);
+      console.log("Tags:", tags);
     });
   }, []);
 
   useEffect(() => {
-    const handleClickOutside = (event: { target: any }) => {
+    const handleClickOutside = (event: MouseEvent) => {
       if (
         tagDropdownRef.current &&
-        !tagDropdownRef.current.contains(event.target) &&
+        !tagDropdownRef.current.contains(event.target as Node) &&
         isTagDropdownOpen
       ) {
         setIsTagDropdownOpen(false);
@@ -122,7 +118,7 @@ function AskAQuestion() {
     setImagePreviews(newPreviews);
   };
 
-  const handleTagChange = (tag: string) => {
+  const handleTagChange = (tag: Tag) => {
     if (selectedTags.includes(tag)) {
       setSelectedTags(selectedTags.filter((t) => t !== tag));
     } else if (selectedTags.length < 5) {
@@ -148,9 +144,15 @@ function AskAQuestion() {
     console.log("Context:", context);
   };
 
-  const filteredTags = mockTags.filter((tag) =>
-    tag.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredTags = tags.filter((tag) =>
+    tag.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  useEffect(() => {
+    const newSelectedTagID = selectedTags.map((tag) => tag.idTag);
+    setSelectedTagID(newSelectedTagID);
+    console.log("Selected tag IDs:", selectedTagID);
+  }, [selectedTags]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -161,7 +163,7 @@ function AskAQuestion() {
         description: description,
         context: context,
         idUser: idUser,
-        listTags: selectedTags,
+        listTags: selectedTagID,
         listPictures: images,
       });
       if (images.length <= 0) {
@@ -170,7 +172,7 @@ function AskAQuestion() {
           description: description,
           context: context,
           idUser: idUser,
-          listTags: selectedTags,
+          listTags: selectedTagID,
         });
       } else {
         const response = await axiosInstance.post("questions/create", {
@@ -320,7 +322,7 @@ function AskAQuestion() {
               <div className="tagsContainer">
                 {selectedTags.map((tag, index) => (
                   <span key={index} className="tag selected">
-                    {tag}
+                    {tag.name}
                     <button type="button" onClick={() => handleTagChange(tag)}>
                       x
                     </button>
@@ -346,15 +348,19 @@ function AskAQuestion() {
                       onChange={handleSearchChange}
                     />
                     <div className="tagDropdownList">
-                      {filteredTags.map((tag, index) => (
-                        <div
-                          key={index}
-                          className="tagDropdownItem"
-                          onClick={() => handleTagChange(tag)}
-                        >
-                          {tag}
-                        </div>
-                      ))}
+                      {filteredTags.length > 0 ? (
+                        tags.map((tag, index) => (
+                          <div
+                            key={index}
+                            className="tagDropdownItem"
+                            onClick={() => handleTagChange(tag)}
+                          >
+                            {tag.name}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="noTagsMessage">No tags available</div>
+                      )}
                     </div>
                   </div>
                 </div>

@@ -6,7 +6,7 @@ import { Link, useParams } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 import { jwtDecode } from "jwt-decode";
 import ProfilePicture from "../components/ProfilePicture";
-import TagCreationPopup from "../components/TagCreationPopup"; // Import the popup
+import TagCreationPopup from "../components/TagCreationPopup";
 
 export interface Question {
   idQuest: string;
@@ -19,6 +19,16 @@ export interface Question {
   flagsInappropiate: number;
   status: boolean;
 }
+
+type Tag = {
+  idTag: string;
+  idUser: string;
+  name: string;
+  description: string;
+  occurrence: number;
+  createdAt: string;
+  updatedAt: string;
+};
 
 const Profile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -33,20 +43,8 @@ const Profile: React.FC = () => {
   const [favorites, setFavorites] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [isTagPopupOpen, setIsTagPopupOpen] = useState(false);
-
-  // Mock data for existing tags
-  const [existingTags, setExistingTags] = useState<string[]>([
-    "JavaScript",
-    "React",
-    "TypeScript",
-    "Node.js",
-    "CSS",
-    "HTML",
-    "GraphQL",
-    "Redux",
-    "Jest",
-    "MongoDB",
-  ]);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [existingTags, setExistingTags] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -69,8 +67,6 @@ const Profile: React.FC = () => {
           `/favorites/${userId}`
         );
         setFavorites(favoritesQuestions.data);
-
-        // UTILISE LA ROUTE AU LIEU DE LA MOCK
       } catch (error) {
         console.error("Error fetching data", error);
       } finally {
@@ -80,6 +76,14 @@ const Profile: React.FC = () => {
 
     fetchUserData();
   }, [id]);
+
+  useEffect(() => {
+    axiosInstance.get("/tags").then((response) => {
+      setTags(response.data);
+    });
+    const newExistingTags = tags.map((tag) => tag.name);
+    setExistingTags(newExistingTags);
+  }, [tags]);
 
   const handleCreateTag = (tagName: string) => {
     console.log("New tag created:", tagName);
