@@ -1,10 +1,15 @@
 .change-info-container {
-    max-width: 400px;
+    max-width: 500px;
     margin: 0 auto;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 10px;
     background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 25vh;
   }
   
   .change-info-form {
@@ -21,18 +26,27 @@
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    width: 80%;
   }
   
   .change-info-form button {
     padding: 10px;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color: #004A85;
     color: white;
     cursor: pointer;
   }
   
   .change-info-form button:hover {
-    background-color: #0056b3;
+    background-color: #033661;
   }
   
+  .return-arrow{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 20px;
+    color: #004A85;
+    cursor: pointer;
+  }
