@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {jwtDecode} from "jwt-decode"; // Corrected import for jwt-decode
+import { jwtDecode } from "jwt-decode";
 import axiosInstance from "../utils/axiosInstance";
 import "./Header.css";
 import UTPLogo from "../assets/logo.png";
@@ -16,6 +16,82 @@ interface MyJwtPayload {
   id: string;
   exp: number;
 }
+
+const Header: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [userStatus, setUserStatus] = useState<string | null>("");
+  const [userId, setUserId] = useState<string>("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    console.log("Token from local storage:", token);
+    if (token) {
+      try {
+        const decodedToken = jwtDecode<MyJwtPayload>(token);
+        console.log("Decoded token", decodedToken);
+
+        const currentTime = Date.now() / 1000;
+        if (decodedToken.exp > currentTime) {
+          setIsLoggedIn(true);
+          const idUser = decodedToken.id;
+          console.log(typeof idUser);
+          axiosInstance
+            .get(`/users/${idUser}`)
+            .then((response) => {
+              setUserStatus(response.data.role);
+              setUserId(response.data.id);
+            })
+            .catch((error) => {
+              console.error("Error fetching user status", error);
+            });
+        } else {
+          console.log("Token has expired");
+          localStorage.removeItem("token");
+          setIsLoggedIn(false);
+        }
+      } catch (error) {
+        console.error("Error decoding token", error);
+        localStorage.removeItem("token");
+        setIsLoggedIn(false);
+      }
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
+
+  return (
+    <header className="header">
+      <Link to="/">
+        <img src={UTPLogo} alt="logo" className="logoUTPHeader" />
+      </Link>
+      <Link to="/" className="homeButton">
+        <h1 className="homeButtonText">Home</h1>
+        <div className="underline"></div>
+      </Link>
+      <SearchBar />
+      {isLoggedIn  ? (
+        <>
+          <FilterMenu />
+          {userStatus === "Student" && <BtnQuestion />}
+          <NotificationMenu idUser={userId} />
+          <ProfileMenu idUser={userId} />
+        </>
+      ) : (
+        <div className="authButtons">
+          <Link to="/auth/login" className="authButton">
+            Login
+          </Link>
+          <Link to="/auth/register" className="authButton">
+            Register
+          </Link>
+        </div>
+      )}
+      {userStatus && <div>User Status: {userStatus}</div>}
+    </header>
+  );
+};
+
+export default Header;
 
 const SearchBar: React.FC = () => {
   return (
@@ -36,13 +112,27 @@ const BtnQuestion: React.FC = () => {
   );
 };
 
-const NotificationMenu: React.FC = () => {
+const NotificationMenu: React.FC<{ idUser: string }> = ({ idUser }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [notifications, setNotifications] = useState<string[]>([]);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  const fetchNotifications = async () => {
+    try {
+      const response = await axiosInstance.get(`favorites/notify/${idUser}`);
+      setNotifications(response.data);
+    } catch (error) {
+      console.error("Error fetching notifications", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [idUser]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -64,9 +154,15 @@ const NotificationMenu: React.FC = () => {
       </button>
       {isOpen && (
         <ul className="dropdown">
-          <li className="dropdownItem">Notification 1</li>
-          <li className="dropdownItem">Notification 2</li>
-          <li className="dropdownItem">Notification 3</li>
+          {notifications.length > 0 ? (
+            notifications.map((notification, index) => (
+              <li key={index} className="dropdownItem">
+                {notification}
+              </li>
+            ))
+          ) : (
+            <li className="dropdownItem">No new notifications</li>
+          )}
         </ul>
       )}
     </div>
@@ -173,78 +269,4 @@ const ProfileMenu: React.FC<{ idUser: string }> = ({ idUser }) => {
   );
 };
 
-const Header: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [userStatus, setUserStatus] = useState<string | null>("");
-  const [userId, setUserId] = useState<string>("");
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    console.log("Token from local storage:", token);
-    if (token) {
-      try {
-        const decodedToken = jwtDecode<MyJwtPayload>(token);
-        console.log("Decoded token", decodedToken);
-
-        const currentTime = Date.now() / 1000;
-        if (decodedToken.exp > currentTime) {
-          setIsLoggedIn(true);
-          const idUser = decodedToken.id;
-          console.log(typeof idUser);
-          axiosInstance
-            .get(`/users/${idUser}`)
-            .then((response) => {
-              setUserStatus(response.data.role);
-              setUserId(response.data.id);
-            })
-            .catch((error) => {
-              console.error("Error fetching user status", error);
-            });
-        } else {
-          console.log("Token has expired");
-          localStorage.removeItem("token");
-          setIsLoggedIn(false);
-        }
-      } catch (error) {
-        console.error("Error decoding token", error);
-        localStorage.removeItem("token");
-        setIsLoggedIn(false);
-      }
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, []);
-
-  return (
-    <header className="header">
-      <Link to="/">
-        <img src={UTPLogo} alt="logo" className="logoUTPHeader" />
-      </Link>
-      <Link to="/" className="homeButton">
-        <h1 className="homeButtonText">Home</h1>
-        <div className="underline"></div>
-      </Link>
-      <SearchBar />
-      {isLoggedIn ? (
-        <>
-          <FilterMenu />
-          {userStatus === "Student" && <BtnQuestion />}
-          <NotificationMenu />
-          <ProfileMenu idUser={userId} />
-        </>
-      ) : (
-        <div className="authButtons">
-          <Link to="/auth/login" className="authButton">
-            Login
-          </Link>
-          <Link to="/auth/register" className="authButton">
-            Register
-          </Link>
-        </div>
-      )}
-      {userStatus && <div>User Status: {userStatus}</div>}
-    </header>
-  );
-};
-
-export default Header;

@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
-import ReactMarkdown from "react-markdown";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import "./MarkdownEditor.css";
@@ -9,57 +8,61 @@ interface MarkdownEditorProps {
   onChange: (value: string) => void;
 }
 
-const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ value, onChange }) => {
-  const [markdownText, setMarkdownText] = useState<string>(value);
-  const simpleMDERef = useRef<any>(null);
+const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ value: externalValue, onChange }) => {
+  const simpleMDERef = useRef<SimpleMDE | null>(null);
+  const [initialized, setInitialized] = useState(false);
+  const valueRef = useRef(externalValue);
+
+  const handleMarkdownChange = useCallback(() => {
+    if (simpleMDERef.current) {
+      const newValue = simpleMDERef.current.value();
+      valueRef.current = newValue;
+      onChange(newValue);
+    }
+  }, [onChange, valueRef]);
+
+  const handleEditorInstance = useCallback((instance: SimpleMDE) => {
+    simpleMDERef.current = instance;
+    instance.codemirror.on('change', handleMarkdownChange);
+  }, []);
 
   useEffect(() => {
-    setMarkdownText(value);
-  }, [value]);
-
-  const handleMarkdownChange = (newValue: string) => {
-    setMarkdownText(newValue);
-    onChange(newValue);
-  };
-
-  const resetEditor = () => {
-    if (simpleMDERef.current && simpleMDERef.current.codemirror && !simpleMDERef.current.codemirror.hasFocus()) {
-      simpleMDERef.current.codemirror.focus();
+    if (simpleMDERef.current && !initialized) {
+      simpleMDERef.current.value(externalValue);
+      setInitialized(true);
     }
-  };
+  }, [externalValue, initialized, simpleMDERef]);
+
+  const initialValue = valueRef.current;
 
   return (
     <div className="markdown-editor">
-     <SimpleMDE
-      ref={simpleMDERef}
-      value={markdownText}
-      onChange={handleMarkdownChange}
-      options={{
-        spellChecker: false,
-        toolbar: [
-          "bold",
-          "italic",
-          "heading",
-          "|",
-          "quote",
-          "unordered-list",
-          "ordered-list",
-          "|",
-          "link",
-          "image",
-          "|",
-          "code",
-          "|",
-          "preview",
-          "side-by-side",
-          "fullscreen",
-        ],
-      }}
-      onBlur={resetEditor}
-    />
-      <div className="markdown-preview">
-        <ReactMarkdown children={markdownText} />
-      </div>
+      <SimpleMDE
+        ref={null}
+        getMdeInstance={handleEditorInstance}
+        options={{
+          initialValue,
+          spellChecker: false,
+          toolbar: [
+            "bold",
+            "italic",
+            "heading",
+            "|",
+            "quote",
+            "unordered-list",
+            "ordered-list",
+            "|",
+            "link",
+            "image",
+            "|",
+            "code",
+            "|",
+            "preview",
+            "side-by-side",
+            "fullscreen",
+          ],
+        }}
+      />
     </div>
   );
 };

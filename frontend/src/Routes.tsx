@@ -14,13 +14,13 @@ import { AuthProvider } from "./context/AuthContext";
 import Report from "./pages/Report";
 import RegisterForm from "./pages/RegisterForm";
 import LoginForm from "./pages/LoginForm";
+import ChangeInfo from "./pages/ChangeInfo"; 
 
 export const Routes = () => {
   return (
     <Router>
       <AuthProvider>
         <RoutesComponents>
-          {/* <Route path="/" element={<Home />} /> */}
           <Route path="*" element={<NotFound />} />
           <Route path="/auth/login" element={<LoginForm />} />
           <Route path="/auth/register" element={<RegisterForm />} />
@@ -33,7 +33,6 @@ export const Routes = () => {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/reported"
             element={
@@ -42,7 +41,6 @@ export const Routes = () => {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/ask"
             element={
@@ -64,6 +62,23 @@ export const Routes = () => {
             element={
               <ProtectedRoute>
                 <Question />
+              </ProtectedRoute>
+            }
+          />
+          {/* New route for changing password or name */}
+          <Route
+            path="/profile/:idUser/change-password"
+            element={
+              <ProtectedRoute>
+                <ChangeInfo isPassword={true} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile/:idUser/change-name"
+            element={
+              <ProtectedRoute>
+                <ChangeInfo isPassword={false} />
               </ProtectedRoute>
             }
           />

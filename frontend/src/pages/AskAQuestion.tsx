@@ -5,6 +5,8 @@ import "./AskAQuestion.css";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 import { jwtDecode } from "jwt-decode";
+import TextAreaComponent from "../components/TextArea";
+
 
 type MyJwtPayload = {
   id: string;
@@ -265,10 +267,16 @@ function AskAQuestion() {
             </div>
 
             <label htmlFor="description">Description:</label>
-            <MarkdownEditor
-              value={description}
-              onChange={(value) => setDescription(value)}
-            />
+            <TextAreaComponent
+              answerText={description}
+              setAnswerText={setDescription}
+              handleImageChange={handleImageChange}
+              imagePreviews={imagePreviews}
+              useCase="description"
+              handleRemoveImage={handleRemoveImage} 
+              handleAnswerSubmit={function (): void {
+                throw new Error("Function not implemented.");
+              } }            />
 
             <div className="guideSection">
               <h2>How to write a clear context for your question :</h2>
@@ -311,10 +319,16 @@ function AskAQuestion() {
             </div>
 
             <label htmlFor="context">Context:</label>
-            <MarkdownEditor
-              value={context}
-              onChange={(value) => setContext(value)}
-            />
+            <TextAreaComponent
+              answerText={context}
+              setAnswerText={setContext}
+              handleImageChange={handleImageChange}
+              imagePreviews={imagePreviews}
+              handleRemoveImage={handleRemoveImage}
+              useCase="context" 
+              handleAnswerSubmit={function (): void {
+                throw new Error("Function not implemented.");
+              } }/>
 
             {/* Tag selection section */}
             <div className="tagSection">

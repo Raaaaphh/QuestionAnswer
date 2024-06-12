@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "./Question.css";
 import Header from "../components/Header";
 import MarkdownRenderer from "../components/MarkdownRenderer";
-import MarkdownEditor from "../components/MarkdownEditor"; // Import the MarkdownEditor component
+// Removed MarkdownEditor import
 import Answer from "../components/Answer";
 import AnimatedUpVote from "../components/AnimatedUpVote";
 import axiosInstance from "../utils/axiosInstance";
@@ -10,6 +10,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import BannerQuestion from "../components/BannerQuestion";
 import flagLogo from "../assets/flagLogo.svg";
 import returnArrow from "../assets/returnArrow.svg";
+import bookmark from "../assets/bookmark.svg";
+import { jwtDecode } from "jwt-decode";
+import TextAreaComponent from "../components/TextArea";
 
 interface Question {
   idQuest: string;
@@ -44,11 +47,19 @@ interface Answer {
   updatedAt: string;
 }
 
+interface MyJwtPayload {
+  id: string;
+  exp: number;
+}
+
 const Question: React.FC = () => {
   const [markdownContent, setMarkdownContent] = useState<string>("");
   const [answers, setAnswers] = useState<any[]>([]);
   const [question, setQuestion] = useState<Question | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [userId, setUserId] = useState<string>("");
+  const [userQuestion, setUserQuestion] = useState<User | null>(null);
   const [answerText, setAnswerText] = useState<string>(""); // State for the answer text
   const [answerImages, setAnswerImages] = useState<string[]>([]); // State for the answer images
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
@@ -59,6 +70,24 @@ const Question: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode<MyJwtPayload>(token);
+        const idUser = decodedToken.id;
+        axiosInstance
+          .get(`/users/${idUser}`)
+          .then((response) => {
+            setUser(response.data);
+          })
+          .catch((error) => {
+            console.error("Error fetching user status", error);
+          });
+      } catch (error) {
+        console.error("Error decoding token", error);
+      }
+    }
+
     const fetchData = async () => {
       try {
         const questionResponse = await axiosInstance.get(`questions/${idQuest}`);
@@ -67,7 +96,7 @@ const Question: React.FC = () => {
 
         if (fetchedQuestion.idUser) {
           const userResponse = await axiosInstance.get(`users/${fetchedQuestion.idUser}`);
-          setUser(userResponse.data);
+          setUserQuestion(userResponse.data);
         }
 
         if (fetchedQuestion.idQuest) {
@@ -82,7 +111,22 @@ const Question: React.FC = () => {
     fetchData();
   }, [idQuest]);
 
+  const handleClickFav = async () => {
+    if (!user || !question) {
+      alert("User or question data is missing.");
+      return;
+    }
+    try {
+      await axiosInstance.post(`favorites/add`, { idUser: user.idUser, idQuest: question.idQuest });
+      alert("Question added to favorites.");
+    } catch (error) {
+      console.error("Error adding question to favorites", error);
+      alert("Failed to add question to favorites.");
+    }
+  };
+
   const handleFlagClick = async () => {
+
     if (!user || !question || !selectedFlagType) {
       alert("User, question data, or flag type is missing.");
       return;
@@ -95,7 +139,8 @@ const Question: React.FC = () => {
     };
 
     try {
-      await axiosInstance.post('/your-flag-endpoint', flagData);
+      console.log("Flagging question", typeof(question.idQuest),typeof(user.idUser), typeof(selectedFlagType));
+      await axiosInstance.post('questions/addFlag', flagData);
       alert('Question flagged successfully');
       setShowFlagMenu(false);
     } catch (error) {
@@ -131,19 +176,30 @@ const Question: React.FC = () => {
   };
 
   const handleAnswerSubmit = async () => {
-    if (!user || !question) {
-      alert("User or question data is missing.");
+    if (!user || !question || !answerText) {
+      alert("User, question, or answer data is missing.");
       return;
     }
-
-    try {
-      const answerData = {
+  
+    let answerData;
+  
+    if (answerImages.length < 1) {
+      answerData = {
+        idUser: user.idUser,
+        idQuest: question.idQuest,
+        content: answerText,
+      };
+    } else {
+      answerData = {
         idUser: user.idUser,
         idQuest: question.idQuest,
         content: answerText,
         listPictures: answerImages,
       };
-
+    }
+  
+    try {
+      console.log("console data", answerData);
       const response = await axiosInstance.post('/answers/create', answerData);
       setAnswers([...answers, response.data]); // Add the new answer to the list of answers
       setAnswerText(""); // Clear the editor
@@ -154,6 +210,7 @@ const Question: React.FC = () => {
       alert('Failed to submit the answer');
     }
   };
+  
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -181,11 +238,27 @@ const Question: React.FC = () => {
     setImagePreviews(newPreviews);
   };
 
+  const handleSetSolved = () => {
+    if (!question) {
+      alert("Question data is missing.");
+      return;
+    }
+    return async () => {
+      try {
+        await axiosInstance.post(`questions/setSolved`, {idQuest: question.idQuest, idUser: user?.idUser});
+        setQuestion({ ...question, status: "Solved" });
+      } catch (error) {
+        console.error("Error setting question as solved", error);
+        alert("Failed to set question as solved");
+      }
+    };
+  }
+
   return (
     <div>
       <Header />
       <div className="topInfos">
-        <img src={returnArrow} alt="return arrow" onClick={handleReturnClick} style={{ cursor: 'pointer' }} />
+      <img src={returnArrow} alt="return arrow" onClick={handleReturnClick} style={{ cursor: 'pointer' }} />
         {question?.status === "Solved" && (
           <div className="status solved">
             Question solved!
@@ -204,6 +277,7 @@ const Question: React.FC = () => {
       <div className="questionPage">
         <div className="upVote">
           <AnimatedUpVote voteCount={question ? question.votes : 0} />
+          <img className="favIcon" src={bookmark} alt="Fav logo" onClick={handleClickFav} style={{ cursor: 'pointer' }} />
         </div>
         {question && <BannerQuestion idQuestAns={question.idQuest} isAnswer={false} />}
         
@@ -240,35 +314,21 @@ const Question: React.FC = () => {
           )}
         </div>
 
-        {/* Conditionally render the MarkdownEditor if the question is not solved and the user is a Lecturer */}
         {(question?.status !== "Solved" && user?.role === "Lecturer") && (
-          <div className="answerEditorSection">
-            <h2>Write your answer:</h2>
-            <MarkdownEditor value={answerText} onChange={setAnswerText} />
-            <div className="fileSelectorContainer">
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleImageChange}
-                className="fileInput"
-              />
-              <div className="imagePreviews">
-                {imagePreviews.map((preview, index) => (
-                  <div key={index} className="imagePreviewContainer">
-                    <img src={preview} alt={`Preview ${index}`} className="imagePreview" />
-                    <button onClick={() => handleRemoveImage(index)} className="removeImageButton">
-                      Remove
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <button onClick={handleAnswerSubmit} className="submitButton">
-              Submit Answer
-            </button>
-          </div>
+          <TextAreaComponent
+          answerText={answerText}
+          setAnswerText={setAnswerText}
+          handleAnswerSubmit={handleAnswerSubmit}
+          handleImageChange={handleImageChange}
+          imagePreviews={imagePreviews}
+          handleRemoveImage={handleRemoveImage}
+          useCase="answer"
+        />
         )}
+        {question?.idUser===user?.idUser && answers.length!=0 && question?.status==="Unsolved" &&(
+          <div className="setSolvedContainer">
+            <button className="setSolvedButton" onClick={handleSetSolved()}>Set as solved</button>
+          </div>)}
       </div>
     </div>
   );

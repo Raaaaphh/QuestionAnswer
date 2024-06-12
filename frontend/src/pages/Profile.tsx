@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import "./Profile.css";
 import QuestionComp from "../components/QuestionComp";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 import { jwtDecode } from "jwt-decode";
 import ProfilePicture from "../components/ProfilePicture";
@@ -32,6 +32,7 @@ type Tag = {
 
 const Profile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate(); // Initialize navigate
   const [user, setUser] = useState<{
     name: string;
     email: string;
@@ -90,6 +91,22 @@ const Profile: React.FC = () => {
     setExistingTags((prevTags) => [...prevTags, tagName]);
   };
 
+  const handleChangePasswordClick = () => {
+    if (user) {
+      navigate(`/profile/${user.idUser}/change-password`);
+    } else {
+      alert("User data is missing.");
+    }
+  };
+
+  const handleChangeNameClick = () => {
+    if (user) {
+      navigate(`/profile/${user.idUser}/change-name`);
+    } else {
+      alert("User data is missing.");
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -115,6 +132,21 @@ const Profile: React.FC = () => {
                 <div className="userDetail">
                   <h3>Email</h3>
                   <p>{user.email}</p>
+                </div>
+                {/* Buttons to change password and name */}
+                <div className="buttonContainer">
+                  <button
+                    onClick={handleChangePasswordClick}
+                    className="simpleButton"
+                  >
+                    Change Password
+                  </button>
+                  <button
+                    onClick={handleChangeNameClick}
+                    className="simpleButton"
+                  >
+                    Change Name
+                  </button>
                 </div>
                 {user.role === "Lecturer" && (
                   <div className="buttonContainer">
