@@ -262,3 +262,33 @@ h2{
 .submitButton:hover {
     background-color: #574b90;
 }
+
+.setSolvedContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .setSolvedButton {
+    background-color: #004A85;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+  }
+  
+  .setSolvedButton:hover {
+    background-color: #003C69;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  }
+  

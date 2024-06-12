@@ -238,6 +238,22 @@ const Question: React.FC = () => {
     setImagePreviews(newPreviews);
   };
 
+  const handleSetSolved = () => {
+    if (!question) {
+      alert("Question data is missing.");
+      return;
+    }
+    return async () => {
+      try {
+        await axiosInstance.post(`questions/setSolved`, {idQuest: question.idQuest, idUser: user?.idUser});
+        setQuestion({ ...question, status: "Solved" });
+      } catch (error) {
+        console.error("Error setting question as solved", error);
+        alert("Failed to set question as solved");
+      }
+    };
+  }
+
   return (
     <div>
       <Header />
@@ -309,6 +325,10 @@ const Question: React.FC = () => {
           useCase="answer"
         />
         )}
+        {question?.idUser===user?.idUser && answers.length!=0 && question?.status==="Unsolved" &&(
+          <div className="setSolvedContainer">
+            <button className="setSolvedButton" onClick={handleSetSolved()}>Set as solved</button>
+          </div>)}
       </div>
     </div>
   );

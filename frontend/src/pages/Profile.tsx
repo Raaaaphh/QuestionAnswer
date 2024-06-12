@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import "./Profile.css";
 import QuestionComp from "../components/QuestionComp";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import ProfilePicture from "../components/ProfilePicture";
-import TagCreationPopup from "../components/TagCreationPopup"; // Import the popup
+import TagCreationPopup from "../components/TagCreationPopup";
 
 export interface Question {
   idQuest: string;
@@ -22,6 +22,7 @@ export interface Question {
 
 const Profile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();  // Initialize navigate
   const [user, setUser] = useState<{
     name: string;
     email: string;
@@ -34,7 +35,6 @@ const Profile: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isTagPopupOpen, setIsTagPopupOpen] = useState(false);
 
-  // Mock data for existing tags
   const [existingTags, setExistingTags] = useState<string[]>([
     "JavaScript",
     "React",
@@ -61,7 +61,7 @@ const Profile: React.FC = () => {
         setUser(userResponse.data);
         console.log("User color", userResponse.data.color);
         const previousQuestions = await axiosInstance.get(
-          `/questions/findByUser/${userId}`                                 // A FAIRE AVEC LA PAGINIATION
+          `/questions/findByUser/${userId}`
         );
         setQuestions(previousQuestions.data);
 
@@ -69,8 +69,6 @@ const Profile: React.FC = () => {
           `/favorites/${userId}`
         );
         setFavorites(favoritesQuestions.data);
-
-        // UTILISE LA ROUTE AU LIEU DE LA MOCK
       } catch (error) {
         console.error("Error fetching data", error);
       } finally {
@@ -84,6 +82,22 @@ const Profile: React.FC = () => {
   const handleCreateTag = (tagName: string) => {
     console.log("New tag created:", tagName);
     setExistingTags((prevTags) => [...prevTags, tagName]);
+  };
+
+  const handleChangePasswordClick = () => {
+    if (user) {
+      navigate(`/profile/${user.idUser}/change-password`);
+    } else {
+      alert("User data is missing.");
+    }
+  };
+
+  const handleChangeNameClick = () => {
+    if (user) {
+      navigate(`/profile/${user.idUser}/change-name`);
+    } else {
+      alert("User data is missing.");
+    }
   };
 
   if (loading) {
@@ -111,6 +125,15 @@ const Profile: React.FC = () => {
                 <div className="userDetail">
                   <h3>Email</h3>
                   <p>{user.email}</p>
+                </div>
+                {/* Buttons to change password and name */}
+                <div className="buttonContainer">
+                  <button onClick={handleChangePasswordClick} className="simpleButton">
+                    Change Password
+                  </button>
+                  <button onClick={handleChangeNameClick} className="simpleButton">
+                    Change Name
+                  </button>
                 </div>
                 {user.role === "Lecturer" && (
                   <div className="buttonContainer">
