@@ -35,7 +35,7 @@ export class FavoritesController {
         }
     }
 
-    @Get('findByUser/')
+    @Get('findByUser/:id')
     async getFavoritesUser(@Param('id') id: string) {
         try {
             return await this.favService.getFavoritesUser(id);

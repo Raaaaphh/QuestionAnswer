@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
 import "./Profile.css";
 import QuestionComp from "../components/QuestionComp";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 import { jwtDecode } from "jwt-decode";
 import ProfilePicture from "../components/ProfilePicture";
+import Header from "../components/Header";
 import TagCreationPopup from "../components/TagCreationPopup";
 
 export interface Question {
@@ -32,7 +32,7 @@ type Tag = {
 
 const Profile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
   const [user, setUser] = useState<{
     name: string;
     email: string;
@@ -51,22 +51,31 @@ const Profile: React.FC = () => {
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem("token");
+        console.log("Token:", token);
+
         if (!token) {
           throw new Error("No token found");
         }
-        const decodedToken = jwtDecode(token) as { id: string };
+
+        const decodedToken = jwtDecode<{ id: string }>(token);
         const userId = decodedToken.id;
+        console.log("User ID:", userId);
+
         const userResponse = await axiosInstance.get(`/users/${userId}`);
+        console.log("User Response:", userResponse.data);
         setUser(userResponse.data);
-        console.log("User color", userResponse.data.color);
+
         const previousQuestions = await axiosInstance.get(
-          `/questions/findByUser/${userId}`
+          `/questions/${userId}`
         );
+        console.log("Previous Questions:", previousQuestions.data);
+        console.log("TATA EN STRING", "TOTO EN SLIP");
         setQuestions(previousQuestions.data);
 
         const favoritesQuestions = await axiosInstance.get(
-          `/favorites/${userId}`
+          `/favorites/findByUser/${userId}`
         );
+        console.log("Favorites Questions:", favoritesQuestions.data);
         setFavorites(favoritesQuestions.data);
       } catch (error) {
         console.error("Error fetching data", error);
@@ -79,9 +88,20 @@ const Profile: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    axiosInstance.get("/tags").then((response) => {
-      setTags(response.data);
-    });
+    const fetchTags = async () => {
+      try {
+        const response = await axiosInstance.get("/tags");
+        console.log("Tags:", response.data); // Vérifiez que les tags sont récupérés
+        setTags(response.data);
+      } catch (error) {
+        console.error("Error fetching tags", error);
+      }
+    };
+
+    fetchTags();
+  }, []);
+
+  useEffect(() => {
     const newExistingTags = tags.map((tag) => tag.name);
     setExistingTags(newExistingTags);
   }, [tags]);
@@ -122,7 +142,7 @@ const Profile: React.FC = () => {
                 <div className="profilePicture">
                   <ProfilePicture userId={user.idUser} />
                 </div>
-                <h2>PROFILE</h2>
+                <h2>{user.name}</h2>
               </div>
               <div className="userDetails">
                 <div className="userDetail">
@@ -133,7 +153,6 @@ const Profile: React.FC = () => {
                   <h3>Email</h3>
                   <p>{user.email}</p>
                 </div>
-                {/* Buttons to change password and name */}
                 <div className="buttonContainer">
                   <button
                     onClick={handleChangePasswordClick}
