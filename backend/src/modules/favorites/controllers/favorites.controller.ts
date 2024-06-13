@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpException, HttpStatus, Param, Post } from "@nestjs/common";
+import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpException, HttpStatus, Param, Post, Query } from "@nestjs/common";
 import { FavoriteDto } from "../dto/favorite.dto";
 import { FavoritesService } from "../services/favorites.service";
 
@@ -62,6 +62,22 @@ export class FavoritesController {
             }
             throw new HttpException({
                 message: 'An error occurred while notifying favorites',
+                error,
+            }, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Get('check')
+    async checkFavorite(@Query('idUser') idUser: string, @Query('idQuest') idQuest: string) {
+        try {
+            return await this.favService.checkFavorite(idUser, idQuest);
+        }
+        catch (error) {
+            if (error instanceof BadRequestException) {
+                throw error;
+            }
+            throw new HttpException({
+                message: 'An error occurred while checking favorite',
                 error,
             }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
