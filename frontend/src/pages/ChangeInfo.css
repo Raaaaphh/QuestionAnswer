@@ -37,6 +37,11 @@
     color: white;
     cursor: pointer;
   }
+
+  .change-info-form button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
   
   .change-info-form button:hover {
     background-color: #033661;

@@ -62,8 +62,8 @@ const ChangeInfo: React.FC<{ isPassword: boolean }> = ({ isPassword }) => {
                 onChange={(e) => setNewValue(e.target.value)}
                 required
                 />
-                <button type="submit">Change Password</button>
-            </form>
+                <button type="submit" disabled={currentValue === newValue || newValue.length<3}>Change Password</button>
+                </form>
             </div>
         ) : (
             <div>
@@ -78,7 +78,7 @@ const ChangeInfo: React.FC<{ isPassword: boolean }> = ({ isPassword }) => {
                 onChange={(e) => setNewValue(e.target.value)}
                 required
                 />
-                <button type="submit">Change Name</button>
+                <button type="submit" disabled={currentValue === newValue || newValue.length<3}>Change Name</button>
             </form>
             </div>
         )}
