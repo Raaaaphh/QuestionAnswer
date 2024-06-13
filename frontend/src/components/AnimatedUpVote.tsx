@@ -71,14 +71,10 @@ const AnimatedUpVote: React.FC<AnimatedUpVoteProps> = ({
           idQuest: questionId,
           idUser: idUser,
         });
-
-        // const response2 = await axiosInstance.get("questions/getvote", {
-        //   params: {
-        //     idQuest: questionId,
-        //   },
-        // // });
-        // setCount(response2.data);
-        // window.location.reload();
+        const response2 = await axiosInstance.get(
+          `questions/getVotes/${idQuestion}`
+        );
+        setCount(response2.data);
         console.log("Vote added:", response.data);
       } else {
         setHasVoted(false);
@@ -86,14 +82,10 @@ const AnimatedUpVote: React.FC<AnimatedUpVoteProps> = ({
           idQuest: idQuestion,
           idUser: idUser,
         });
-
-        // const response2 = await axiosInstance.get("questions/getvote", {
-        //   params: {
-        //     idQuest: questionId,
-        //   },
-        // });
-        // setCount(response2.data);
-        // window.location.reload();
+        const response2 = await axiosInstance.get(
+          `questions/getVotes/${idQuestion}`
+        );
+        setCount(response2.data);
         console.log("Vote removed:", response.data);
       }
     }

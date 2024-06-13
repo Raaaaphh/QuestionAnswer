@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import "./Question.css";
 import Header from "../components/Header";
 import MarkdownRenderer from "../components/MarkdownRenderer";
-// Removed MarkdownEditor import
 import Answer from "../components/Answer";
 import AnimatedUpVote from "../components/AnimatedUpVote";
 import axiosInstance from "../utils/axiosInstance";
@@ -60,13 +59,15 @@ const Question: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [userId, setUserId] = useState<string>("");
   const [userQuestion, setUserQuestion] = useState<User | null>(null);
-  const [answerText, setAnswerText] = useState<string>(""); // State for the answer text
-  const [answerImages, setAnswerImages] = useState<string[]>([]); // State for the answer images
+  const [answerText, setAnswerText] = useState<string>("");
+  const [answerImages, setAnswerImages] = useState<string[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const { idQuest } = useParams<string>();
   const [showFlagMenu, setShowFlagMenu] = useState(false);
   const [selectedFlagType, setSelectedFlagType] = useState<string>("");
   const flagMenuRef = useRef<HTMLDivElement | null>(null);
+  const [hasVoted, setHasVoted] = useState(false);
+  const [hasVotedFav, setHasVotedFav] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -87,6 +88,26 @@ const Question: React.FC = () => {
         console.error("Error decoding token", error);
       }
     }
+
+    const fetchQuestionsFromDatabase = async (filter: string) => {
+      try {
+        const response = await axiosInstance.post(
+          `flag/check?idUser=${user}&idQuest=${question}`
+        );
+        setHasVoted(response.data);
+      } catch (error) {
+        console.error("Error fetching questions from database:", error);
+      }
+
+      try {
+        const response = await axiosInstance.post(
+          `favorites/check?idUser=${user}&idQuest=${question}`
+        );
+        setHasVotedFav(response.data);
+      } catch (error) {
+        console.error("Error fetching questions from database:", error);
+      }
+    };
 
     const fetchData = async () => {
       try {
@@ -122,43 +143,70 @@ const Question: React.FC = () => {
       alert("User or question data is missing.");
       return;
     }
-    try {
-      await axiosInstance.post(`favorites/add`, {
-        idUser: user.idUser,
-        idQuest: question.idQuest,
-      });
-      alert("Question added to favorites.");
-    } catch (error) {
-      console.error("Error adding question to favorites", error);
-      alert("Failed to add question to favorites.");
+    if (!hasVotedFav) {
+      setHasVotedFav(true);
+      try {
+        await axiosInstance.post(`favorites/add`, {
+          idUser: user.idUser,
+          idQuest: question.idQuest,
+        });
+        alert("Question added to favorites.");
+      } catch (error) {
+        console.error("Error adding question to favorites", error);
+        alert("Failed to add question to favorites.");
+      }
+    } else {
+      setHasVotedFav(false);
+      try {
+        await axiosInstance.post(`favorites/remove`, {
+          idUser: user.idUser,
+          idQuest: question.idQuest,
+        });
+        alert("Question removed from favorites.");
+      } catch (error) {
+        console.error("Error removing question from favorites", error);
+        alert("Failed to remove question from favorites.");
+      }
     }
   };
 
   const handleFlagClick = async () => {
-    if (!user || !question || !selectedFlagType) {
-      alert("User, question data, or flag type is missing.");
+    if (!user) {
+      alert("User data is missing.");
       return;
     }
-
-    const flagData = {
-      idUser: user.idUser,
-      idQuest: question.idQuest,
-      flagType: selectedFlagType,
-    };
-
-    try {
-      console.log(
-        "Flagging question",
-        typeof question.idQuest,
-        typeof user.idUser,
-        typeof selectedFlagType
-      );
-      await axiosInstance.post("questions/addFlag", flagData);
-      alert("Question flagged successfully");
-      setShowFlagMenu(false);
-    } catch (error) {
-      console.error("Error flagging the question", error);
-      alert("Failed to flag the question");
+    if (!question) {
+      alert("Question data is missing.");
+      return;
+    }
+    if (!hasVoted) {
+      setHasVoted(true);
+      try {
+        await axiosInstance.post("questions/addFlag", {
+          idUser: user.idUser,
+          idQuest: question.idQuest,
+          flagType: "Spam",
+        });
+        alert("Question flagged successfully");
+        setShowFlagMenu(false);
+      } catch (error) {
+        console.error("Error flagging the question", error);
+        alert("Failed to flag the question");
+      }
+    } else {
+      setHasVoted(false);
+      try {
+        await axiosInstance.post("questions/removeFlag", {
+          idUser: user.idUser,
+          idQuest: question.idQuest,
+          flagType: "Spam",
+        });
+        alert("Question unflagged successfully");
+        setShowFlagMenu(false);
+      } catch (error) {
+        console.error("Error unflagging the question", error);
+        alert("Failed to unflag the question");
+      }
     }
   };
 
@@ -217,10 +265,10 @@ const Question: React.FC = () => {
     try {
       console.log("console data", answerData);
       const response = await axiosInstance.post("/answers/create", answerData);
-      setAnswers([...answers, response.data]); // Add the new answer to the list of answers
-      setAnswerText(""); // Clear the editor
-      setAnswerImages([]); // Clear the images
-      setImagePreviews([]); // Clear the image previews
+      setAnswers([...answers, response.data]);
+      setAnswerText("");
+      setAnswerImages([]);
+      setImagePreviews([]);
     } catch (error) {
       console.error("Error submitting the answer", error);
       alert("Failed to submit the answer");
@@ -328,7 +376,7 @@ const Question: React.FC = () => {
         )}
 
         <div className="questionContainer">
-          <h1>{question ? question.title : "Loading..."}</h1>
+          <h1>{question?.title ?? "Loading..."}</h1>
           <div className="questionDescription">
             <h2>Description:</h2>
             <p>

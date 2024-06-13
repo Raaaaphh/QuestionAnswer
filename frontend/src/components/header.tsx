@@ -69,7 +69,7 @@ const Header: React.FC = () => {
         <div className="underline"></div>
       </Link>
       <SearchBar />
-      {isLoggedIn  ? (
+      {isLoggedIn ? (
         <>
           <FilterMenu />
           {userStatus === "Student" && <BtnQuestion />}
@@ -268,5 +268,3 @@ const ProfileMenu: React.FC<{ idUser: string }> = ({ idUser }) => {
     </div>
   );
 };
-
-
