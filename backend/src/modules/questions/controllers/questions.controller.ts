@@ -98,10 +98,10 @@ export class QuestionsController {
     }
 
     @Get('findByUser/params')
-    searchQuestionsByUser(@Query('id') id: string, @Query('limit') limit: string, @Query('page') page: string) {
+    searchQuestionsByUser(@Query('name') name: string, @Query('limit') limit: string, @Query('page') page: string) {
         try {
-            if (id === undefined) {
-                throw new Error('User ID is required');
+            if (name === undefined) {
+                throw new Error('Name is required');
             }
             if (limit === undefined) {
                 limit = '20';
@@ -109,10 +109,11 @@ export class QuestionsController {
             if (page === undefined) {
                 page = '1';
             }
-            return this.questionsService.searchQuestionsByUser(id, limit, page);
+            return this.questionsService.searchQuestionsByUser(name, limit, page);
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 

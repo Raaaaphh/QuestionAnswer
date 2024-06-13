@@ -11,11 +11,12 @@ import { Vote } from "../../votes/vote.model";
 import { Favorite } from "../../favorites/favorite.model";
 import { Flag, FlagType } from "../../flags/flag.model";
 import { Tag } from "src/modules/tags/tag.model";
+import { User } from "src/modules/users/user.model";
 
 @Injectable()
 export class QuestionsService {
 
-    constructor(@InjectModel(Question) private questModel: typeof Question, @InjectModel(QuestionTag) private questTagModel: typeof QuestionTag, @InjectModel(Picture) private pictureModel: typeof Picture, @InjectModel(Vote) private voteModel: typeof Vote, @InjectModel(Favorite) private favoriteModel: typeof Favorite, @InjectModel(Flag) private flagModel: typeof Flag, @InjectModel(Tag) private tagModel: typeof Tag, private readonly sequelize: Sequelize) { }
+    constructor(@InjectModel(Question) private questModel: typeof Question, @InjectModel(QuestionTag) private questTagModel: typeof QuestionTag, @InjectModel(Picture) private pictureModel: typeof Picture, @InjectModel(Vote) private voteModel: typeof Vote, @InjectModel(Favorite) private favoriteModel: typeof Favorite, @InjectModel(Flag) private flagModel: typeof Flag, @InjectModel(Tag) private tagModel: typeof Tag, @InjectModel(User) private userModel: typeof User, private readonly sequelize: Sequelize) { }
 
     async getQuestion(id: string) {
         if (!isValidUUID(id)) {
@@ -120,18 +121,29 @@ export class QuestionsService {
         return questions;
     }
 
-    async searchQuestionsByUser(id: string, limit: string, page: string) {
+    async searchQuestionsByUser(name: string, limit: string, page: string) {
         try {
-            if (!isValidUUID(id)) {
-                throw new BadRequestException('Invalid user ID');
-            }
             const intLimit = parseInt(limit, 10);
             const intPage = parseInt(page, 10);
             const offset = (intPage - 1) * intLimit;
 
+            const users = await this.userModel.findAll({
+                where: {
+                    name: {
+                        [Op.like]: `%${name}%`
+                    }
+                },
+            });
+
+            if (!users || users.length === 0) {
+                throw new NotFoundException('User not found');
+            }
+
+            const idUsers = users.map(user => user.idUser);
+
             const questions = await this.questModel.findAll({
                 where: {
-                    idUser: id
+                    idUser: idUsers
                 },
                 limit: intLimit,
                 //offset: offset,
