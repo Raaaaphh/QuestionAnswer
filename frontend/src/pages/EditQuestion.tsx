@@ -65,11 +65,11 @@ const EditQuestion: React.FC<{}> = () => {
   return (
     <div>
         <Header />
-        <img src={returnArrow} alt="return arrow" className="return-arrow" onClick={() => navigate(-1)} />
+        <img src={returnArrow} alt="return arrow" className="return-arrow-edit" onClick={() => navigate(-1)} />
 
         <div className='editPage'>
             <div className='questionContainer'>
-                <h1>Edit Question</h1>
+                <h1 className='titleEditQuestion'>Edit Question</h1>
                 <form className="edit-question-form">
                     <label htmlFor="title">Title</label>
                     <input

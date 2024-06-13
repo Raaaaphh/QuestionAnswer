@@ -29,12 +29,11 @@ const Header: React.FC = () => {
       try {
         const decodedToken = jwtDecode<MyJwtPayload>(token);
         console.log("Decoded token", decodedToken);
-
+  
         const currentTime = Date.now() / 1000;
         if (decodedToken.exp > currentTime) {
           setIsLoggedIn(true);
           const idUser = decodedToken.id;
-          console.log(typeof idUser);
           axiosInstance
             .get(`/users/${idUser}`)
             .then((response) => {
@@ -58,6 +57,7 @@ const Header: React.FC = () => {
       setIsLoggedIn(false);
     }
   }, []);
+  
 
   return (
     <header className="header">

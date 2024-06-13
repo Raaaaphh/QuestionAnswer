@@ -64,14 +64,14 @@
     background-color: #003366;
 }
 
-h1{
+.titleEditQuestion{
     font-size: 350%;
     margin-bottom: 20px;
 }
 
-.return-arrow {
+.return-arrow-edit{
+    position: absolute;
     font-size: 30px;
     color: #004A85;
     cursor: pointer;
-    margin-top: 120px;
 }

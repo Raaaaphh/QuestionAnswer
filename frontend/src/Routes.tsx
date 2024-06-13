@@ -2,20 +2,20 @@ import {
   BrowserRouter as Router,
   Routes as RoutesComponents,
   Route,
-} from "react-router-dom";
-import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
-import AskAQuestion from "./pages/AskAQuestion";
-import Profile from "./pages/Profile";
-import Question from "./pages/Question";
-import ProtectedRoute from "./components/ProtectedRoute";
-import VerifyUserEmail from "./components/EmailVerif";
-import { AuthProvider } from "./context/AuthContext";
-import Report from "./pages/Report";
-import RegisterForm from "./pages/RegisterForm";
-import LoginForm from "./pages/LoginForm";
-import ChangeInfo from "./pages/ChangeInfo"; 
-import EditQuestion from "./pages/EditQuestion";
+} from 'react-router-dom';
+import Home from './pages/Home';
+import NotFound from './pages/NotFound';
+import AskAQuestion from './pages/AskAQuestion';
+import Profile from './pages/Profile';
+import Question from './pages/Question';
+import ProtectedRoute from './components/ProtectedRoute';
+import VerifyUserEmail from './components/EmailVerif';
+import { AuthProvider } from './context/AuthContext';
+import Report from './pages/Report';
+import RegisterForm from './pages/RegisterForm';
+import LoginForm from './pages/LoginForm';
+import ChangeInfo from './pages/ChangeInfo';
+import EditQuestion from './pages/EditQuestion';
 
 export const Routes = () => {
   return (
@@ -83,13 +83,13 @@ export const Routes = () => {
             }
           />
           <Route
-          path="/question/:idQuest/edit"
-          element={
-            <ProtectedRoute>
-              <EditQuestion />
-            </ProtectedRoute>
-          }
-        />
+            path="/question/:idQuest/edit"
+            element={
+              <ProtectedRoute>
+                <EditQuestion />
+              </ProtectedRoute>
+            }
+          />
         </RoutesComponents>
       </AuthProvider>
     </Router>
