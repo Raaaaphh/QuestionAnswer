@@ -6,7 +6,7 @@ import { Tag } from '../tags/tag.model';
 import { Vote } from '../votes/vote.model';
 
 
-enum Role {
+export enum Role {
     SuperAdmin = 'SuperAdmin',
     Lecturer = 'Lecturer',
     Student = 'Student',
