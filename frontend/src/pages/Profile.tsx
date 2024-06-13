@@ -66,10 +66,9 @@ const Profile: React.FC = () => {
         setUser(userResponse.data);
 
         const previousQuestions = await axiosInstance.get(
-          `/questions/${userId}`
+          `/questions/getQuestionsForUser/${userId}`
         );
         console.log("Previous Questions:", previousQuestions.data);
-        console.log("TATA EN STRING", "TOTO EN SLIP");
         setQuestions(previousQuestions.data);
 
         const favoritesQuestions = await axiosInstance.get(
@@ -91,7 +90,7 @@ const Profile: React.FC = () => {
     const fetchTags = async () => {
       try {
         const response = await axiosInstance.get("/tags");
-        console.log("Tags:", response.data); // Vérifiez que les tags sont récupérés
+        console.log("Tags:", response.data);
         setTags(response.data);
       } catch (error) {
         console.error("Error fetching tags", error);
