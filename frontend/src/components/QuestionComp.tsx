@@ -24,6 +24,8 @@ type Tag = {
   updatedAt: string;
 };
 
+const mockTags = ["Python", "JavaScript", "CSS"];
+
 const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
   const [question, setQuestion] = useState<{
     idUser: string;

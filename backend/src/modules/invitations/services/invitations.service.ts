@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { Invitation, Role } from "../invitation.model";
 import { JwtService } from "@nestjs/jwt";
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
@@ -9,9 +9,6 @@ export class InvitationsService {
     constructor(private jwtService: JwtService) { }
 
     async sendInvitation(email: string, role: string) {
-        if (!email || !role) {
-            throw new BadRequestException('Email and role are required');
-        }
         const invitation = new Invitation();
         invitation.idInvitation = uuidv4();
         invitation.email = email;
@@ -27,10 +24,6 @@ export class InvitationsService {
     }
 
     async validateInvitation(token: string) {
-        if (!token) {
-            throw new BadRequestException('Token is required');
-        }
-
         try {
             const decoded = this.jwtService.verify(token);
             return { email: decoded.email, role: decoded.role };

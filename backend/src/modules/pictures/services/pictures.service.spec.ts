@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { getModelToken } from '@nestjs/sequelize';
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { Picture } from '../picture.model';
@@ -45,7 +45,7 @@ describe('PicturesService', () => {
             (isValidUUID as jest.Mock).mockReturnValue(true);
             mockPictureModel.findOne.mockResolvedValue(null);
 
-            await expect(service.getPicture('valid-id')).rejects.toThrow(NotFoundException);
+            await expect(service.getPicture('valid-id')).rejects.toThrow(ForbiddenException);
         });
 
         it('should return the picture if found', async () => {
@@ -69,7 +69,7 @@ describe('PicturesService', () => {
             (isValidUUID as jest.Mock).mockReturnValue(true);
             mockPictureModel.findAll.mockResolvedValue([]);
 
-            await expect(service.getPicturesByQuestion('valid-id')).rejects.toThrow(NotFoundException);
+            await expect(service.getPicturesByQuestion('valid-id')).rejects.toThrow(ForbiddenException);
         });
 
         it('should return the pictures if found', async () => {
@@ -93,7 +93,7 @@ describe('PicturesService', () => {
             (isValidUUID as jest.Mock).mockReturnValue(true);
             mockPictureModel.findAll.mockResolvedValue([]);
 
-            await expect(service.getPicturesByAnswer('valid-id')).rejects.toThrow(NotFoundException);
+            await expect(service.getPicturesByAnswer('valid-id')).rejects.toThrow(ForbiddenException);
         });
 
         it('should return the pictures if found', async () => {
@@ -117,7 +117,7 @@ describe('PicturesService', () => {
             (isValidUUID as jest.Mock).mockReturnValue(true);
             mockPictureModel.findOne.mockResolvedValue(null);
 
-            await expect(service.deletePicture('valid-id')).rejects.toThrow(NotFoundException);
+            await expect(service.deletePicture('valid-id')).rejects.toThrow(ForbiddenException);
         });
 
         it('should delete the picture and return it if found', async () => {

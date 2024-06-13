@@ -14,7 +14,7 @@ import { AuthProvider } from "./context/AuthContext";
 import Report from "./pages/Report";
 import RegisterForm from "./pages/RegisterForm";
 import LoginForm from "./pages/LoginForm";
-import ChangeInfo from "./pages/ChangeInfo"; 
+import ChangeInfo from "./pages/ChangeInfo";
 
 export const Routes = () => {
   return (
@@ -25,22 +25,16 @@ export const Routes = () => {
           <Route path="/auth/login" element={<LoginForm />} />
           <Route path="/auth/register" element={<RegisterForm />} />
           <Route path="/verify-email" element={<VerifyUserEmail />} />
-          <Route
+          <Route path="/" element={<Home />} />
+          {/* <Route
             path="/"
             element={
               <ProtectedRoute>
                 <Home />
               </ProtectedRoute>
             }
-          />
-          <Route
-            path="/reported"
-            element={
-              <ProtectedRoute>
-                <Report />
-              </ProtectedRoute>
-            }
-          />
+          /> */}
+
           <Route
             path="/ask"
             element={
