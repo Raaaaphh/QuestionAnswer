@@ -69,12 +69,6 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
 
         setTags(response.data);
 
-        const questionTagsResponse = await axiosInstance.get(
-          `/tags/${idQuest}`
-        );
-
-        setTags(response.data);
-
         // const questionTagsResponse = await axiosInstance.get(
         //   `/tags/${idQuest}`
         // );
