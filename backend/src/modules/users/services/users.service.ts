@@ -1,6 +1,6 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { User } from '../user.model';
+import { Role, User } from '../user.model';
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { UserEditMdpDto, UserEditNameDto } from '../dto';
 import * as argon from 'argon2';
@@ -73,6 +73,32 @@ export class UsersService {
         }
         await user.destroy();
         return user;
+    }
+
+    async changeRole(id: string, role: string) {
+        try {
+            if (!isValidUUID(id)) {
+                throw new BadRequestException('Invalid user ID');
+            }
+            const user = await this.userModel.findOne({
+                where: {
+                    idUser: id
+                }
+            });
+
+            if (!user) {
+                throw new ForbiddenException('User not found');
+            }
+
+            user.role = role as Role;
+
+            await user.save();
+            return user;
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
+        }
     }
 
     async editMdp(mdpDto: UserEditMdpDto) {
