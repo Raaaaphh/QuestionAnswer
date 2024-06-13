@@ -329,6 +329,31 @@ export class QuestionsService {
         }
     }
 
+    async getVotesByQuestion(id: string) {
+        const transaction = await this.sequelize.transaction();
+        try {
+            if (!isValidUUID(id)) {
+                throw new BadRequestException('Invalid question ID');
+            }
+
+            const question = await this.questModel.findOne({
+                where: {
+                    idQuest: id
+                },
+                transaction
+            });
+
+            if (!question) {
+                throw new NotFoundException('Question not found');
+            }
+
+            await transaction.commit();
+            return question.votes;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     async createQuestion(quest: QuestionCreateDto) {
         const idQuest = uuidv4();
 
