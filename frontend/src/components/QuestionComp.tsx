@@ -24,8 +24,6 @@ type Tag = {
   updatedAt: string;
 };
 
-const mockTags = ["Python", "JavaScript", "CSS"];
-
 const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
   const [question, setQuestion] = useState<{
     idUser: string;
@@ -49,6 +47,7 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
   const [user, setUser] = useState<{ name: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [tags, setTags] = useState<Tag[]>([]);
+  const [idQuestion, setIdQuestion] = useState<string>(idQuest);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -74,11 +73,6 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
         );
 
         setTags(response.data);
-
-        // const questionTagsResponse = await axiosInstance.get(
-        //   `/tags/${idQuest}`
-        // );
-        // setTags(questionTagsResponse.data);
       } catch (error) {
         console.error("Error fetching data", error);
       } finally {
@@ -108,6 +102,7 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
     try {
       await axiosInstance.delete(`/questions/${idQuest}`);
       console.log("Question deleted successfully");
+      window.location.reload();
     } catch (error) {
       console.error("Error deleting question", error);
     }
@@ -131,7 +126,7 @@ const QuestionComp: React.FC<QuestionProps> = ({ idQuest, reportDisplay }) => {
   return (
     <div key={idQuest} className="questionItem">
       {reportDisplay === false && (
-        <AnimatedUpVote voteCount={question?.votes ?? 0} />
+        <AnimatedUpVote voteCount={question.votes} idQuestion={idQuest} />
       )}
       {reportDisplay === true && (
         <div className="reportCount">
