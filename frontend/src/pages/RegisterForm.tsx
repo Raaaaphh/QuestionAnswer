@@ -5,11 +5,7 @@ import Header from "../components/Header";
 import "./AuthForm.css";
 import logo from "../assets/logo.png";
 
-interface AuthFormProps {
-  isRegister?: boolean;
-}
-
-function AuthForm({ isRegister = false }: AuthFormProps) {
+function RegisterForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,7 +17,7 @@ function AuthForm({ isRegister = false }: AuthFormProps) {
     const checkTokenAndNavigate = async () => {
       const token = localStorage.getItem("token");
       if (token) {
-        await navigate("/");
+        navigate("/");
       }
     };
     checkTokenAndNavigate();
@@ -31,10 +27,9 @@ function AuthForm({ isRegister = false }: AuthFormProps) {
     e.preventDefault();
 
     try {
-      const url = isRegister ? "/auth/register" : "/auth/login";
-      const payload = isRegister
-        ? { name, email, password }
-        : { name, password };
+      const url = "/auth/register";
+      const payload = { name, email, password };
+
       const response = await axiosInstance.post(url, payload, {
         headers: {
           "Content-Type": "application/json",
@@ -42,17 +37,20 @@ function AuthForm({ isRegister = false }: AuthFormProps) {
       });
 
       if (response.data) {
-        if (isRegister) {
-          navigate("/auth/login");
-        } else if (response.data.token) {
-          localStorage.setItem("token", response.data.token);
+        const { token } = response.data;
+        if (token) {
+          localStorage.setItem("token", token);
           navigate("/");
         } else {
-          setError("An error as occurred while sending the request.");
+          setError("Token not found in response.");
         }
+      } else {
+        setError("No response data.");
       }
     } catch (error: any) {
-      setError(error.response.data.message);
+      setError(
+        error.response?.data?.message || "An unexpected error occurred."
+      );
     }
   };
 
@@ -61,7 +59,7 @@ function AuthForm({ isRegister = false }: AuthFormProps) {
       <Header />
       <div className="container">
         <form onSubmit={handleSubmit} className="formLogin">
-          <h1 className="loginTitle">{isRegister ? "Register" : "Login"}</h1>
+          <h1 className="loginTitle">Register</h1>
           <img src={logo} alt="logo" className="imgLogin" />
           <input
             type="text"
@@ -69,26 +67,24 @@ function AuthForm({ isRegister = false }: AuthFormProps) {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          {isRegister && (
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          )}
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button type="submit">{isRegister ? "Register" : "Login"}</button>
+          <button type="submit">Register</button>
         </form>
+        {error && <p className="error">{error}</p>}
       </div>
-      {error && <p>{error}</p>}
     </div>
   );
 }
 
-export default AuthForm;
+export default RegisterForm;

@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+.editQuestionPageContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.editPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+    background-color: #fff;
+    padding: 20px; 
+    border-radius: 8px;
+}
+
+.edit-question-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.edit-question-form label {
+    font-weight: bold;
+    font-size: x-large;
+    margin-bottom: 5px;
+}
+
+.edit-question-form input,
+.edit-question-form textarea {
+    width: 90%;
+    max-width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #004A85;
+    font-size: 16px;
+    resize: vertical;
+    font-family: 'Poppins', sans-serif;
+
+}
+
+.edit-question-form textarea {
+    min-height: 150px;
+}
+
+.edit-question-form button {
+    padding: 10px 20px;
+    background-color: #004A85;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.edit-question-form button:hover {
+    background-color: #003366;
+}
+
+.titleEditQuestion{
+    font-size: 350%;
+    margin-bottom: 20px;
+}
+
+.return-arrow-edit{
+    position: absolute;
+    font-size: 30px;
+    color: #004A85;
+    cursor: pointer;
+}

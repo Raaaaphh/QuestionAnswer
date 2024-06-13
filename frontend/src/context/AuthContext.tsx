@@ -13,6 +13,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    console.log("Token from localStorage on load:", token);
     if (token) {
       setIsAuthenticated(true);
     }
@@ -21,11 +22,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = (token: string) => {
     localStorage.setItem('token', token);
     setIsAuthenticated(true);
+    console.log("User logged in. Token set in localStorage:", token);
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     setIsAuthenticated(false);
+    console.log("User logged out. Token removed from localStorage.");
   };
 
   return (
