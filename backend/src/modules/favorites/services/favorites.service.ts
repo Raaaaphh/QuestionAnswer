@@ -97,6 +97,32 @@ export class FavoritesService {
         }
     }
 
+    async checkFavorite(idUser: string, idQuest: string) {
+        try {
+            if (!isValidUUID(idUser)) {
+                throw new BadRequestException('Invalid User ID');
+            }
+            if (!isValidUUID(idQuest)) {
+                throw new BadRequestException('Invalid Question ID');
+            }
+
+            const favorite = await this.favModel.findOne({
+                where: {
+                    idUser,
+                    idQuest
+                }
+            });
+
+            if (!favorite) {
+                return false;
+            } else {
+                return true;
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async addFavorite(favDto: FavoriteDto) {
         try {
             const favorite = await this.favModel.create({
