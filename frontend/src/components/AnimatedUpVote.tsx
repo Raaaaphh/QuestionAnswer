@@ -48,6 +48,16 @@ const AnimatedUpVote: React.FC<AnimatedUpVoteProps> = ({
         localStorage.removeItem("token");
       }
     }
+    const fetchQuestionsFromDatabase = async (filter: string) => {
+      try {
+        const response = await axiosInstance.post(
+          `votes/check?idUser=${idUser}&idQuest=${idQuestion}`
+        );
+        setHasVoted(response.data);
+      } catch (error) {
+        console.error("Error fetching questions from database:", error);
+      }
+    };
   }, []);
 
   const handleClick = async () => {
@@ -62,28 +72,28 @@ const AnimatedUpVote: React.FC<AnimatedUpVoteProps> = ({
           idUser: idUser,
         });
 
-        const response2 = await axiosInstance.get("questions/getvote", {
-          params: {
-            idQuest: questionId,
-          },
-        });
-        setCount(response2.data);
-        window.location.reload();
+        // const response2 = await axiosInstance.get("questions/getvote", {
+        //   params: {
+        //     idQuest: questionId,
+        //   },
+        // // });
+        // setCount(response2.data);
+        // window.location.reload();
         console.log("Vote added:", response.data);
       } else {
         setHasVoted(false);
         const response = await axiosInstance.post("questions/removevote", {
-          idQuest: questionId,
+          idQuest: idQuestion,
           idUser: idUser,
         });
 
-        const response2 = await axiosInstance.get("questions/getvote", {
-          params: {
-            idQuest: questionId,
-          },
-        });
-        setCount(response2.data);
-        window.location.reload();
+        // const response2 = await axiosInstance.get("questions/getvote", {
+        //   params: {
+        //     idQuest: questionId,
+        //   },
+        // });
+        // setCount(response2.data);
+        // window.location.reload();
         console.log("Vote removed:", response.data);
       }
     }
@@ -98,6 +108,8 @@ const AnimatedUpVote: React.FC<AnimatedUpVoteProps> = ({
         onClick={handleClick}
       >
         <span className="arrow"></span>
+        <div className="wire1"></div>
+        <div className="wire2"></div>
       </button>
     </div>
   );
