@@ -1,18 +1,64 @@
 import React, { useState, useEffect } from "react";
 import "./AnimatedUpVote.css";
+import axiosInstance from "../utils/axiosInstance";
+import { jwtDecode } from "jwt-decode";
 
 interface AnimatedUpVoteProps {
   voteCount: number;
+  idQuestion: string;
 }
 
-const AnimatedUpVote: React.FC<AnimatedUpVoteProps> = ({ voteCount }) => {
+type MyJwtPayload = {
+  id: string;
+  exp: number;
+};
+
+const AnimatedUpVote: React.FC<AnimatedUpVoteProps> = ({
+  voteCount,
+  idQuestion,
+}) => {
   const [clicked, setClicked] = useState(false);
   const [hasVoted, setHasVoted] = useState(false);
   const [count, setCount] = useState(voteCount);
+  const [questionId, setQuestionId] = useState(idQuestion);
+  const [idUser, setIdUser] = useState("");
 
   useEffect(() => {
     setCount(voteCount);
   }, [voteCount]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode<MyJwtPayload>(token);
+        const currentTime = Date.now() / 1000;
+        if (decodedToken.exp > currentTime) {
+          const userId = decodedToken.id;
+          setIdUser(userId);
+          axiosInstance.get(`/users/${userId}`).then((response) => {
+            console.log("User data:", response.data);
+          });
+        } else {
+          console.log("Token has expired");
+          localStorage.removeItem("token");
+        }
+      } catch (error) {
+        console.error("Error decoding token", error);
+        localStorage.removeItem("token");
+      }
+    }
+    const fetchQuestionsFromDatabase = async (filter: string) => {
+      try {
+        const response = await axiosInstance.post(
+          `votes/check?idUser=${idUser}&idQuest=${idQuestion}`
+        );
+        setHasVoted(response.data);
+      } catch (error) {
+        console.error("Error fetching questions from database:", error);
+      }
+    };
+  }, []);
 
   const handleClick = async () => {
     if (!clicked) {
@@ -21,24 +67,26 @@ const AnimatedUpVote: React.FC<AnimatedUpVoteProps> = ({ voteCount }) => {
 
       if (!hasVoted) {
         setHasVoted(true);
-        setCount(count + 1);
-        await fetch("http://localhost:3000/addVote", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ questionId: "yourQuestionId" }),
+        const response = await axiosInstance.post("questions/addvote", {
+          idQuest: questionId,
+          idUser: idUser,
         });
+        const response2 = await axiosInstance.get(
+          `questions/getVotes/${idQuestion}`
+        );
+        setCount(response2.data);
+        console.log("Vote added:", response.data);
       } else {
         setHasVoted(false);
-        setCount(count - 1);
-        await fetch("http://localhost:3000/removeVote", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ questionId: "yourQuestionId" }),
+        const response = await axiosInstance.post("questions/removevote", {
+          idQuest: idQuestion,
+          idUser: idUser,
         });
+        const response2 = await axiosInstance.get(
+          `questions/getVotes/${idQuestion}`
+        );
+        setCount(response2.data);
+        console.log("Vote removed:", response.data);
       }
     }
   };
@@ -52,6 +100,8 @@ const AnimatedUpVote: React.FC<AnimatedUpVoteProps> = ({ voteCount }) => {
         onClick={handleClick}
       >
         <span className="arrow"></span>
+        <div className="wire1"></div>
+        <div className="wire2"></div>
       </button>
     </div>
   );

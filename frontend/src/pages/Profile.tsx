@@ -4,7 +4,7 @@ import "./Profile.css";
 import QuestionComp from "../components/QuestionComp";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import ProfilePicture from "../components/ProfilePicture";
 import TagCreationPopup from "../components/TagCreationPopup";
 
@@ -20,9 +20,19 @@ export interface Question {
   status: boolean;
 }
 
+type Tag = {
+  idTag: string;
+  idUser: string;
+  name: string;
+  description: string;
+  occurrence: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
 const Profile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();  // Initialize navigate
+  const navigate = useNavigate(); // Initialize navigate
   const [user, setUser] = useState<{
     name: string;
     email: string;
@@ -34,19 +44,8 @@ const Profile: React.FC = () => {
   const [favorites, setFavorites] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [isTagPopupOpen, setIsTagPopupOpen] = useState(false);
-
-  const [existingTags, setExistingTags] = useState<string[]>([
-    "JavaScript",
-    "React",
-    "TypeScript",
-    "Node.js",
-    "CSS",
-    "HTML",
-    "GraphQL",
-    "Redux",
-    "Jest",
-    "MongoDB",
-  ]);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [existingTags, setExistingTags] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -78,6 +77,14 @@ const Profile: React.FC = () => {
 
     fetchUserData();
   }, [id]);
+
+  useEffect(() => {
+    axiosInstance.get("/tags").then((response) => {
+      setTags(response.data);
+    });
+    const newExistingTags = tags.map((tag) => tag.name);
+    setExistingTags(newExistingTags);
+  }, [tags]);
 
   const handleCreateTag = (tagName: string) => {
     console.log("New tag created:", tagName);
@@ -128,10 +135,16 @@ const Profile: React.FC = () => {
                 </div>
                 {/* Buttons to change password and name */}
                 <div className="buttonContainer">
-                  <button onClick={handleChangePasswordClick} className="simpleButton">
+                  <button
+                    onClick={handleChangePasswordClick}
+                    className="simpleButton"
+                  >
                     Change Password
                   </button>
-                  <button onClick={handleChangeNameClick} className="simpleButton">
+                  <button
+                    onClick={handleChangeNameClick}
+                    className="simpleButton"
+                  >
                     Change Name
                   </button>
                 </div>
