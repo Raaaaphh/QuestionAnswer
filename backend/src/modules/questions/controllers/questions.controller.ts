@@ -43,6 +43,16 @@ export class QuestionsController {
         }
     }
 
+    @Get('getQuestionsForUser/:id')
+    getQuestionsForUser(@Param('id') id: string) {
+        try {
+            return this.questionsService.getQuestionsForUser(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     @Get('findReported/params')
     findReportedQuestions(@Query('limit') limit: string, @Query('page') page: string) {
         try {
