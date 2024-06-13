@@ -172,6 +172,26 @@ export class QuestionsController {
         }
     }
 
+    @Get('getQuestionsByUser/:idUser')
+    getQuestionsByUser(@Param('idUser') id: string) {
+        try {
+            return this.questionsService.getQuestionsByUser(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    @Get('getVotesByUser/:idUser')
+    getVotesByUser(@Param('idUser') id: string) {
+        try {
+            return this.questionsService.getVotesByUser(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     @Post('create')
     @UseGuards(StudentGuard)
     createQuestion(@Body() quest: QuestionCreateDto) {

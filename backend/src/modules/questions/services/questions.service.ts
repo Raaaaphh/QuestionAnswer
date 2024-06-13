@@ -274,6 +274,61 @@ export class QuestionsService {
         }
     }
 
+    async getQuestionsByUser(id: string) {
+        const transaction = await this.sequelize.transaction();
+        try {
+            if (!isValidUUID(id)) {
+                throw new BadRequestException('Invalid user ID');
+            }
+
+            const questions = await this.questModel.findAll({
+                where: {
+                    idUser: id
+                },
+                transaction
+            });
+
+            if (!questions || questions.length === 0) {
+                throw new NotFoundException('Questions not found');
+            }
+
+            await transaction.commit();
+            return questions.length;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async getVotesByUser(id: string) {
+        const transaction = await this.sequelize.transaction();
+        try {
+            if (!isValidUUID(id)) {
+                throw new BadRequestException('Invalid user ID');
+            }
+
+            const questions = await this.questModel.findAll({
+                where: {
+                    idUser: id
+                },
+                transaction
+            });
+
+            if (!questions || questions.length === 0) {
+                throw new NotFoundException('Questions not found');
+            }
+
+            let votes = 0;
+            for (const question of questions) {
+                votes += question.votes;
+            }
+
+            await transaction.commit();
+            return votes;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     async createQuestion(quest: QuestionCreateDto) {
         const idQuest = uuidv4();
 
