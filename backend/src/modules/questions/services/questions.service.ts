@@ -224,6 +224,56 @@ export class QuestionsService {
         }
     }
 
+    async getVotes(id: string) {
+        const transaction = await this.sequelize.transaction();
+        try {
+            if (!isValidUUID(id)) {
+                throw new BadRequestException('Invalid question ID');
+            }
+            const question = await this.questModel.findOne({
+                where: {
+                    idQuest: id
+                },
+                transaction
+            });
+
+            if (!question) {
+                throw new NotFoundException('Question not found');
+            }
+
+            await transaction.commit();
+            return question.votes;
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async getFlags(id: string) {
+        const transaction = await this.sequelize.transaction();
+        try {
+            if (!isValidUUID(id)) {
+                throw new BadRequestException('Invalid question ID');
+            }
+            const question = await this.questModel.findOne({
+                where: {
+                    idQuest: id
+                },
+                transaction
+            });
+
+            if (!question) {
+                throw new NotFoundException('Question not found');
+            }
+
+            await transaction.commit();
+            return { flagsSpam: question.flagsSpam, flagsInappropriate: question.flagsInappropriate };
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     async createQuestion(quest: QuestionCreateDto) {
         const idQuest = uuidv4();
 
@@ -484,6 +534,38 @@ export class QuestionsService {
             throw new HttpException(error.message || 'Error during the removal of report', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    async removeAllFlags(id: string) {
+        const idQuest = id;
+        const transaction = await this.sequelize.transaction();
+        try {
+            const quest = await this.questModel.findOne({
+                where: { idQuest },
+                transaction,
+            });
+
+            if (!quest) {
+                throw new HttpException('Question not found', HttpStatus.NOT_FOUND);
+            }
+
+            quest.flagsSpam = 0;
+            quest.flagsInappropriate = 0;
+            await quest.save({ transaction });
+
+            await this.flagModel.destroy({
+                where: { idQuest },
+                transaction,
+            });
+
+            await transaction.commit();
+            return { status: 'Success', message: 'All flags removed successfully' };
+        } catch (error) {
+            await transaction.rollback();
+            console.error(error);
+            throw new HttpException(error.message || 'Error during the removal of all reports', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     async editQuestion(question: QuestionEditDto) {
         const transaction = await this.sequelize.transaction();

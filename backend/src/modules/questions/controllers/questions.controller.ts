@@ -152,6 +152,26 @@ export class QuestionsController {
         }
     }
 
+    @Get('getVotes/:idQuest')
+    getVotes(@Param('idQuest') id: string) {
+        try {
+            return this.questionsService.getVotes(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    @Get('getFlags/:idQuest')
+    getFlags(@Param('idQuest') id: string) {
+        try {
+            return this.questionsService.getFlags(id);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     @Post('create')
     @UseGuards(StudentGuard)
     createQuestion(@Body() quest: QuestionCreateDto) {
@@ -206,6 +226,16 @@ export class QuestionsController {
     removeFlag(@Body() dto: QuestionFlagDto) {
         try {
             return this.questionsService.removeFlag(dto);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    @Post('removeAllFlags/:idQuest')
+    removeAllFlags(@Param('idQuest') id: string) {
+        try {
+            return this.questionsService.removeAllFlags(id);
         }
         catch (error) {
             console.log(error);
