@@ -57,22 +57,34 @@ const AnimatedUpVote: React.FC<AnimatedUpVoteProps> = ({
 
       if (!hasVoted) {
         setHasVoted(true);
-        setCount(count + 1);
-        const response = await axiosInstance.post("questions/addVote", {
-          questionId: questionId,
-          userId: idUser,
+        const response = await axiosInstance.post("questions/addvote", {
+          idQuest: questionId,
+          idUser: idUser,
         });
+
+        const response2 = await axiosInstance.get("questions/getvote", {
+          params: {
+            idQuest: questionId,
+          },
+        });
+        setCount(response2.data);
+        window.location.reload();
         console.log("Vote added:", response.data);
       } else {
         setHasVoted(false);
-        setCount(count - 1);
-        await fetch("http://localhost:3000/removeVote", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ questionId: "yourQuestionId" }),
+        const response = await axiosInstance.post("questions/removevote", {
+          idQuest: questionId,
+          idUser: idUser,
         });
+
+        const response2 = await axiosInstance.get("questions/getvote", {
+          params: {
+            idQuest: questionId,
+          },
+        });
+        setCount(response2.data);
+        window.location.reload();
+        console.log("Vote removed:", response.data);
       }
     }
   };
