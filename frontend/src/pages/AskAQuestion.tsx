@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 import { jwtDecode } from "jwt-decode";
 import TextAreaComponent from "../components/TextArea";
+import ReturnButton from "../components/ReturnButton";
 
 type MyJwtPayload = {
   id: string;
@@ -193,6 +194,10 @@ function AskAQuestion() {
   return (
     <div>
       <Header />
+      <div className="returnButtonContainer">
+        <ReturnButton />
+      </div>
+      <div className="profileContainer"></div>
       <div className="askContainer">
         <div className="askFormSection">
           <form className="askForm" onSubmit={handleSubmit}>
