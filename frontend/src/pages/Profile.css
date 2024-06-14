@@ -86,8 +86,8 @@
 .buttonContainer {
   display: flex;
   gap: 10px;
-  justify-content: center; /* Center align the buttons horizontally */
-  margin-top: 20px; /* Add some space above the buttons */
+  justify-content: center;
+  margin-top: 20px; 
 }
 
 .simpleButton {
