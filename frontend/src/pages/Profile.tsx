@@ -7,7 +7,7 @@ import { jwtDecode } from "jwt-decode";
 import ProfilePicture from "../components/ProfilePicture";
 import Header from "../components/Header";
 import TagCreationPopup from "../components/TagCreationPopup";
-import UserSearchPopup from "../components/UserSearchPopup"; // Import the new component
+import UserSearchPopup from "../components/UserSearchPopup";
 import ReturnButton from "../components/ReturnButton";
 
 export interface Question {
@@ -140,7 +140,6 @@ const Profile: React.FC = () => {
         <ReturnButton />
       </div>
       <div className="profileContainer">
-        
         {user ? (
           <div className="profileSection">
             <div className="userInfos">
@@ -231,9 +230,7 @@ const Profile: React.FC = () => {
         />
       )}
       {isUserSearchPopupOpen && (
-        <UserSearchPopup
-          onClose={() => setIsUserSearchPopupOpen(false)}
-        />
+        <UserSearchPopup onClose={() => setIsUserSearchPopupOpen(false)} />
       )}
     </div>
   );
