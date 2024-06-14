@@ -7,6 +7,8 @@ import { jwtDecode } from "jwt-decode";
 import ProfilePicture from "../components/ProfilePicture";
 import Header from "../components/Header";
 import TagCreationPopup from "../components/TagCreationPopup";
+import UserSearchPopup from "../components/UserSearchPopup"; // Import the new component
+import ReturnButton from "../components/ReturnButton";
 
 export interface Question {
   idQuest: string;
@@ -44,6 +46,7 @@ const Profile: React.FC = () => {
   const [favorites, setFavorites] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [isTagPopupOpen, setIsTagPopupOpen] = useState(false);
+  const [isUserSearchPopupOpen, setIsUserSearchPopupOpen] = useState(false); // New state for user search popup
   const [tags, setTags] = useState<Tag[]>([]);
   const [existingTags, setExistingTags] = useState<string[]>([]);
 
@@ -133,7 +136,11 @@ const Profile: React.FC = () => {
   return (
     <div>
       <Header />
+      <div className="returnButtonContainer">
+        <ReturnButton />
+      </div>
       <div className="profileContainer">
+        
         {user ? (
           <div className="profileSection">
             <div className="userInfos">
@@ -177,6 +184,12 @@ const Profile: React.FC = () => {
                     >
                       Create a tag
                     </button>
+                    <button
+                      onClick={() => setIsUserSearchPopupOpen(true)} // Open user search popup
+                      className="simpleButton"
+                    >
+                      Search User
+                    </button>
                   </div>
                 )}
               </div>
@@ -215,6 +228,11 @@ const Profile: React.FC = () => {
           onClose={() => setIsTagPopupOpen(false)}
           onSubmit={handleCreateTag}
           existingTags={existingTags}
+        />
+      )}
+      {isUserSearchPopupOpen && (
+        <UserSearchPopup
+          onClose={() => setIsUserSearchPopupOpen(false)}
         />
       )}
     </div>

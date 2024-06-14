@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./ChangeInfo.css";
 import returnArrow from "../assets/returnArrow.svg";
 import { useNavigate } from "react-router-dom";
+import ReturnButton from "../components/ReturnButton";
 import { jwtDecode } from "jwt-decode";
 import axiosInstance from "../utils/axiosInstance";
 
@@ -91,18 +92,11 @@ const ChangeInfo: React.FC<{ isPassword: boolean }> = ({ isPassword }) => {
     }
   };
 
-  const handleReturnClick = () => {
-    navigate(-1);
-  };
+  //!!! IL FAUT AUSSI VERIFIER SI LE MOT DE PASSE ACTUEL EST CORRECT AVANT DE CHANGER LE MOT DE PASSE
 
   return (
     <div>
-      <img
-        src={returnArrow}
-        alt="return"
-        className="return-arrow"
-        onClick={handleReturnClick}
-      />
+      <ReturnButton />
       <div className="change-info-container">
         {isPassword ? (
           <div>
