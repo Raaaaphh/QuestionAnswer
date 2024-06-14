@@ -70,7 +70,6 @@ const UserSearchPopup: React.FC<UserSearchPopupProps> = ({ onClose }) => {
       console.error("Error updating user role", error);
     }
   };
-  
 
   const handleClickOutside = (event: MouseEvent) => {
     if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
@@ -89,18 +88,19 @@ const UserSearchPopup: React.FC<UserSearchPopupProps> = ({ onClose }) => {
     <div className="popupOverlay">
       <div className="popupContent" ref={popupRef}>
         <button onClick={onClose} className="closeButton">X</button>
-        <h3>Search User</h3>
+        <h3 className="popupTitle">Search User</h3>
         <input
-            type="email"
-            placeholder="Enter user email"
-            value={searchEmail}
-            onChange={(e) => {
-                const { value } = e.target;
-                setSearchEmail(value);
-                if (value.trim() === "") {
-                setSearchResults([]);
-                }
-            }}
+          type="email"
+          placeholder="Enter user email"
+          value={searchEmail}
+          onChange={(e) => {
+            const { value } = e.target;
+            setSearchEmail(value);
+            if (value.trim() === "") {
+              setSearchResults([]);
+            }
+          }}
+          className="searchInput"
         />
         {loading && <p>Loading...</p>}
         <div className="searchResults">
@@ -109,7 +109,7 @@ const UserSearchPopup: React.FC<UserSearchPopupProps> = ({ onClose }) => {
               <p>{user.email}</p>
               <button
                 onClick={() => handleSetLecturer(user.idUser)}
-                className="simpleButton"
+                className="setLecturerButton"
               >
                 Set as Lecturer
               </button>

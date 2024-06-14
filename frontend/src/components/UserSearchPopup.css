@@ -11,11 +11,12 @@
   }
   
   .popupContent {
-    background-color: white;
+    background-color: #f0f0f0;
     padding: 20px;
-    border-radius: 5px;
-    width: 300px;
+    border-radius: 10px;
+    width: 400px;
     text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   }
   
   .closeButton {
@@ -26,6 +27,21 @@
     border: none;
     font-size: 20px;
     cursor: pointer;
+    color: #777;
+  }
+  
+  .popupTitle {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .searchInput {
+    width: 80%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
   }
   
   .searchResults {
@@ -39,8 +55,8 @@
     margin-top: 10px;
   }
   
-  .simpleButton {
-    background-color: #004A85;
+  .setLecturerButton {
+    background-color: #004a85;
     border: none;
     border-radius: 5px;
     color: white;
@@ -51,11 +67,15 @@
     transition: background-color 0.3s ease, transform 0.3s ease;
   }
   
-  .simpleButton:active {
+  .setLecturerButton:hover {
+    background-color: #004a85;
+  }
+  
+  .setLecturerButton:active {
     transform: scale(0.95);
   }
   
-  .simpleButton:focus {
+  .setLecturerButton:focus {
     outline: none;
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
   }
