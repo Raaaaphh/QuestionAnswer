@@ -4,6 +4,7 @@ import {jwtDecode} from "jwt-decode";
 import Header from "../components/Header";
 import QuestionComp from "../components/QuestionComp";
 import "./Report.css";
+import ReturnButton from "../components/ReturnButton";
 
 interface MyJwtPayload {
   id: string;
@@ -62,8 +63,12 @@ const Report = () => {
   return (
     <div>
       <Header />
+      <div className="returnButtonContainer">
+        <ReturnButton />
+      </div>
+      <div className="profileContainer"></div>
       <div className="mainContainer">
-        {isLoggedIn && userStatus === "Lecturer" ? (
+        {isLoggedIn && userStatus === "Lecturer" && (
           <div className="reportContainer">
             <h2 className="sectionTitle">Reported Questions</h2>
             <div className="questionsContainer">
@@ -72,8 +77,6 @@ const Report = () => {
               ))}
             </div>
           </div>
-        ) : (
-          <p>You are not authorized to view this page</p>
         )}
       </div>
     </div>

@@ -8,6 +8,7 @@ import { jwtDecode } from "jwt-decode";
 import ProfilePicture from "../components/ProfilePicture";
 import TagCreationPopup from "../components/TagCreationPopup";
 import UserSearchPopup from "../components/UserSearchPopup"; // Import the new component
+import ReturnButton from "../components/ReturnButton";
 
 export interface Question {
   idQuest: string;
@@ -116,7 +117,11 @@ const Profile: React.FC = () => {
   return (
     <div>
       <Header />
+      <div className="returnButtonContainer">
+        <ReturnButton />
+      </div>
       <div className="profileContainer">
+        
         {user ? (
           <div className="profileSection">
             <div className="userInfos">

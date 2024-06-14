@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./ChangeInfo.css";
 import returnArrow from "../assets/returnArrow.svg";
 import { useNavigate } from "react-router-dom";
+import ReturnButton from "../components/ReturnButton";
 
 interface User {
   id: string;
@@ -29,15 +30,13 @@ const ChangeInfo: React.FC<{ isPassword: boolean }> = ({ isPassword }) => {
     // REQUETE POUR CHANGER LE MOT DE PASSE OU LE NOM
   };
 
-  const handleReturnClick = () => {
-    navigate(-1);
-  }
+
 
   //!!! IL FAUT AUSSI VERIFIER SI LE MOT DE PASSE ACTUEL EST CORRECT AVANT DE CHANGER LE MOT DE PASSE
 
   return (
     <div>
-        <img src={returnArrow} alt="return" className="return-arrow" onClick={handleReturnClick}/>
+        <ReturnButton />
         <div className="change-info-container">
         
         {isPassword ? (

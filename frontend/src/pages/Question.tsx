@@ -12,6 +12,7 @@ import returnArrow from "../assets/returnArrow.svg";
 import bookmark from "../assets/bookmark.svg";
 import { jwtDecode } from "jwt-decode";
 import TextAreaComponent from "../components/TextArea";
+import ReturnButton from "../components/ReturnButton";
 
 interface Question {
   idQuest: string;
@@ -235,9 +236,6 @@ const Question: React.FC = () => {
     };
   }, []);
 
-  const handleReturnClick = () => {
-    navigate(-1);
-  };
 
   const handleAnswerSubmit = async () => {
     if (!user || !question || !answerText) {
@@ -329,12 +327,7 @@ const Question: React.FC = () => {
     <div>
       <Header />
       <div className="topInfos">
-        <img
-          src={returnArrow}
-          alt="return arrow"
-          onClick={handleReturnClick}
-          style={{ cursor: "pointer" }}
-        />
+        <ReturnButton/>
         {question?.status === "Solved" && (
           <div className="status solved">Question solved!</div>
         )}

@@ -83,8 +83,8 @@
 .buttonContainer {
   display: flex;
   gap: 10px;
-  justify-content: center; /* Center align the buttons horizontally */
-  margin-top: 20px; /* Add some space above the buttons */
+  justify-content: center;
+  margin-top: 20px; 
 }
 
 .simpleButton {
@@ -109,5 +109,12 @@
 .simpleButton:focus {
   outline: none;
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
+}
+
+.returnButtonContainer {
+  position: absolute;
+  top: 80px;
+  left: 20px; 
+  z-index: 10; 
 }
 
