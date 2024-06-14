@@ -74,7 +74,7 @@
   justify-content: center;
 }
 
-.questionsContainer {
+.previousQuestions .questionsContainer {
   display: flex;
   flex-direction: column;
   gap: 10px;
