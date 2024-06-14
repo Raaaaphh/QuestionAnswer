@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import Header from "../components/Header";
-import MarkdownEditor from "../components/MarkdownEditor";
 import "./AskAQuestion.css";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
