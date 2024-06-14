@@ -17,10 +17,10 @@ export class UsersController {
         }
     }
 
-    @Get('findByName/:name')
-    async findByName(@Param('name') name: string) {
+    @Get('findByEmail')
+    async findByName(@Body('email') email: string) {
         try {
-            return await this.usersService.findByName(name);
+            return await this.usersService.findByEmail(email);
         }
         catch (error) {
             console.log(error);
