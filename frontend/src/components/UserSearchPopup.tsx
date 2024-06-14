@@ -7,30 +7,39 @@ interface UserSearchPopupProps {
 }
 
 interface User {
-    idUser: string;
-    name: string;
-    email: string;
-    password: string;
-    confirmed: boolean;
-    banned: boolean;
-    color: string;
-    createdAt: string;
-    emailToken: string;
-    role: string;
-    updatedAt: string;
-  }
+  idUser: string;
+  name: string;
+  email: string;
+  password: string;
+  confirmed: boolean;
+  banned: boolean;
+  color: string;
+  createdAt: string;
+  emailToken: string;
+  role: string;
+  updatedAt: string;
+}
 
 const UserSearchPopup: React.FC<UserSearchPopupProps> = ({ onClose }) => {
   const [searchEmail, setSearchEmail] = useState("");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
 
-  const handleSearch = async () => {
+  const debounce = (func: (...args: any[]) => void, wait: number) => {
+    let timeout: NodeJS.Timeout;
+    return (...args: any[]) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+  };
+
+  const fetchUsers = async (email: string) => {
     setLoading(true);
     try {
-      const response = await axiosInstance.get(`/users/search?email=${searchEmail}`);
-      setSearchResults(response.data);
+      const response = await axiosInstance.get(`/users/findByEmail/${email}`);
+      console.log(response.data);
+      setSearchResults(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Error searching for users", error);
     } finally {
@@ -38,9 +47,19 @@ const UserSearchPopup: React.FC<UserSearchPopupProps> = ({ onClose }) => {
     }
   };
 
+  const debouncedFetchUsers = useRef(debounce(fetchUsers, 300)).current;
+
+  useEffect(() => {
+    if (searchEmail) {
+      debouncedFetchUsers(searchEmail);
+    } else {
+      setSearchResults([]);
+    }
+  }, [searchEmail, debouncedFetchUsers]);
+
   const handleSetLecturer = async (userId: string) => {
     try {
-      await axiosInstance.post(`/users/changeRole`, null, {
+      await axiosInstance.post(`/users/changeRole/params`, null, {
         params: {
           idUser: userId,
           role: "Lecturer",
@@ -51,6 +70,7 @@ const UserSearchPopup: React.FC<UserSearchPopupProps> = ({ onClose }) => {
       console.error("Error updating user role", error);
     }
   };
+  
 
   const handleClickOutside = (event: MouseEvent) => {
     if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
@@ -71,14 +91,18 @@ const UserSearchPopup: React.FC<UserSearchPopupProps> = ({ onClose }) => {
         <button onClick={onClose} className="closeButton">X</button>
         <h3>Search User</h3>
         <input
-          type="email"
-          placeholder="Enter user email"
-          value={searchEmail}
-          onChange={(e) => setSearchEmail(e.target.value)}
+            type="email"
+            placeholder="Enter user email"
+            value={searchEmail}
+            onChange={(e) => {
+                const { value } = e.target;
+                setSearchEmail(value);
+                if (value.trim() === "") {
+                setSearchResults([]);
+                }
+            }}
         />
-        <button onClick={handleSearch} className="simpleButton">
-          {loading ? "Searching..." : "Search"}
-        </button>
+        {loading && <p>Loading...</p>}
         <div className="searchResults">
           {searchResults.map((user) => (
             <div key={user.idUser} className="searchResultItem">
