@@ -19,7 +19,7 @@ export class FavoritesController {
         }
     }
 
-    @Get('findByQuest/')
+    @Get('findByQuest/:id')
     async getFavoritesQuestion(@Param('id') id: string) {
         try {
             return await this.favService.getFavoritesQuestion(id);
@@ -35,7 +35,7 @@ export class FavoritesController {
         }
     }
 
-    @Get('findByUser/')
+    @Get('findByUser/:id')
     async getFavoritesUser(@Param('id') id: string) {
         try {
             return await this.favService.getFavoritesUser(id);
@@ -51,7 +51,7 @@ export class FavoritesController {
         }
     }
 
-    @Get('notify/')
+    @Get('notify/:idUser')
     async notifyFavorites(@Param('idUser') idUser: string) {
         try {
             return await this.favService.notifyFavorites(idUser);

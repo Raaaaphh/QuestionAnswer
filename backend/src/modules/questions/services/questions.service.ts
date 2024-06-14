@@ -56,6 +56,23 @@ export class QuestionsService {
         return questions;
     }
 
+    async getQuestionsForUser(id: string) {
+        if (!isValidUUID(id)) {
+            throw new BadRequestException('Invalid user ID');
+        }
+
+        const questions = await this.questModel.findAll({
+            where: {
+                idUser: id
+            }
+        });
+
+        if (!questions || questions.length === 0) {
+            throw new ForbiddenException('Questions not found');
+        }
+        return questions;
+    }
+
     async findReportedQuestions(limit: string, page: string) {
         const intLimit = parseInt(limit, 10);
         const intPage = parseInt(page, 10);
