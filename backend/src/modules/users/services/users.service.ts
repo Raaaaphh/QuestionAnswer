@@ -35,24 +35,25 @@ export class UsersService {
     }
 
 
-    async findByName(name: string) {
+    async findByEmail(email: string) {
         try {
             const users = await this.userModel.findAll({
                 where: {
-                    name: {
-                        [Op.like]: `%${name.toLowerCase()}%`
+                    email: {
+                        [Op.like]: `${email}%`
                     }
-                }
+                },
+                limit: 5,
             });
 
             if (users.length === 0) {
-                throw new NotFoundException(`User with name ${name} not found`);
+                throw new NotFoundException(`User with name ${email} not found`);
             }
 
             return users;
         } catch (error) {
             console.log(error);
-            throw new NotFoundException(`User with name ${name} not found`);
+            throw new NotFoundException(`User with name ${email} not found`);
         }
 
     }
@@ -154,7 +155,7 @@ export class UsersService {
             const user = await this.userModel.findOne({
                 where: {
                     idUser: id
-                }
+                },
             });
 
             if (!user) {
