@@ -155,7 +155,6 @@ h1 {
   height: 50px;
 }
 
-/* Dropdown styling */
 .dropdown {
   position: absolute;
   top: 100%;
@@ -165,12 +164,15 @@ h1 {
   border-radius: 4px;
   z-index: 10;
   display: none;
+  margin: 0;
+  padding: 0;
 }
 
 .notificationMenu .dropdown,
 .profileMenu .dropdown,
 .filterMenu .dropdown {
   display: block;
+  list-style-type: none;
 }
 
 .dropdownItem {
