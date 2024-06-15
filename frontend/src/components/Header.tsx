@@ -86,7 +86,7 @@ const Header: React.FC = () => {
           </Link>
         </div>
       )}
-      {userStatus && <div>User Status: {userStatus}</div>}
+      {/* {userStatus && <div>User Status: {userStatus}</div>} */}
     </header>
   );
 };

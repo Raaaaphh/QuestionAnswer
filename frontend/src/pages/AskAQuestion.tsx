@@ -386,7 +386,7 @@ function AskAQuestion() {
               )}
             </div>
 
-            <div className="fileSelectorContainer">
+            {/* <div className="fileSelectorContainer">
               <h2>Select images or screenshots (up to 5):</h2>
               <input
                 type="file"
@@ -414,7 +414,7 @@ function AskAQuestion() {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
 
             <button type="submit" className="submitButton">
               Submit
