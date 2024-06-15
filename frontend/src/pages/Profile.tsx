@@ -3,7 +3,7 @@ import "./Profile.css";
 import QuestionComp from "../components/QuestionComp";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import ProfilePicture from "../components/ProfilePicture";
 import Header from "../components/Header";
 import TagCreationPopup from "../components/TagCreationPopup";
@@ -20,6 +20,14 @@ export interface Question {
   flagsSpam: number;
   flagsInappropiate: number;
   status: boolean;
+}
+
+interface Answer {
+  idAnsw: string;
+  idUser: string;
+  idQuest: string;
+  description: string;
+  updatedAt: string;
 }
 
 type Tag = {
@@ -43,10 +51,11 @@ const Profile: React.FC = () => {
     role: string;
   } | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [answers, setAnswers] = useState<Answer[]>([]);
   const [favorites, setFavorites] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [isTagPopupOpen, setIsTagPopupOpen] = useState(false);
-  const [isUserSearchPopupOpen, setIsUserSearchPopupOpen] = useState(false); // New state for user search popup
+  const [isUserSearchPopupOpen, setIsUserSearchPopupOpen] = useState(false);
   const [tags, setTags] = useState<Tag[]>([]);
   const [existingTags, setExistingTags] = useState<string[]>([]);
 
@@ -54,31 +63,29 @@ const Profile: React.FC = () => {
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem("token");
-        console.log("Token:", token);
+        if (!token) throw new Error("No token found");
 
-        if (!token) {
-          throw new Error("No token found");
+        const { id: userId } = jwtDecode<{ id: string }>(token);
+
+        const { data: userData } = await axiosInstance.get(`/users/${userId}`);
+        setUser(userData);
+
+        if (userData.role === 'Student') {
+          const { data: previousQuestions } = await axiosInstance.get(`/questions/getQuestionsForUser/${userId}`);
+          setQuestions(previousQuestions);
+
+          const { data: favoritesQuestions } = await axiosInstance.get(`/favorites/findByUser/${userId}`);
+          setFavorites(favoritesQuestions);
         }
 
-        const decodedToken = jwtDecode<{ id: string }>(token);
-        const userId = decodedToken.id;
-        console.log("User ID:", userId);
-
-        const userResponse = await axiosInstance.get(`/users/${userId}`);
-        console.log("User Response:", userResponse.data);
-        setUser(userResponse.data);
-
-        const previousQuestions = await axiosInstance.get(
-          `/questions/getQuestionsForUser/${userId}`
-        );
-        console.log("Previous Questions:", previousQuestions.data);
-        setQuestions(previousQuestions.data);
-
-        const favoritesQuestions = await axiosInstance.get(
-          `/favorites/findByUser/${userId}`
-        );
-        console.log("Favorites Questions:", favoritesQuestions.data);
-        setFavorites(favoritesQuestions.data);
+        if (userData.role === 'Lecturer') {
+          const { data: previousAnswers } = await axiosInstance.get(`/answers/findByUser/${userId}`);
+          const uniqueAnswers = previousAnswers.filter(
+            (answer: Answer, index: number, self: Answer[]) =>
+              index === self.findIndex((a) => a.idQuest === answer.idQuest)
+          );
+          setAnswers(uniqueAnswers);
+        }
       } catch (error) {
         console.error("Error fetching data", error);
       } finally {
@@ -92,9 +99,8 @@ const Profile: React.FC = () => {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const response = await axiosInstance.get("/tags");
-        console.log("Tags:", response.data);
-        setTags(response.data);
+        const { data: tagsData } = await axiosInstance.get("/tags");
+        setTags(tagsData);
       } catch (error) {
         console.error("Error fetching tags", error);
       }
@@ -104,12 +110,10 @@ const Profile: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const newExistingTags = tags.map((tag) => tag.name);
-    setExistingTags(newExistingTags);
+    setExistingTags(tags.map((tag) => tag.name));
   }, [tags]);
 
   const handleCreateTag = (tagName: string) => {
-    console.log("New tag created:", tagName);
     setExistingTags((prevTags) => [...prevTags, tagName]);
   };
 
@@ -144,9 +148,7 @@ const Profile: React.FC = () => {
           <div className="profileSection">
             <div className="userInfos">
               <div className="avatarUsername">
-                <div className="profilePicture">
-                  <ProfilePicture userId={user.idUser} />
-                </div>
+                <ProfilePicture userId={user.idUser} />
                 <h2>{user.name}</h2>
               </div>
               <div className="userDetails">
@@ -159,16 +161,10 @@ const Profile: React.FC = () => {
                   <p>{user.email}</p>
                 </div>
                 <div className="buttonContainer">
-                  <button
-                    onClick={handleChangePasswordClick}
-                    className="simpleButton"
-                  >
+                  <button onClick={handleChangePasswordClick} className="simpleButton">
                     Change Password
                   </button>
-                  <button
-                    onClick={handleChangeNameClick}
-                    className="simpleButton"
-                  >
+                  <button onClick={handleChangeNameClick} className="simpleButton">
                     Change Name
                   </button>
                 </div>
@@ -177,57 +173,53 @@ const Profile: React.FC = () => {
                     <Link to="/reported" className="simpleButton">
                       Go to Report
                     </Link>
-                    <button
-                      onClick={() => setIsTagPopupOpen(true)}
-                      className="simpleButton"
-                    >
+                    <button onClick={() => setIsTagPopupOpen(true)} className="simpleButton">
                       Create a tag
                     </button>
-                    <button
-                      onClick={() => setIsUserSearchPopupOpen(true)} // Open user search popup
-                      className="simpleButton"
-                    >
+                    <button onClick={() => setIsUserSearchPopupOpen(true)} className="simpleButton">
                       Search User
                     </button>
                   </div>
                 )}
               </div>
             </div>
-            <div className="previousQuestions">
-              <h3>Previous Questions</h3>
-              <div className="questionsContainer">
-                {questions.map((question) => (
-                  <QuestionComp
-                    key={question.idQuest}
-                    idQuest={question.idQuest}
-                    reportDisplay={false}
-                  />
-                ))}
+            {user.role === "Lecturer" && (
+              <div className="previousQuestions">
+                <h3>Previous Answers</h3>
+                <div className="questionsContainer">
+                  {answers.map((answer) => (
+                    <QuestionComp key={answer.idAnsw} idQuest={answer.idQuest} reportDisplay={false} />
+                  ))}
+                </div>
               </div>
-            </div>
-            <div className="followedQuestions">
-              <h3>Followed Questions</h3>
-              <div className="questionsContainer">
-                {favorites.map((question) => (
-                  <QuestionComp
-                    key={question.idQuest}
-                    idQuest={question.idQuest}
-                    reportDisplay={false}
-                  />
-                ))}
+            )}
+            {user.role === "Student" && (
+              <div>
+                <div className="previousQuestions">
+                  <h3>Previous Questions</h3>
+                  <div className="questionsContainer">
+                    {questions.map((question) => (
+                      <QuestionComp key={question.idQuest} idQuest={question.idQuest} reportDisplay={false} />
+                    ))}
+                  </div>
+                </div>
+                <div className="followedQuestions">
+                  <h3>Followed Questions</h3>
+                  <div className="questionsContainer">
+                    {favorites.map((question) => (
+                      <QuestionComp key={question.idQuest} idQuest={question.idQuest} reportDisplay={false} />
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         ) : (
           <p>No user data available.</p>
         )}
       </div>
       {isTagPopupOpen && (
-        <TagCreationPopup
-          onClose={() => setIsTagPopupOpen(false)}
-          onSubmit={handleCreateTag}
-          existingTags={existingTags}
-        />
+        <TagCreationPopup onClose={() => setIsTagPopupOpen(false)} onSubmit={handleCreateTag} existingTags={existingTags} />
       )}
       {isUserSearchPopupOpen && (
         <UserSearchPopup onClose={() => setIsUserSearchPopupOpen(false)} />
