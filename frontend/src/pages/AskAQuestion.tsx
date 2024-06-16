@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import Header from "../components/Header";
-import MarkdownEditor from "../components/MarkdownEditor";
 import "./AskAQuestion.css";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 import { jwtDecode } from "jwt-decode";
 import TextAreaComponent from "../components/TextArea";
+import ReturnButton from "../components/ReturnButton";
 
 type MyJwtPayload = {
   id: string;
@@ -194,6 +194,10 @@ function AskAQuestion() {
   return (
     <div>
       <Header />
+      <div className="returnButtonContainer">
+        <ReturnButton />
+      </div>
+      <div className="profileContainer"></div>
       <div className="askContainer">
         <div className="askFormSection">
           <form className="askForm" onSubmit={handleSubmit}>
@@ -382,7 +386,7 @@ function AskAQuestion() {
               )}
             </div>
 
-            <div className="fileSelectorContainer">
+            {/* <div className="fileSelectorContainer">
               <h2>Select images or screenshots (up to 5):</h2>
               <input
                 type="file"
@@ -410,7 +414,7 @@ function AskAQuestion() {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
 
             <button type="submit" className="submitButton">
               Submit
