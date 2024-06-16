@@ -59,6 +59,11 @@ export class AuthController {
         }
     }
 
+    /**
+     *  Verify the email of the user
+     * @param emailToken 
+     * @returns 
+     */
     @Patch('verify-email')
     async verifyEmail(@Body('emailToken') emailToken: string) {
         try {
@@ -72,6 +77,12 @@ export class AuthController {
         }
     }
 
+    /**
+     *  Register a user with an invitation token
+     * @param token 
+     * @param authreg 
+     * @returns 
+     */
     @Post('register/invitation?')
     async registerWithToken(@Query('token') token: string, @Body() authreg: AuthRegisterDto) {
         try {

@@ -19,6 +19,11 @@ export class FavoritesController {
         }
     }
 
+    /**
+     * Get favorites by question
+     * @param id 
+     * @returns 
+     */
     @Get('findByQuest/:id')
     async getFavoritesQuestion(@Param('id') id: string) {
         try {
@@ -35,6 +40,11 @@ export class FavoritesController {
         }
     }
 
+    /**
+     * Get favorites by user
+     * @param id 
+     * @returns 
+     */
     @Get('findByUser/:id')
     async getFavoritesUser(@Param('id') id: string) {
         try {
@@ -51,6 +61,11 @@ export class FavoritesController {
         }
     }
 
+    /**
+     * To have all user notifications of resolved questions bookmarked
+     * @param idUser 
+     * @returns 
+     */
     @Get('notify/:idUser')
     async notifyFavorites(@Param('idUser') idUser: string) {
         try {
@@ -67,6 +82,12 @@ export class FavoritesController {
         }
     }
 
+    /**
+     * Check if a question is bookmarked by a user
+     * @param idUser 
+     * @param idQuest 
+     * @returns 
+     */
     @Get('check')
     async checkFavorite(@Query('idUser') idUser: string, @Query('idQuest') idQuest: string) {
         try {
@@ -112,6 +133,11 @@ export class FavoritesController {
         }
     }
 
+    /**
+     * To remove notification of a resolved favorite question
+     * @param favDto 
+     * @returns 
+     */
     @Post('deleteNotified')
     async deleteNotified(@Body() favDto: FavoriteDto) {
         try {

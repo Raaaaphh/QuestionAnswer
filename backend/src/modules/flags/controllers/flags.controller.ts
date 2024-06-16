@@ -5,6 +5,12 @@ import { FlagsService } from '../services/flags.service';
 export class FlagsController {
     constructor(private flagsService: FlagsService) { }
 
+    /**
+     * Check if a user has flagged a question
+     * @param idUser 
+     * @param idQuest 
+     * @returns 
+     */
     @Get('check')
     async checkFlag(@Query('idUser') idUser: string, @Query('idQuest') idQuest: string) {
         try {

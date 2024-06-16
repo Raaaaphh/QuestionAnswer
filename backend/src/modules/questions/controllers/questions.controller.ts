@@ -2,12 +2,18 @@ import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Query,
 import { QuestionCreateDto, QuestionEditDto, QuestionFlagDto, QuestionVoteDto } from "../dto";
 import { QuestionsService } from "../services/questions.service";
 import { StudentGuard } from "../../../guards/student.guard";
+import { AdminGuard } from "src/guards/admin.guard";
 
 @Controller('questions')
 export class QuestionsController {
     constructor(private questionsService: QuestionsService) {
     }
 
+    /**
+     * Get a question by id
+     * @param id 
+     * @returns 
+     */
     @Get(':id')
     getQuestion(@Param('id') id: string) {
         try {
@@ -27,6 +33,12 @@ export class QuestionsController {
         }
     }
 
+    /**
+     * Get all questions with limit and page
+     * @param limit 
+     * @param page 
+     * @returns 
+     */
     @Get('all/params')
     findAllWithLimit(@Query('limit') limit: string, @Query('page') page: string) {
         try {
@@ -43,6 +55,11 @@ export class QuestionsController {
         }
     }
 
+    /**
+     * Get all questions for a user with his id
+     * @param id 
+     * @returns 
+     */
     @Get('getQuestionsForUser/:id')
     getQuestionsForUser(@Param('id') id: string) {
         try {
@@ -53,6 +70,12 @@ export class QuestionsController {
         }
     }
 
+    /**
+     * Get all questions with more than 5 flags, with limit and page
+     * @param limit 
+     * @param page 
+     * @returns 
+     */
     @Get('findReported/params')
     findReportedQuestions(@Query('limit') limit: string, @Query('page') page: string) {
         try {
@@ -69,6 +92,13 @@ export class QuestionsController {
         }
     }
 
+    /**
+     * Find questions with the search bar, with limit and page
+     * @param search 
+     * @param limit 
+     * @param page 
+     * @returns 
+     */
     @Get('findByName/params')
     searchQuestions(@Query('search') search: string, @Query('limit') limit: string, @Query('page') page: string) {
         try {
@@ -88,6 +118,13 @@ export class QuestionsController {
         }
     }
 
+    /**
+     * Get all questions with a filter, like only the question solved, with limit and page
+     * @param filter 
+     * @param limit 
+     * @param page 
+     * @returns 
+     */
     @Get('findByFilter/params')
     searchQuestionsByFilter(@Query('filter') filter: string, @Query('limit') limit: string, @Query('page') page: string) {
         try {
@@ -107,6 +144,13 @@ export class QuestionsController {
         }
     }
 
+    /**
+     * Questions with the name of the user, with limit and page
+     * @param name 
+     * @param limit 
+     * @param page 
+     * @returns 
+     */
     @Get('findByUser/params')
     searchQuestionsByUser(@Query('name') name: string, @Query('limit') limit: string, @Query('page') page: string) {
         try {
@@ -127,6 +171,13 @@ export class QuestionsController {
         }
     }
 
+    /**
+     * Find questions with tags, with limit and page
+     * @param tags 
+     * @param limit 
+     * @param page 
+     * @returns 
+     */
     @Get('findByTags/params')
     async searchQuestionsByTags(@Query('tags') tags: string, @Query('limit') limit: string, @Query('page') page: string) {
         try {
@@ -153,6 +204,11 @@ export class QuestionsController {
         }
     }
 
+    /**
+     * Get all tags for a question
+     * @param id 
+     * @returns 
+     */
     @Get('tagsForQuestion/:id')
     getTagsForQuestion(@Param('id') id: string) {
         try {
@@ -163,6 +219,11 @@ export class QuestionsController {
         }
     }
 
+    /**
+     * Get the number of votes for a question 
+     * @param id 
+     * @returns 
+     */
     @Get('getVotes/:idQuest')
     getVotes(@Param('idQuest') id: string) {
         try {
@@ -173,6 +234,11 @@ export class QuestionsController {
         }
     }
 
+    /**
+     * Get the number of flags for a question
+     * @param id 
+     * @returns 
+     */
     @Get('getFlags/:idQuest')
     getFlags(@Param('idQuest') id: string) {
         try {
@@ -183,6 +249,11 @@ export class QuestionsController {
         }
     }
 
+    /**
+     * Get the number of questions for a user 
+     * @param id 
+     * @returns 
+     */
     @Get('getQuestionsByUser/:idUser')
     getQuestionsByUser(@Param('idUser') id: string) {
         try {
@@ -193,6 +264,11 @@ export class QuestionsController {
         }
     }
 
+    /**
+     * Get the number of votes for a user
+     * @param id 
+     * @returns 
+     */
     @Get('getVotesByUser/:idUser')
     getVotesByUser(@Param('idUser') id: string) {
         try {
@@ -223,6 +299,11 @@ export class QuestionsController {
         }
     }
 
+    /**
+     * Set a question as solved
+     * @param dto 
+     * @returns 
+     */
     @Post('setSolved')
     setSolved(@Body() dto: QuestionVoteDto) {
         try {
@@ -273,7 +354,13 @@ export class QuestionsController {
         }
     }
 
+    /**
+     * Remove all flags for a question 
+     * @param id 
+     * @returns 
+     */
     @Post('removeAllFlags/:idQuest')
+    @UseGuards(AdminGuard)
     removeAllFlags(@Param('idQuest') id: string) {
         try {
             return this.questionsService.removeAllFlags(id);

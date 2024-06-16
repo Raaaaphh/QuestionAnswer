@@ -17,6 +17,11 @@ export class UsersController {
         }
     }
 
+    /**
+     * Find a user by email
+     * @param email 
+     * @returns 
+     */
     @Get('findByEmail')
     async findByName(@Body('email') email: string) {
         try {
@@ -47,6 +52,12 @@ export class UsersController {
         }
     }
 
+    /**
+     * Change the role of a user
+     * @param idUser 
+     * @param role 
+     * @returns 
+     */
     @Post('changeRole/params?')
     @UseGuards(AdminGuard)
     async changeRole(@Query('idUser') idUser: string, @Query('role') role: string) {

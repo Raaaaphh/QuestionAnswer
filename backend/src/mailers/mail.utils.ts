@@ -2,6 +2,11 @@ import * as nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 
 
+/**
+ *  Send an email to the user with a link to verify his email
+ * @param email 
+ * @param emailToken 
+ */
 export const sendMail = (email: string, emailToken: string) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -32,6 +37,12 @@ export const sendMail = (email: string, emailToken: string) => {
     });
 };
 
+/**
+ * Send an email to the Lecturer with a link to register to the site
+ * This link allow the administrator to invite with a role on the token, the user will be insert with it
+ * @param email 
+ * @param emailToken 
+ */
 export const sendMailInvitation = (email: string, inviteLink: string) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
