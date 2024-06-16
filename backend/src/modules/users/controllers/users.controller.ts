@@ -23,7 +23,7 @@ export class UsersController {
      * @returns 
      */
     @Get('findByEmail/:email')
-    async findByName(@Param('email') email: string) {
+    async findByEmail(@Param('email') email: string) {
         try {
             return await this.usersService.findByEmail(email);
         }
