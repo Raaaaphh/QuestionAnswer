@@ -12,8 +12,11 @@ describe('FavoritesController', () => {
         getFavorites: jest.fn(),
         getFavoritesQuestion: jest.fn(),
         getFavoritesUser: jest.fn(),
+        notifyFavorites: jest.fn(),
+        checkFavorite: jest.fn(),
         addFavorite: jest.fn(),
         removeFavorite: jest.fn(),
+        deleteNotified: jest.fn(),
     };
 
     beforeEach(async () => {
@@ -55,6 +58,23 @@ describe('FavoritesController', () => {
         });
     });
 
+    describe('notifyFavorites', () => {
+        it('should call favoritesService.notifyFavorites with correct data', async () => {
+            const idUser = '1';
+            await controller.notifyFavorites(idUser);
+            expect(service.notifyFavorites).toHaveBeenCalledWith(idUser);
+        });
+    });
+
+    describe('checkFavorite', () => {
+        it('should call favoritesService.checkFavorite with correct data', async () => {
+            const idUser = '1';
+            const idQuest = '1';
+            await controller.checkFavorite(idUser, idQuest);
+            expect(service.checkFavorite).toHaveBeenCalledWith(idUser, idQuest);
+        });
+    });
+
     describe('addFavorite', () => {
         it('should call favoritesService.addFavorite with correct data', async () => {
             const dto: FavoriteDto = { idUser: '1', idQuest: '1' };
@@ -62,16 +82,6 @@ describe('FavoritesController', () => {
             expect(service.addFavorite).toHaveBeenCalledWith(dto);
         });
 
-        // it('should log error if favoritesService.addFavorite throws', async () => {
-        //     const consoleSpy = jest.spyOn(console, 'log');
-        //     const dto: FavoriteDto = { idUser: '1', idQuest: '1' };
-        //     jest.spyOn(service, 'addFavorite').mockImplementation(() => { throw new Error('Test Error') });
-        //     try {
-        //         await controller.addFavorite(dto);
-        //     } catch (error) {
-        //         expect(consoleSpy).toHaveBeenCalledWith(new Error('Test Error'));
-        //     }
-        // });
     });
 
     describe('removeFavorite', () => {
@@ -81,15 +91,13 @@ describe('FavoritesController', () => {
             expect(service.removeFavorite).toHaveBeenCalledWith(dto);
         });
 
-        // it('should log error if favoritesService.removeFavorite throws', async () => {
-        //     const consoleSpy = jest.spyOn(console, 'log');
-        //     const dto: FavoriteDto = { idUser: '1', idQuest: '1' };
-        //     jest.spyOn(service, 'removeFavorite').mockImplementation(() => { throw new Error('Test Error') });
-        //     try {
-        //         await controller.removeFavorite(dto);
-        //     } catch (error) {
-        //         expect(consoleSpy).toHaveBeenCalledWith(new Error('Test Error'));
-        //     }
-        // });
+    });
+
+    describe('deleteNotified', () => {
+        it('should call favoritesService.deleteFavorites with correct id', async () => {
+            const dto: FavoriteDto = { idUser: '1', idQuest: '1' };
+            await controller.deleteNotified(dto);
+            expect(service.deleteNotified).toHaveBeenCalledWith(dto);
+        });
     });
 });

@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Role, User } from '../user.model';
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
@@ -20,6 +20,7 @@ export class UsersService {
         }
         catch (error) {
             console.log(error);
+            throw new NotFoundException('Users not found');
         }
     }
 
@@ -46,21 +47,21 @@ export class UsersService {
                 limit: 5,
             });
 
-            if (users.length === 0) {
+            if (users.length === 0 || !users) {
                 throw new NotFoundException(`User with name ${email} not found`);
             }
 
             return users;
         } catch (error) {
             console.log(error);
-            throw new NotFoundException(`User with name ${email} not found`);
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException('Error while finding user by email', HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
     async remove(id: string) {
-        //const user = await this.findOne(id);
-        //await user.destroy();
         if (!isValidUUID(id)) {
             throw new BadRequestException('Invalid user ID');
         }
@@ -70,7 +71,7 @@ export class UsersService {
             }
         });
         if (!user) {
-            throw new ForbiddenException('User not found');
+            throw new NotFoundException('User not found');
         }
         await user.destroy();
         return user;
@@ -88,7 +89,7 @@ export class UsersService {
             });
 
             if (!user) {
-                throw new ForbiddenException('User not found');
+                throw new NotFoundException('User not found');
             }
 
             user.role = role as Role;
@@ -110,7 +111,7 @@ export class UsersService {
         });
 
         if (!user) {
-            throw new ForbiddenException('User not found');
+            throw new NotFoundException('User not found');
         }
 
         const valid = await argon.verify(user.password, mdpDto.oldpassword);
@@ -137,7 +138,7 @@ export class UsersService {
         });
 
         if (!user) {
-            throw new ForbiddenException('User not found');
+            throw new NotFoundException('User not found');
         }
 
         user.name = userDto.name;
@@ -159,7 +160,7 @@ export class UsersService {
             });
 
             if (!user) {
-                throw new ForbiddenException('User not found');
+                throw new NotFoundException('User not found');
             }
 
             user.banned = !user.banned;

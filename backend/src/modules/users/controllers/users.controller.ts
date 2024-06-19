@@ -14,6 +14,7 @@ export class UsersController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -29,6 +30,7 @@ export class UsersController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -39,6 +41,7 @@ export class UsersController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -49,11 +52,12 @@ export class UsersController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
     /**
-     * Change the role of a user
+     * Change the role of a user by hand
      * @param idUser 
      * @param role 
      * @returns 
@@ -66,6 +70,7 @@ export class UsersController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -76,6 +81,7 @@ export class UsersController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -86,6 +92,7 @@ export class UsersController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -97,6 +104,7 @@ export class UsersController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 }
