@@ -1,8 +1,8 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, HttpException, HttpStatus, NotFoundException, Param, Post, Query, UseGuards } from "@nestjs/common";
 import { QuestionCreateDto, QuestionEditDto, QuestionFlagDto, QuestionVoteDto } from "../dto";
 import { QuestionsService } from "../services/questions.service";
 import { StudentGuard } from "../../../guards/student.guard";
-import { AdminGuard } from "src/guards/admin.guard";
+import { AdminGuard } from "../../../guards/admin.guard";
 
 @Controller('questions')
 export class QuestionsController {
@@ -20,6 +20,10 @@ export class QuestionsController {
             return this.questionsService.getQuestion(id);
         } catch (error) {
             console.log(error);
+            if (error instanceof NotFoundException || error instanceof BadRequestException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -30,6 +34,7 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -52,6 +57,10 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -67,6 +76,10 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            if (error instanceof NotFoundException || error instanceof BadRequestException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -89,6 +102,10 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -115,6 +132,10 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -141,6 +162,10 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -167,7 +192,10 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
-            throw error;
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -216,6 +244,7 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -231,6 +260,7 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -246,6 +276,7 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -261,6 +292,7 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -276,6 +308,7 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -286,6 +319,7 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -296,6 +330,7 @@ export class QuestionsController {
             return this.questionsService.createQuestion(quest);
         } catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -311,6 +346,7 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -321,6 +357,7 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -331,6 +368,7 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -341,6 +379,7 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -351,6 +390,7 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -367,6 +407,7 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -374,10 +415,10 @@ export class QuestionsController {
     editQuestion(@Body() question: QuestionEditDto) {
         try {
             return this.questionsService.editQuestion(question);
-
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -388,6 +429,10 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

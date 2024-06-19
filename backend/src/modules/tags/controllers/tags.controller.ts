@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, UseGuards } from "@nestjs/common";
 import { AdminGuard } from "../../../guards/admin.guard";
 import { TagsService } from "../services/tags.service";
 import { TagCreateDto } from "../dto/tag-create.dto";
@@ -13,7 +13,7 @@ export class TagsController {
             return this.tagsService.findAll();
         }
         catch (error) {
-            console.log(error);
+            throw new HttpException('Error during the retrieval of the tags', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -23,7 +23,7 @@ export class TagsController {
             return this.tagsService.getTag(id);
         }
         catch (error) {
-            console.log(error);
+            throw error;
         }
     }
 
@@ -34,7 +34,7 @@ export class TagsController {
             return this.tagsService.createTag(tagDto);
         }
         catch (error) {
-            console.log(error);
+            throw error;
         }
     }
 
@@ -44,7 +44,7 @@ export class TagsController {
             return this.tagsService.deleteTag(id);
         }
         catch (error) {
-            console.log(error);
+            throw error;
         }
     }
 

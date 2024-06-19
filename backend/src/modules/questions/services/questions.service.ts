@@ -1,8 +1,8 @@
-import { ForbiddenException, Injectable, HttpException, HttpStatus, BadRequestException, NotFoundException } from "@nestjs/common";
+import { ForbiddenException, Injectable, HttpException, HttpStatus, BadRequestException, NotFoundException, ConflictException } from "@nestjs/common";
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { InjectModel } from "@nestjs/sequelize";
 import { Op } from "sequelize";
-import { Sequelize } from "sequelize-typescript";
+import { Not, Sequelize } from "sequelize-typescript";
 import { Question } from "../question.model";
 import { QuestionCreateDto, QuestionEditDto, QuestionFlagDto, QuestionVoteDto } from "../dto";
 import { QuestionTag } from "../../questiontags/questiontag.model";
@@ -10,8 +10,8 @@ import { Picture } from "../../pictures/picture.model";
 import { Vote } from "../../votes/vote.model";
 import { Favorite } from "../../favorites/favorite.model";
 import { Flag, FlagType } from "../../flags/flag.model";
-import { Tag } from "src/modules/tags/tag.model";
-import { User } from "src/modules/users/user.model";
+import { Tag } from "../../tags/tag.model";
+import { User } from "../../users/user.model";
 
 @Injectable()
 export class QuestionsService {
@@ -30,7 +30,7 @@ export class QuestionsService {
         });
 
         if (!question) {
-            throw new ForbiddenException('Question not found');
+            throw new NotFoundException('Question not found');
         }
         return question;
     }
@@ -51,7 +51,7 @@ export class QuestionsService {
         });
 
         if (!questions || questions.length === 0) {
-            throw new ForbiddenException('Questions not found');
+            throw new NotFoundException('Questions not found');
         }
         return questions;
     }
@@ -68,7 +68,7 @@ export class QuestionsService {
         });
 
         if (!questions || questions.length === 0) {
-            throw new ForbiddenException('Questions not found');
+            throw new NotFoundException('Questions not found');
         }
         return questions;
     }
@@ -90,7 +90,7 @@ export class QuestionsService {
         });
 
         if (!questions || questions.length === 0) {
-            throw new ForbiddenException('Questions not found');
+            throw new NotFoundException('Questions not found');
         }
         return questions;
     }
@@ -112,7 +112,7 @@ export class QuestionsService {
         });
 
         if (!questions || questions.length === 0) {
-            throw new ForbiddenException('Questions not found');
+            throw new NotFoundException('Questions not found');
         }
         return questions;
     }
@@ -133,7 +133,7 @@ export class QuestionsService {
         });
 
         if (!questions || questions.length === 0) {
-            throw new ForbiddenException('Questions not found');
+            throw new NotFoundException('Questions not found');
         }
         return questions;
     }
@@ -167,11 +167,12 @@ export class QuestionsService {
             });
 
             if (!questions || questions.length === 0) {
-                throw new ForbiddenException('Questions not found');
+                throw new NotFoundException('Questions not found');
             }
             return questions;
         } catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -187,6 +188,11 @@ export class QuestionsService {
                 },
                 transaction
             });
+
+            if (!tempQuestions || tempQuestions.length === 0) {
+                throw new NotFoundException('Questions not found');
+            }
+
             const intLimit = parseInt(limit, 10);
             const intPage = parseInt(page, 10);
             const offset = (intPage - 1) * intLimit;
@@ -202,7 +208,7 @@ export class QuestionsService {
             });
 
             if (!questions || questions.length === 0) {
-                throw new ForbiddenException('Questions not found');
+                throw new NotFoundException('Questions not found');
             }
 
             await transaction.commit();
@@ -210,10 +216,13 @@ export class QuestionsService {
             return questions;
         } catch (error) {
             await transaction.rollback();
-            console.error(error);
+            if (NotFoundException) {
+                throw error;
+            }
             throw new HttpException('Error while searching questions by tags', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     async getTagsForQuestion(id: string) {
         const transaction = await this.sequelize.transaction();
@@ -250,6 +259,10 @@ export class QuestionsService {
 
         } catch (error) {
             console.log(error);
+            if (error instanceof BadRequestException || error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -275,6 +288,10 @@ export class QuestionsService {
 
         } catch (error) {
             console.log(error);
+            if (error instanceof BadRequestException || error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -300,6 +317,10 @@ export class QuestionsService {
 
         } catch (error) {
             console.log(error);
+            if (error instanceof BadRequestException || error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -325,6 +346,10 @@ export class QuestionsService {
             return questions.length;
         } catch (error) {
             console.log(error);
+            if (error instanceof BadRequestException || error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -355,6 +380,10 @@ export class QuestionsService {
             return votes;
         } catch (error) {
             console.log(error);
+            if (error instanceof BadRequestException || error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -380,6 +409,10 @@ export class QuestionsService {
             return question.votes;
         } catch (error) {
             console.log(error);
+            if (error instanceof BadRequestException || error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -389,7 +422,7 @@ export class QuestionsService {
         const transaction = await this.sequelize.transaction();
         try {
             if (quest.title.length > 100) {
-                throw new HttpException('The title is too long', HttpStatus.BAD_REQUEST);
+                throw new BadRequestException('Title is too long');
             }
 
             const newTitleWords = quest.title.toLowerCase().split(' ').filter(word => word.length > 0)
@@ -401,7 +434,7 @@ export class QuestionsService {
                 const similarWordsCount = this.findSimilarWordsCount(newTitleWords, existingTitleWords);
 
                 if (similarWordsCount >= 80) {
-                    throw new HttpException('A question with a similar title already exists', HttpStatus.CONFLICT);
+                    throw new ConflictException('A similar question already exists');
                 }
             }
 
@@ -426,6 +459,9 @@ export class QuestionsService {
         } catch (error) {
             await transaction.rollback();
             console.error(error);
+            if (error instanceof BadRequestException || error instanceof ConflictException) {
+                throw error;
+            }
             throw new HttpException(error.message || 'Error during the creation of the question', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -441,11 +477,11 @@ export class QuestionsService {
             });
 
             if (!quest) {
-                throw new HttpException('Question not found', HttpStatus.NOT_FOUND);
+                throw new NotFoundException('Question not found');
             }
 
             if (quest.idUser !== idUser) {
-                throw new HttpException('User is not the author of the question', HttpStatus.FORBIDDEN);
+                throw new ForbiddenException('User is not the author of the question');
             }
 
             quest.status = true;
@@ -466,6 +502,9 @@ export class QuestionsService {
         } catch (error) {
             await transaction.rollback();
             console.error(error);
+            if (error instanceof NotFoundException || error instanceof ForbiddenException) {
+                throw error;
+            }
             throw new HttpException(error.message || 'Error during the setting of the question as solved', HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -483,7 +522,7 @@ export class QuestionsService {
             });
 
             if (existingVote) {
-                throw new HttpException('User has already voted for this question', HttpStatus.BAD_REQUEST);
+                throw new BadRequestException('User has already voted for this question');
             }
 
             const quest = await this.questModel.findOne({
@@ -492,7 +531,7 @@ export class QuestionsService {
             });
 
             if (!quest) {
-                throw new HttpException('Question not found', HttpStatus.NOT_FOUND);
+                throw new NotFoundException('Question not found');
             }
 
             quest.votes += 1;
@@ -509,6 +548,9 @@ export class QuestionsService {
         } catch (error) {
             await transaction.rollback();
             console.error(error);
+            if (error instanceof BadRequestException || error instanceof NotFoundException) {
+                throw error;
+            }
             throw new HttpException(error.message || 'Error during the upload of votes', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -523,7 +565,7 @@ export class QuestionsService {
             });
 
             if (!vote) {
-                throw new HttpException('Vote not found', HttpStatus.NOT_FOUND);
+                throw new NotFoundException('Vote not found');
             }
 
             const quest = await this.questModel.findOne({
@@ -532,7 +574,7 @@ export class QuestionsService {
             });
 
             if (!quest) {
-                throw new HttpException('Question not found', HttpStatus.NOT_FOUND);
+                throw new NotFoundException('Question not found');
             }
 
             quest.votes -= 1;
@@ -548,6 +590,9 @@ export class QuestionsService {
         } catch (error) {
             await transaction.rollback();
             console.error(error);
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
             throw new HttpException(error.message || 'Error during the removal of vote', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -564,7 +609,7 @@ export class QuestionsService {
             });
 
             if (existingFlag) {
-                throw new HttpException('User has already flagged this question', HttpStatus.BAD_REQUEST);
+                throw new BadRequestException('User has already flagged this question');
             }
 
             const quest = await this.questModel.findOne({
@@ -573,7 +618,7 @@ export class QuestionsService {
             });
 
             if (!quest) {
-                throw new HttpException('Question not found', HttpStatus.NOT_FOUND);
+                throw new NotFoundException('Question not found');
             }
 
             if (flagType === 'Spam') {
@@ -596,6 +641,9 @@ export class QuestionsService {
         } catch (error) {
             await transaction.rollback();
             console.error(error);
+            if (error instanceof BadRequestException || error instanceof NotFoundException) {
+                throw error;
+            }
             throw new HttpException(error.message || 'Error during the flagging of the question', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -610,7 +658,7 @@ export class QuestionsService {
             });
 
             if (!flag) {
-                throw new HttpException('Report not found', HttpStatus.NOT_FOUND);
+                throw new NotFoundException('Flag not found');
             }
 
             const quest = await this.questModel.findOne({
@@ -619,7 +667,7 @@ export class QuestionsService {
             });
 
             if (!quest) {
-                throw new HttpException('Question not found', HttpStatus.NOT_FOUND);
+                throw new NotFoundException('Question not found');
             }
 
             if (flag.flagType === 'Spam') {
@@ -640,6 +688,9 @@ export class QuestionsService {
         } catch (error) {
             await transaction.rollback();
             console.error(error);
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
             throw new HttpException(error.message || 'Error during the removal of report', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -654,7 +705,7 @@ export class QuestionsService {
             });
 
             if (!quest) {
-                throw new HttpException('Question not found', HttpStatus.NOT_FOUND);
+                throw new NotFoundException('Question not found');
             }
 
             quest.flagsSpam = 0;
@@ -671,6 +722,9 @@ export class QuestionsService {
         } catch (error) {
             await transaction.rollback();
             console.error(error);
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
             throw new HttpException(error.message || 'Error during the removal of all reports', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -687,7 +741,7 @@ export class QuestionsService {
             });
 
             if (!quest) {
-                throw new ForbiddenException('Question not found');
+                throw new NotFoundException('Question not found');
             }
 
             quest.title = question.title;
@@ -711,7 +765,7 @@ export class QuestionsService {
             return quest;
         } catch (error) {
             console.error(error);
-            if (error instanceof ForbiddenException) {
+            if (error instanceof NotFoundException) {
                 throw error;
             }
             throw new HttpException(error.message || 'Error during the edition of the question', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -726,7 +780,7 @@ export class QuestionsService {
             }
         });
         if (!question) {
-            throw new ForbiddenException('Question not found');
+            throw new NotFoundException('Question not found');
         }
 
         await question.destroy();

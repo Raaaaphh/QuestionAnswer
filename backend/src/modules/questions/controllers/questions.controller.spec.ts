@@ -63,8 +63,8 @@ describe('QuestionsController', () => {
     describe('findAllWithLimit', () => {
         it('should call questionsService.findAllWithLimit with correct limit', async () => {
             const limit = '20';
-            await controller.findAllWithLimit(limit);
-            expect(service.findAllWithLimit).toHaveBeenCalledWith(limit);
+            await controller.findAllWithLimit(limit, '1');
+            expect(service.findAllWithLimit).toHaveBeenCalledWith(limit, '1');
         });
     });
 
@@ -72,8 +72,8 @@ describe('QuestionsController', () => {
         it('should call questionsService.searchQuestions with correct search and limit', async () => {
             const search = 'search';
             const limit = '20';
-            await controller.searchQuestions(search, limit);
-            expect(service.searchQuestions).toHaveBeenCalledWith(search, limit);
+            await controller.searchQuestions(search, limit, '1');
+            expect(service.searchQuestions).toHaveBeenCalledWith(search, limit, '1');
         });
     });
 
@@ -90,22 +90,22 @@ describe('QuestionsController', () => {
     describe('searchQuestionsByUser', () => {
         it('should call questionsService.searchQuestionsByUser with correct id', async () => {
             const id = '1';
-            await controller.searchQuestionsByUser(id);
-            expect(service.searchQuestionsByUser).toHaveBeenCalledWith(id);
+            await controller.searchQuestionsByUser(id, '20', '1');
+            expect(service.searchQuestionsByUser).toHaveBeenCalledWith(id, '20', '1');
         });
     });
 
     describe('searchQuestionsByTags', () => {
         it('should call questionsService.searchQuestionsByTags with correct tags', async () => {
             const tags = 'tag1,tag2';
-            await controller.searchQuestionsByTags(tags);
-            expect(service.searchQuestionsByTags).toHaveBeenCalledWith(['tag1', 'tag2']);
+            await controller.searchQuestionsByTags(tags, '20', '1');
+            expect(service.searchQuestionsByTags).toHaveBeenCalledWith(['tag1', 'tag2'], '20', '1');
         });
 
         it('should throw BadRequestException if tags are not provided', async () => {
             const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
             try {
-                await controller.searchQuestionsByTags('');
+                await controller.searchQuestionsByTags('', '20', '1');
             } catch (error) {
                 expect(error).toBeInstanceOf(BadRequestException);
                 expect(error.message).toBe('Tags query parameter is required');
@@ -117,7 +117,7 @@ describe('QuestionsController', () => {
         it('should throw BadRequestException if tags are empty after trimming', async () => {
             const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
             try {
-                await controller.searchQuestionsByTags(' , ');
+                await controller.searchQuestionsByTags(' , ', '20', '1');
             } catch (error) {
                 expect(error).toBeInstanceOf(BadRequestException);
                 expect(error.message).toBe('At least one tag is required');
@@ -131,7 +131,7 @@ describe('QuestionsController', () => {
             jest.spyOn(service, 'searchQuestionsByTags').mockImplementation(() => { throw new Error('Test Error') });
 
             try {
-                await controller.searchQuestionsByTags('tag1,tag2');
+                await controller.searchQuestionsByTags('tag1,tag2', '20', '1');
             } catch (error) {
                 expect(consoleSpy).toHaveBeenCalledWith(new Error('Test Error'));
             }
