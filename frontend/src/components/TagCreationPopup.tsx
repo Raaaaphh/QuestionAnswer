@@ -69,7 +69,6 @@ const TagCreationPopup: React.FC<TagCreationPopupProps> = ({
     if (!existingTags.includes(tagName)) {
       onSubmit(tagName);
     }
-    //REQUETE A FAIRE POUR AJOUTER LE TAG
     const tagData = {
       name: tagName,
       description: " ",
@@ -139,7 +138,7 @@ const TagCreationPopup: React.FC<TagCreationPopupProps> = ({
             </div>
           </div>
           <div className="buttons">
-            <button type="submit" className="submitButton">
+            <button type="submit" className="submitButtonC">
               Create tag
             </button>
             <button type="button" className="cancelButton" onClick={onClose}>
