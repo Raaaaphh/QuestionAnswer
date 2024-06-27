@@ -126,8 +126,8 @@
     width: 100%;
   }
   
-  .submitButton, .cancelButton {
-    padding: 10px 20px;
+  .submitButtonC, .cancelButton {
+    padding: 10px 15px;
     font-size: 16px;
     border-radius: 5px;
     border: none;
@@ -137,7 +137,7 @@
     font-family: 'Poppins', sans-serif;
   }
   
-  .submitButton {
+  .submitButtonC {
     background-color: #004A85;
     color: white;
   }

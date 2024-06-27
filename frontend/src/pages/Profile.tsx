@@ -185,7 +185,7 @@ const Profile: React.FC = () => {
             </div>
             {user.role === "Lecturer" && (
               <div className="previousQuestions">
-                <h3>Previous Answers</h3>
+                <h3>Questions that you have answered</h3>
                 <div className="questionsContainer">
                   {answers.map((answer) => (
                     <QuestionComp key={answer.idAnsw} idQuest={answer.idQuest} reportDisplay={false} />
