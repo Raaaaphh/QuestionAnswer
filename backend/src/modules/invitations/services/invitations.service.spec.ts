@@ -40,8 +40,8 @@ describe('InvitationsService', () => {
                 idInvitation: uuidv4(),
                 email,
                 role,
-                createdAt: new Date(),
-                updatedAt: new Date(),
+                createdAt: '2021-01-01T00:00:00.000Z',
+                updatedAt: '2021-01-01T00:00:00.000Z',
             };
             jest.spyOn(invitationModel, 'create').mockResolvedValue(mockInvitation);
             jest.spyOn(jwtService, 'sign').mockReturnValue('mock_token');
