@@ -10,7 +10,7 @@ describe('UsersController', () => {
 
     const mockUsersService = {
         findAll: jest.fn(),
-        findByName: jest.fn(),
+        findByEmail: jest.fn(),
         findById: jest.fn(),
         remove: jest.fn(),
         editMdp: jest.fn(),
@@ -43,9 +43,9 @@ describe('UsersController', () => {
 
     describe('findByName', () => {
         it('should call usersService.findByName with correct name', async () => {
-            const name = 'name';
-            await controller.findByName(name);
-            expect(service.findByName).toHaveBeenCalledWith(name);
+            const email = 'test@utp';
+            await controller.findByEmail(email);
+            expect(service.findByEmail).toHaveBeenCalledWith(email);
         });
     });
 

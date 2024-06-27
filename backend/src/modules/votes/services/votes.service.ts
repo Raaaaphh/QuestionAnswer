@@ -10,7 +10,7 @@ export class VotesService {
     async hasUserVoted(idUser: string, idQuest: string) {
         const vote = await this.voteModel.findOne({ where: { idUser, idQuest } });
         if (!vote) {
-            throw new BadRequestException('User has not voted');
+            return false;
         } else {
             return true;
         }

@@ -1,6 +1,11 @@
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
+
+/**
+ * Guard that checks if the user is an admin
+ * @returns {boolean} - True if the user is an admin, false otherwise
+ */
 @Injectable()
 export class AdminGuard implements CanActivate {
     canActivate(

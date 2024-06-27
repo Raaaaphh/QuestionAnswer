@@ -82,28 +82,28 @@ describe('UsersService', () => {
         });
     });
 
-    describe('findByName', () => {
+    describe('findByEmail', () => {
         it('should throw NotFoundException if user is not found', async () => {
-            mockUserModel.findAll.mockResolvedValue(null);
+            mockUserModel.findAll.mockResolvedValue([]);
 
-            await expect(service.findByName('Jef Anton')).rejects.toThrow(NotFoundException);
+            await expect(service.findByEmail('test@utp')).rejects.toThrow(NotFoundException);
         });
 
         it('should return users found by their name', async () => {
             const users = [{ idUser: 'b3d6a5d7-54d7-44fd-929d-7352f462e635' }, { idUser: 'b3d6a5d7-54d7-44fd-929d-7352f462e636' }];
             mockUserModel.findAll.mockResolvedValue(users);
 
-            const result = await service.findByName('name');
+            const result = await service.findByEmail('test@utp');
             expect(result).toEqual(users);
         });
     });
 
     describe('remove', () => {
-        it('should throw ForbiddenException if user is not found', async () => {
+        it('should throw NotFoundException if user is not found', async () => {
             (isValidUUID as jest.Mock).mockReturnValue(true);
             mockUserModel.findOne.mockResolvedValue(null);
 
-            await expect(service.remove('user-id')).rejects.toThrow(ForbiddenException);
+            await expect(service.remove('user-id')).rejects.toThrow(NotFoundException);
         });
 
         it('should remove the user', async () => {
@@ -124,7 +124,7 @@ describe('UsersService', () => {
     });
 
     describe('editMdp', () => {
-        it('should throw ForbiddenException if user is not found', async () => {
+        it('should throw NotFoundException if user is not found', async () => {
             const dto: UserEditMdpDto = {
                 idUser: 'b3d6a5d7-54d7-44fd-929d-7352f462e635',
                 oldpassword: 'oldpassword',
@@ -133,7 +133,7 @@ describe('UsersService', () => {
             };
             mockUserModel.findOne.mockResolvedValue(null);
 
-            await expect(service.editMdp(dto)).rejects.toThrow(ForbiddenException);
+            await expect(service.editMdp(dto)).rejects.toThrow(NotFoundException);
         });
 
         it('should trhow ForbiddenException if it is the wrong password', async () => {
@@ -200,10 +200,10 @@ describe('UsersService', () => {
     });
 
     describe('editName', () => {
-        it('should throw ForbiddenException if user is not found', async () => {
+        it('should throw NotFoundException if user is not found', async () => {
             const dto: UserEditNameDto = { idUser: '1', name: 'new_name' };
             mockUserModel.findOne.mockResolvedValue(null);
-            await expect(service.editName(dto)).rejects.toThrow(ForbiddenException);
+            await expect(service.editName(dto)).rejects.toThrow(NotFoundException);
         });
 
         it('should edit the name', async () => {
@@ -247,9 +247,9 @@ describe('UsersService', () => {
             expect(result).toEqual(user);
         });
 
-        it('should throw ForbiddenException if user is not found', async () => {
+        it('should throw NotFoundException if user is not found', async () => {
             mockUserModel.findOne.mockResolvedValue(null);
-            await expect(service.ban('user-id')).rejects.toThrow(ForbiddenException);
+            await expect(service.ban('user-id')).rejects.toThrow(NotFoundException);
         });
     });
 });

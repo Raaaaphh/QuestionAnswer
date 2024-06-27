@@ -8,6 +8,9 @@ interface CustomRequest extends Request {
     user?: any;
 }
 
+/**
+ * Middleware to check if the user is authenticated
+ */
 @Injectable()
 export class JwtMiddleware implements NestMiddleware {
     constructor(private readonly userService: UsersService) { }

@@ -2,6 +2,10 @@ import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, Forbi
 import { AnswerCreateDto } from 'src/modules/answers/dto';
 import { QuestionsService } from '../modules/questions/services/questions.service';
 
+/**
+ * Guard that checks if the user is authorized to answer a question
+ * @returns {boolean} - True if the user is authorized to answer the question, false otherwise
+ */
 @Injectable()
 export class AnswerGuard implements CanActivate {
     constructor(private questionsService: QuestionsService) { }

@@ -1,19 +1,29 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, HttpException, HttpStatus, NotFoundException, Param, Post, Query, UseGuards } from "@nestjs/common";
 import { QuestionCreateDto, QuestionEditDto, QuestionFlagDto, QuestionVoteDto } from "../dto";
 import { QuestionsService } from "../services/questions.service";
 import { StudentGuard } from "../../../guards/student.guard";
+import { AdminGuard } from "../../../guards/admin.guard";
 
 @Controller('questions')
 export class QuestionsController {
     constructor(private questionsService: QuestionsService) {
     }
 
+    /**
+     * Get a question by id
+     * @param id 
+     * @returns 
+     */
     @Get(':id')
     getQuestion(@Param('id') id: string) {
         try {
             return this.questionsService.getQuestion(id);
         } catch (error) {
             console.log(error);
+            if (error instanceof NotFoundException || error instanceof BadRequestException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -24,9 +34,16 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    /**
+     * Get all questions with limit and page
+     * @param limit 
+     * @param page 
+     * @returns 
+     */
     @Get('all/params')
     findAllWithLimit(@Query('limit') limit: string, @Query('page') page: string) {
         try {
@@ -40,9 +57,38 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    /**
+     * Get all questions for a user with his id
+     * @param id 
+     * @returns 
+     */
+    @Get('getQuestionsForUser/:id')
+    getQuestionsForUser(@Param('id') id: string) {
+        try {
+            return this.questionsService.getQuestionsForUser(id);
+        }
+        catch (error) {
+            console.log(error);
+            if (error instanceof NotFoundException || error instanceof BadRequestException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Get all questions with more than 5 flags, with limit and page
+     * @param limit 
+     * @param page 
+     * @returns 
+     */
     @Get('findReported/params')
     findReportedQuestions(@Query('limit') limit: string, @Query('page') page: string) {
         try {
@@ -56,9 +102,20 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    /**
+     * Find questions with the search bar, with limit and page
+     * @param search 
+     * @param limit 
+     * @param page 
+     * @returns 
+     */
     @Get('findByName/params')
     searchQuestions(@Query('search') search: string, @Query('limit') limit: string, @Query('page') page: string) {
         try {
@@ -75,9 +132,20 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    /**
+     * Get all questions with a filter, like only the question solved, with limit and page
+     * @param filter 
+     * @param limit 
+     * @param page 
+     * @returns 
+     */
     @Get('findByFilter/params')
     searchQuestionsByFilter(@Query('filter') filter: string, @Query('limit') limit: string, @Query('page') page: string) {
         try {
@@ -94,14 +162,25 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    /**
+     * Questions with the name of the user, with limit and page
+     * @param name 
+     * @param limit 
+     * @param page 
+     * @returns 
+     */
     @Get('findByUser/params')
-    searchQuestionsByUser(@Query('id') id: string, @Query('limit') limit: string, @Query('page') page: string) {
+    searchQuestionsByUser(@Query('name') name: string, @Query('limit') limit: string, @Query('page') page: string) {
         try {
-            if (id === undefined) {
-                throw new Error('User ID is required');
+            if (name === undefined) {
+                throw new Error('Name is required');
             }
             if (limit === undefined) {
                 limit = '20';
@@ -109,13 +188,24 @@ export class QuestionsController {
             if (page === undefined) {
                 page = '1';
             }
-            return this.questionsService.searchQuestionsByUser(id, limit, page);
+            return this.questionsService.searchQuestionsByUser(name, limit, page);
         }
         catch (error) {
             console.log(error);
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    /**
+     * Find questions with tags, with limit and page
+     * @param tags 
+     * @param limit 
+     * @param page 
+     * @returns 
+     */
     @Get('findByTags/params')
     async searchQuestionsByTags(@Query('tags') tags: string, @Query('limit') limit: string, @Query('page') page: string) {
         try {
@@ -142,6 +232,11 @@ export class QuestionsController {
         }
     }
 
+    /**
+     * Get all tags for a question
+     * @param id 
+     * @returns 
+     */
     @Get('tagsForQuestion/:id')
     getTagsForQuestion(@Param('id') id: string) {
         try {
@@ -149,6 +244,82 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw error;
+        }
+    }
+
+    /**
+     * Get the number of votes for a question 
+     * @param id 
+     * @returns 
+     */
+    @Get('getVotes/:idQuest')
+    getVotes(@Param('idQuest') id: string) {
+        try {
+            return this.questionsService.getVotes(id);
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+    /**
+     * Get the number of flags for a question
+     * @param id 
+     * @returns 
+     */
+    @Get('getFlags/:idQuest')
+    getFlags(@Param('idQuest') id: string) {
+        try {
+            return this.questionsService.getFlags(id);
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+    /**
+     * Get the number of questions for a user 
+     * @param id 
+     * @returns 
+     */
+    @Get('getQuestionsByUser/:idUser')
+    getQuestionsByUser(@Param('idUser') id: string) {
+        try {
+            return this.questionsService.getQuestionsByUser(id);
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+    /**
+     * Get the number of votes for a user
+     * @param id 
+     * @returns 
+     */
+    @Get('getVotesByUser/:idUser')
+    getVotesByUser(@Param('idUser') id: string) {
+        try {
+            return this.questionsService.getVotesByUser(id);
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+    @Get('getVotesByQuestion/:idQuest')
+    getVotesByQuestion(@Param('idQuest') id: string) {
+        try {
+            return this.questionsService.getVotesByQuestion(id);
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
         }
     }
 
@@ -159,9 +330,15 @@ export class QuestionsController {
             return this.questionsService.createQuestion(quest);
         } catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
+    /**
+     * Set a question as solved
+     * @param dto 
+     * @returns 
+     */
     @Post('setSolved')
     setSolved(@Body() dto: QuestionVoteDto) {
         try {
@@ -169,6 +346,7 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -179,6 +357,7 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -189,6 +368,7 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -199,6 +379,7 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -209,6 +390,24 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            throw error;
+        }
+    }
+
+    /**
+     * Remove all flags for a question 
+     * @param id 
+     * @returns 
+     */
+    @Post('removeAllFlags/:idQuest')
+    @UseGuards(AdminGuard)
+    removeAllFlags(@Param('idQuest') id: string) {
+        try {
+            return this.questionsService.removeAllFlags(id);
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
         }
     }
 
@@ -216,10 +415,10 @@ export class QuestionsController {
     editQuestion(@Body() question: QuestionEditDto) {
         try {
             return this.questionsService.editQuestion(question);
-
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -230,6 +429,10 @@ export class QuestionsController {
         }
         catch (error) {
             console.log(error);
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

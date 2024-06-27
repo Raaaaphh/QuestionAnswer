@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/sequelize';
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { Favorite } from '../favorite.model';
 import { FavoritesService } from './favorites.service';
 import { FavoriteDto } from '../dto/favorite.dto';
@@ -128,8 +128,62 @@ describe('FavoritesService', () => {
     });
 
     describe('deleteNotified', () => {
-        // A faire
+        it('should throw NotFoundException if favorite is not found', async () => {
+            const dto = { idUser: 'user-id', idQuest: 'question-id' };
+            mockFavoriteModel.findOne.mockResolvedValue(null);
+
+            await expect(service.deleteNotified(dto)).rejects.toThrow(NotFoundException);
+        });
+
+        it('should update the favorite and return it', async () => {
+            const dto: FavoriteDto = { idUser: 'user-id', idQuest: 'question-id' };
+            const favorite = { idFav: 'fav-id', idUser: 'user-id', idQuest: 'question-id', notified: true, save: jest.fn() };
+            mockFavoriteModel.findOne.mockResolvedValue(favorite);
+
+            const result = await service.deleteNotified(dto);
+            expect(mockFavoriteModel.findOne).toHaveBeenCalledWith({ where: { idUser: dto.idUser, idQuest: dto.idQuest } });
+            expect(favorite.save).toHaveBeenCalled();
+            expect(result).toEqual(favorite);
+        });
     });
+
+    describe('checkFavorite', () => {
+        it('should return false if favorite does not exist', async () => {
+            const idUser = 'user-id';
+            const idQuest = 'question-id';
+            (isValidUUID as jest.Mock).mockReturnValue(true);
+            mockFavoriteModel.findOne.mockResolvedValue(null);
+
+            const result = await service.checkFavorite(idUser, idQuest);
+            expect(result).toBe(false);
+        });
+
+        it('should return true if favorite exists', async () => {
+            const favorite = { idFav: 1, idUser: 'user-id', idQuest: 'question-id' }
+            const idUser = favorite.idUser;
+            const idQuest = favorite.idQuest;
+            (isValidUUID as jest.Mock).mockReturnValue(true);
+            mockFavoriteModel.findOne.mockResolvedValue(favorite);
+
+            const result = await service.checkFavorite(idUser, idQuest);
+            expect(result).toBe(true);
+        });
+
+        it('should throw BadRequestException if idUser is invalid', async () => {
+            const idUser = 'invalid-id';
+            const idQuest = 'question-id';
+            (isValidUUID as jest.Mock).mockReturnValue(false);
+            await expect(service.checkFavorite(idUser, idQuest)).rejects.toThrow(BadRequestException);
+        });
+
+        it('should throw BadRequestException if idQuest is invalid', async () => {
+            const idUser = 'user-id';
+            const idQuest = 'invalid-id';
+            (isValidUUID as jest.Mock).mockReturnValue(false);
+            await expect(service.checkFavorite(idUser, idQuest)).rejects.toThrow(BadRequestException);
+        });
+    });
+
 
     describe('addFavorite', () => {
         it('should add a favorite', async () => {

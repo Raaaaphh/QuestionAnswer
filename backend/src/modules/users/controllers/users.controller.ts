@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
 import { UsersService } from "../services/users.service";
 import { UserEditMdpDto, UserEditNameDto } from "../dto";
 import { AdminGuard } from "../../../guards/admin.guard";
@@ -14,16 +14,23 @@ export class UsersController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
-    @Get('findByName/:name')
-    async findByName(@Param('name') name: string) {
+    /**
+     * Find a user by email
+     * @param email 
+     * @returns 
+     */
+    @Get('findByEmail/:email')
+    async findByEmail(@Param('email') email: string) {
         try {
-            return await this.usersService.findByName(name);
+            return await this.usersService.findByEmail(email);
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -34,6 +41,7 @@ export class UsersController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -44,6 +52,25 @@ export class UsersController {
         }
         catch (error) {
             console.log(error);
+            throw error;
+        }
+    }
+
+    /**
+     * Change the role of a user by hand
+     * @param idUser 
+     * @param role 
+     * @returns 
+     */
+    @Post('changeRole/params?')
+    @UseGuards(AdminGuard)
+    async changeRole(@Query('idUser') idUser: string, @Query('role') role: string) {
+        try {
+            return await this.usersService.changeRole(idUser, role);
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
         }
     }
 
@@ -54,6 +81,7 @@ export class UsersController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -64,6 +92,7 @@ export class UsersController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 
@@ -75,6 +104,7 @@ export class UsersController {
         }
         catch (error) {
             console.log(error);
+            throw error;
         }
     }
 }

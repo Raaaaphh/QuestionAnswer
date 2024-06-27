@@ -8,6 +8,11 @@ import { AnswerGuard } from "../../../guards/answer.guard";
 export class AnswersController {
     constructor(private answersService: AnswersService) { }
 
+    /**
+     *  Get an answer by its id
+     * @param id 
+     * @returns 
+     */
     @Get(':id')
     async getAnswer(@Param('id') id: string) {
         try {
@@ -34,6 +39,11 @@ export class AnswersController {
         }
     }
 
+    /**
+     *  Get all answers for a question
+     * @param id 
+     * @returns 
+     */
     @Get('findByQuestion/:id')
     async searchAnswersByQuestion(@Param('id') id: string) {
         try {
@@ -48,6 +58,11 @@ export class AnswersController {
         }
     }
 
+    /**
+     *  Get all answers for a user
+     * @param id 
+     * @returns 
+     */
     @Get('findByUser/:id')
     async searchAnswersByUser(@Param('id') id: string) {
         try {

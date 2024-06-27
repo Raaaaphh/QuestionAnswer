@@ -6,6 +6,12 @@ import { AdminGuard } from "../../../guards/admin.guard";
 export class InvitationsController {
     constructor(private invitService: InvitationsService) { }
 
+    /**
+     * Send an invitation by email to a user, with a specific role
+     * @param email 
+     * @param role 
+     * @returns 
+     */
     @Post('send')
     @UseGuards(AdminGuard)
     async sendInvitation(@Body('email') email: string, @Body('role') role: string) {
@@ -17,6 +23,11 @@ export class InvitationsController {
         }
     }
 
+    /**
+     * Use the token to validate the invitation
+     * @param token 
+     * @returns 
+     */
     @Get('validate')
     async validateInvitation(@Query('token') token: string) {
         try {

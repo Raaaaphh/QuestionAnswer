@@ -16,6 +16,11 @@ export class PicturesController {
         }
     }
 
+    /**
+     * Get pictures by question 
+     * @param id 
+     * @returns 
+     */
     @Get('question/:id')
     getPicturesByQuestion(@Param('id') id: string) {
         try {
@@ -26,6 +31,11 @@ export class PicturesController {
         }
     }
 
+    /**
+     * Get pictures by answer
+     * @param id 
+     * @returns 
+     */
     @Get('answer/:id')
     getPicturesByAnswer(@Param('id') id: string) {
         try {
